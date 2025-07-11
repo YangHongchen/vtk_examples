@@ -43,6 +43,8 @@ find_package(VTK REQUIRED)
 add_executable(${PROJECT_NAME}
     main.cpp
     main_normal.cpp
+    main_soft.cpp
+    main_multi_stl.cpp
     # 可添加其他源文件...
 )
 
