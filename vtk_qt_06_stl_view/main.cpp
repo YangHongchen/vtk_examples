@@ -6,37 +6,42 @@
 #include <vtkRenderWindow.h>
 #include <vtkRenderWindowInteractor.h>
 
+#include <vtkPolyDataNormals.h>
+#include <vtkProperty.h>
+
 int main (int argc, char* argv[])
 {
-    // 1. 读取 STL 文件
     auto stlReader = vtkSmartPointer<vtkSTLReader>::New();
     stlReader->SetFileName ("c:/stl/1.stl");
+    stlReader->Update();
 
-    // 2.创建mapper
+    // 1.平滑法线生成器（自动计算平滑的 Vertex 法线）
+    auto normals = vtkSmartPointer<vtkPolyDataNormals>::New();
+    normals->SetInputConnection (stlReader->GetOutputPort());
+    normals->SetFeatureAngle (120.0); // 调整角度越小越锐利
+    normals->SplittingOff();          // 不分割锐角边缘，保证连续性
+    normals->Update();
+
     auto mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
-    mapper->SetInputConnection (stlReader->GetOutputPort());
+    mapper->SetInputConnection (normals->GetOutputPort());  // 2.这里采用normals。而非直接采用stlReader
 
-    // 3.创建actor
     auto actor = vtkSmartPointer<vtkActor>::New();
     actor->SetMapper (mapper);
+    actor->GetProperty()->SetInterpolationToPhong();  // 3. 平滑着色
 
-    // 4.渲染器
+
     auto renderer = vtkSmartPointer<vtkRenderer>::New();
     renderer->AddActor (actor);
     renderer->SetBackground (0.1, 0.2, 0.3);
 
-    // 5.渲染窗口
     auto renderWindow = vtkSmartPointer<vtkRenderWindow>::New();
     renderWindow->AddRenderer (renderer);
     renderWindow->SetSize (1080, 780);
 
-    // 6. 交互器
     auto interactor = vtkSmartPointer<vtkRenderWindowInteractor>::New();
     interactor->SetRenderWindow (renderWindow);
 
-    // 渲染 window
     renderWindow->Render();
-    // 启动交互（否则立即退出：非报错）
     interactor->Start();
 
     return 0;
