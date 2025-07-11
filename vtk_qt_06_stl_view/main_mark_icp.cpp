@@ -66,7 +66,7 @@ void detectKeyPoints (vtkSmartPointer<vtkSTLReader> reader,
     auto polyData = reader->GetOutput();
     vtkIdType numPoints = polyData->GetNumberOfPoints();
 
-    double minZ = std::numeric_limits<double>::max();
+    double maxZ = std::numeric_limits<double>::lowest();
     double minX = std::numeric_limits<double>::max();
     double maxX = std::numeric_limits<double>::lowest();
 
@@ -75,10 +75,10 @@ void detectKeyPoints (vtkSmartPointer<vtkSTLReader> reader,
         double p[3];
         polyData->GetPoint (i, p);
 
-        // 牙尖：Z 最小
-        if (p[2] < minZ)
+        // 牙尖：Z 最大（最前端）
+        if (p[2] > maxZ)
         {
-            minZ = p[2];
+            maxZ  = p[2];
             std::copy (p, p + 3, toothTip);
         }
 
@@ -143,7 +143,7 @@ int main()
     auto renderer = vtkSmartPointer<vtkRenderer>::New();
     renderer->AddActor (upperActor);
     renderer->AddActor (lowerActor);
-    // renderer->AddActor (toothMarker);
+    renderer->AddActor (toothMarker);
     renderer->AddActor (condyleLMarker);
     renderer->AddActor (condyleRMarker);
     renderer->SetBackground (0.1, 0.2, 0.3);
