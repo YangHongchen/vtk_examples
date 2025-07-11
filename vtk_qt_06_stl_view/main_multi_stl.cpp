@@ -69,7 +69,7 @@ void centerByLowestPoint (vtkSmartPointer<vtkActor> upperActor,
     lowerActor->SetPosition (-lowestPoint[0], -lowestPoint[1], -lowestPoint[2]);
 }
 
-int main (int argc, char* argv[])
+int main_multi_stl (int argc, char* argv[])
 {
     // 1. 创建 STL 读取器（上颌和下颌）
     auto upperReader = vtkSmartPointer<vtkSTLReader>::New();
