@@ -46,6 +46,7 @@ add_executable(${PROJECT_NAME}
     main_soft.cpp
     main_multi_stl.cpp
     main_mark_icp.cpp
+    main_bite_animate.cpp
     # 可添加其他源文件...
 )
 
