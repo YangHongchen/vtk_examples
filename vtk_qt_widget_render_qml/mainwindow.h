@@ -6,6 +6,10 @@
 #include <QQuickWidget>
 #include <QHBoxLayout>
 
+
+class VtkRenderWidget;  // 前置声明自定义Widget
+
+
 class MainWindow : public QMainWindow {
     Q_OBJECT
 public:
@@ -19,6 +23,8 @@ private:
 private:
     QQuickWidget *m_navWidget;
     QStackedWidget *m_contentStack;
+    VtkRenderWidget *m_vtkWidget = nullptr;  // 自定义Widget指针
+
 };
 
 

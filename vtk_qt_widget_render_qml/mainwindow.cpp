@@ -2,6 +2,7 @@
 #include <QPushButton>
 #include <QQuickItem>
 #include <QLabel>
+#include "CustomWidget.h"
 
 // MainWindow.cpp
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
@@ -25,7 +26,11 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     m_contentStack = new QStackedWidget();
     addQmlPage("qrc:/qml/Dashboard.qml");
     addQmlPage("qrc:/qml/Settings.qml");
-    addQmlPage("qml:/qml/Analysis.qml");
+    addQmlPage("qrc:/qml/Analysis.qml");
+
+    // 3. 添加自定义Widget页面（索引3）
+    m_vtkWidget = new VtkRenderWidget();
+    m_contentStack->addWidget(m_vtkWidget);  // 索引3
 
     // 3.布局设置
     mainLayout->addWidget(m_navWidget, 1);
@@ -35,6 +40,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
 void MainWindow::handlePageChange(int index)
 {
+    if(index == 3) {  // VTK页面特殊处理
+        qDebug() << "切换到VTK渲染页面";
+        m_vtkWidget->activate();  // 激活VTK渲染
+    }
     qDebug() << "收到页面切换信号，索引:" << index;
     m_contentStack->setCurrentIndex(index);
     // 双重验证
