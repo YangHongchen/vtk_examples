@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/">
+        <file>qml/Analysis.qml</file>
+        <file>qml/Dashboard.qml</file>
+        <file>qml/Settings.qml</file>
+    </qresource>
+</RCC>
