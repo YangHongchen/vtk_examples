@@ -1,67 +1,54 @@
 #include "mainwindow.h"
 #include <QPushButton>
 #include <QQuickItem>
+#include <QLabel>
 
-MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent),
-     m_stackedWidget(new QStackedWidget(this))
+// MainWindow.cpp
+MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
     // 主布局
     QWidget *centralWidget = new QWidget(this);
     QHBoxLayout *mainLayout = new QHBoxLayout(centralWidget);
 
-    // 1. 添加导航栏 (左侧)
-    QVBoxLayout *navLayout = new QVBoxLayout();
-    QStringList pageNames = {"仪表盘", "设置", "数据分析"};
-
-    for (int i = 0; i < pageNames.size();  ++i) {
-        QPushButton *btn = new QPushButton(pageNames[i], this);
-        connect(btn, &QPushButton::clicked, [this, i](){ switchPage(i); });
-        navLayout->addWidget(btn);
+    // 1. 左侧导航 (QML实现)
+    m_navWidget = new QQuickWidget(QUrl("qrc:/qml/NavigationMenu.qml"),this);
+    m_navWidget->setResizeMode(QQuickWidget::SizeRootObjectToView);
+    QObject *navQmlRoot = m_navWidget->rootObject();
+    if(!navQmlRoot) {
+        qCritical() << "QML根对象未创建！";
+        return;
     }
+    bool connectResult = QObject::connect(navQmlRoot, SIGNAL(pageChanged(int)),this, SLOT(handlePageChange(int)));
+    qDebug() << "信号连接结果:" << connectResult; // 必须输出true
 
-    // 2. 添加QML页面栈 (右侧)
-    m_stackedWidget->setMinimumWidth(800);
+    // 2. 右侧内容区 (Widget实现)
+    m_contentStack = new QStackedWidget();
+    addQmlPage("qrc:/qml/Dashboard.qml");
+    addQmlPage("qrc:/qml/Settings.qml");
+    addQmlPage("qml:/qml/Analysis.qml");
 
-    // 加载多个QML页面
-    QStringList qmlFiles = {
-        "qrc:/qml/Dashboard.qml",
-        "qrc:/qml/Settings.qml",
-        "qrc:/qml/Analysis.qml"
-    };
-
-    foreach (const QString &file, qmlFiles) {
-        QQuickWidget *qmlWidget = new QQuickWidget();
-        qmlWidget->setResizeMode(QQuickWidget::SizeRootObjectToView);
-        qmlWidget->setSource(QUrl(file));
-        m_qmlPages.append(qmlWidget);
-        m_stackedWidget->addWidget(qmlWidget);
-    }
-
-    // 组合布局
-    mainLayout->addLayout(navLayout, 1);
-    mainLayout->addWidget(m_stackedWidget, 4);
+    // 3.布局设置
+    mainLayout->addWidget(m_navWidget, 1);
+    mainLayout->addWidget(m_contentStack, 4);
     setCentralWidget(centralWidget);
-
-    // 初始化显示第一页
-    switchPage(0);
 }
 
-MainWindow::~MainWindow()
+void MainWindow::handlePageChange(int index)
 {
-    if(m_stackedWidget) {
-        delete m_stackedWidget;
-    }
-    m_qmlPages.clear();
-}
-
-void MainWindow::switchPage(int index)
-{
-    if (index >= 0 && index < m_qmlPages.size())  {
-        m_stackedWidget->setCurrentIndex(index);
-
-        // 强制刷新QML页面
-        QQuickWidget *current = m_qmlPages[index];
-        current->rootObject()->setProperty("active", true);
+    qDebug() << "收到页面切换信号，索引:" << index;
+    m_contentStack->setCurrentIndex(index);
+    // 双重验证
+    if (m_contentStack->currentIndex() != index) {
+        qWarning() << "页面切换失败！当前索引:" << m_contentStack->currentIndex();
     }
 }
+
+void MainWindow::addQmlPage(const QString &qmlPath)
+{
+    QQuickWidget *qmlWidget = new QQuickWidget();
+    qmlWidget->setResizeMode(QQuickWidget::SizeRootObjectToView);
+    qmlWidget->setSource(QUrl(qmlPath));
+    m_contentStack->addWidget(qmlWidget);
+}
+
+
