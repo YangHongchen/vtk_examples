@@ -8,7 +8,7 @@ Rectangle {
     border.color: "#ddd"
 
     Text {
-        text:"hello"
+        text:"Analysis..."
         anchors.centerIn: parent
     }
 }

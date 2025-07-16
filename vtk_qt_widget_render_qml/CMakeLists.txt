@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.19)
-project(qt_widget_startup_demo LANGUAGES CXX)
+project(qt_widget_qml_intergration_demo LANGUAGES CXX)
 
 set(CMAKE_AUTORCC ON)  # 自动处理资源编译
 
@@ -8,19 +8,15 @@ find_package(Qt6 REQUIRED COMPONENTS Widgets)
 
 qt_standard_project_setup()
 
-qt_add_executable(qt_widget_startup_demo
+qt_add_executable(qt_widget_qml_intergration_demo
     WIN32 MACOSX_BUNDLE
     main.cpp
-    mainwindow.cpp
     mainwindow.h
-    mainwindow.ui
-    HybridWindow.h
-    HybridWindow.cpp
-    backend.h backend.cpp
+    mainwindow.cpp
 )
 
-qt_add_qml_module(qt_widget_startup_demo
-    URI qt_widget_startup_demo
+qt_add_qml_module(qt_widget_qml_intergration_demo
+    URI qt_widget_qml_intergration_demo
     VERSION 1.0
     QML_FILES
         qml/Analysis.qml
@@ -30,7 +26,7 @@ qt_add_qml_module(qt_widget_startup_demo
        qml.qrc
 )
 
-target_link_libraries(qt_widget_startup_demo
+target_link_libraries(qt_widget_qml_intergration_demo
     PRIVATE
         Qt::Core
         Qt::Widgets
@@ -40,14 +36,14 @@ target_link_libraries(qt_widget_startup_demo
 
 include(GNUInstallDirs)
 
-install(TARGETS qt_widget_startup_demo
+install(TARGETS qt_widget_qml_intergration_demo
     BUNDLE  DESTINATION .
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
 )
 
 qt_generate_deploy_app_script(
-    TARGET qt_widget_startup_demo
+    TARGET qt_widget_qml_intergration_demo
     OUTPUT_SCRIPT deploy_script
     NO_UNSUPPORTED_PLATFORM_ERROR
 )
