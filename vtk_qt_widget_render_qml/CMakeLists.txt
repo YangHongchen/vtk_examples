@@ -54,8 +54,6 @@ add_executable(${PROJECT_NAME}
 
     # Qml Context注册类
 
-
-
     # 自定义组件（目前是vtk效果测试组件）
     CustomWidget.h
     CustomWidget.cpp

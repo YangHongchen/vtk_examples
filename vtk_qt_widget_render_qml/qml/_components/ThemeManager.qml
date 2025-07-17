@@ -26,9 +26,7 @@ QtObject {
     signal themeChanged(string themeName)
     // 主题色配置
     property var themeConfig: {
-        "default"
-        // 默认主题
-        : {
+        "default": {
             "primary": "#0B4DA2",
             "primary_light": "#E5F3FF",
             "success": "#27ae60",
@@ -40,8 +38,7 @@ QtObject {
             "textGray": "#9FA7BD",
             "border": "#D8DDEB"
         },
-        "dark"// 暗黑主题
-        : {
+        "dark": {
             "primary": "#00C38B",
             "primary_light": "#E6F9F4",
             "success": "#3E8641",
@@ -54,5 +51,4 @@ QtObject {
             "border": "#D8DDEB"
         }
     }
-
 }

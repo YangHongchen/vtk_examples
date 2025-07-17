@@ -17,5 +17,6 @@
         <file>qml/report/ReportIndex.qml</file>
         <file>qml/analysis/AnalysisTracks.qml</file>
         <file>qml/analysis/AnalysisAnalyze.qml</file>
+        <file>qml/_widgets/SideMenu.qml</file>
     </qresource>
 </RCC>
