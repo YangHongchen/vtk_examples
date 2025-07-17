@@ -11,6 +11,12 @@ project(qt_widget_qml_intergration_demo
 )
 
 #-----------------------------------------------------------------------------
+# 编译设备
+#-----------------------------------------------------------------------------
+set(CMAKE_BUILD_PARALLEL_LEVEL 8)  # 使用8个线程并行编译
+# set(CMAKE_GENERATOR "Ninja")
+
+#-----------------------------------------------------------------------------
 # 编译器标准设置
 #-----------------------------------------------------------------------------
 set(CMAKE_CXX_STANDARD 17)           # VTK 9.x 需要C++14及以上
@@ -33,10 +39,38 @@ set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTORCC ON)
 
 #-----------------------------------------------------------------------------
+# QxORM 数据库映射类编译配置
+#-----------------------------------------------------------------------------
+add_definitions(-D_BUILDING_USER)
+add_definitions(-D_BUILDING_DEVICE)
+add_definitions(-D_BUILDING_PATIENT)
+add_definitions(-D_BUILDING_MEDICAL_TESTING)
+add_definitions(-D_BUILDING_MEDICAL_TESTING_STEP)
+add_definitions(-D_BUILDING_MEDICAL_TESTING_DATA)
+add_definitions(-D_BUILDING_HARDWARE)
+
+#-----------------------------------------------------------------------------
 # Qt模块查找（关键组件说明）
 #-----------------------------------------------------------------------------
-find_package(Qt6 6.5 REQUIRED COMPONENTS Core Widgets Quick QuickWidgets)
-find_package(Qt6 REQUIRED COMPONENTS Widgets)
+find_package(Qt6 6.5 REQUIRED COMPONENTS
+    Core
+    Quick
+    QuickWidgets
+    Widgets
+    Network
+    Sql
+    Multimedia
+    Pdf
+)
+
+#-----------------------------------------------------------------------------
+# 引入qxorm库
+#-----------------------------------------------------------------------------
+set(QXORM_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/3rd/qxorm/include")
+set(QXORM_LIB_DIR "${CMAKE_SOURCE_DIR}/3rd/qxorm/lib")
+include_directories(${QXORM_INCLUDE_DIR})
+link_directories(${QXORM_LIB_DIR})
+
 
 #-----------------------------------------------------------------------------
 # VTK模块查找（关键组件说明）
@@ -51,6 +85,10 @@ add_executable(${PROJECT_NAME}
     # 主窗口（负责登录后页面管理）
     MainWindow.h
     MainWindow.cpp
+
+    # 通用函数
+    src/common/EncryptUtils.h
+    src/common/EncryptUtils.cpp
 
     # Qml Context注册类
 
@@ -69,7 +107,20 @@ add_executable(${PROJECT_NAME}
     # 登录
     src/user/LoginController.h
     src/user/LoginController.cpp
+    src/user/User.h
+    src/user/User.cpp
+    src/user/UserDao.h
+    src/user/UserDao.cpp
 
+    # DB
+     src/database/precompiled.h
+    src/database/Database.h
+    src/database/Database.cpp
+    src/database/DBManager.h
+    src/database/DBManager.cpp
+    src/database/export.h
+    src/database/BaseDao.h
+    src/database/BaseDao.cpp
 )
 
 #-----------------------------------------------------------------------------
@@ -95,13 +146,24 @@ set(RESOURCES
 )
 target_sources(${PROJECT_NAME} PRIVATE ${RESOURCES})
 
-
+#-----------------------------------------------------------------------------
+# 链接库 Qt 库
+#-----------------------------------------------------------------------------
 target_link_libraries(${PROJECT_NAME}
     PRIVATE
         Qt::Core
         Qt::Widgets
         Qt::Quick
         Qt6::QuickWidgets
+        Qt6::Sql
+        Qt6::Multimedia
+        Qt6::Pdf
+        Qt6::Network
+)
+
+# ✅ 链接 QxOrm 库
+target_link_libraries(${PROJECT_NAME} PRIVATE
+    QxOrm           # 静态库：QxOrm.lib；动态库也相同写法
 )
 
 #-----------------------------------------------------------------------------
@@ -116,6 +178,7 @@ vtk_module_autoinit(
     TARGETS ${PROJECT_NAME}
     MODULES ${VTK_LIBRARIES}
 )
+
 
 include(GNUInstallDirs)
 

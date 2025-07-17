@@ -67,7 +67,7 @@ void MainWindow::setupUI()
 
     // 4.布局设置（导航站1/5，右侧空间内容占比4/5）
     mainLayout->addWidget(m_navWidget, 1);
-    mainLayout->addWidget(m_contentStack, 4);
+    mainLayout->addWidget(m_contentStack, 6);
     setCentralWidget(centralWidget);
 }
 

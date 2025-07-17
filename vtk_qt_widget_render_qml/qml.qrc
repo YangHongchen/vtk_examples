@@ -18,5 +18,35 @@
         <file>qml/analysis/AnalysisTracks.qml</file>
         <file>qml/analysis/AnalysisAnalyze.qml</file>
         <file>qml/_widgets/SideMenu.qml</file>
+        <file>qml/_components/ValidatedTextField.qml</file>
+        <file>qml/_components/Button.qml</file>
+        <file>qml/_components/WImageSvg.qml</file>
+        <file>qml/_components/WTextField.qml</file>
+        <file>qml/_components/WNotification.qml</file>
+        <file>assets/images/clear.png</file>
+        <file>assets/images/eye_close.png</file>
+        <file>assets/images/eye_open.png</file>
+        <file>assets/icons/arrow-left-bold.svg</file>
+        <file>assets/icons/arrow-right-bold.svg</file>
+        <file>assets/icons/arrow-up-bold.svg</file>
+        <file>assets/icons/ashbin.svg</file>
+        <file>assets/icons/close-bold.svg</file>
+        <file>assets/icons/login_avatar.svg</file>
+        <file>assets/icons/login_banner.svg</file>
+        <file>assets/icons/logo.svg</file>
+        <file>assets/icons/men.svg</file>
+        <file>assets/icons/minus-bold.svg</file>
+        <file>assets/icons/picture-filling.svg</file>
+        <file>assets/icons/play_circle.svg</file>
+        <file>assets/icons/plus.svg</file>
+        <file>assets/icons/preview.svg</file>
+        <file>assets/icons/rise-filling.svg</file>
+        <file>assets/icons/select-bold.svg</file>
+        <file>assets/icons/top-filling.svg</file>
+        <file>assets/icons/window_close.svg</file>
+        <file>assets/icons/window_minimize.svg</file>
+        <file>assets/icons/women.svg</file>
+        <file>assets/icons/zoom-in.svg</file>
+        <file>assets/icons/zoom-out.svg</file>
     </qresource>
 </RCC>

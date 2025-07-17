@@ -9,21 +9,9 @@ QtObject {
     // 当前主题类型
     property string currentTheme: "default"
 
-    // 颜色绑定
-    property color primary: root.themeConfig[currentTheme].primary
-    property color primaryLight: root.themeConfig[currentTheme].primary_light
-    property color success: root.themeConfig[currentTheme].success
-    property color warning: root.themeConfig[currentTheme].warning
-    property color danger: root.themeConfig[currentTheme].danger
-    property color textColor: root.themeConfig[currentTheme].textNormarl
-    property color textWhite: "#FFFFFF"
-    property color colorWhite: "#FFFFFF"
-    property color textNormal: root.themeConfig[currentTheme].textNormarl
-    property color textGray: root.themeConfig[currentTheme].textGray
-    property color borderColor: root.themeConfig[currentTheme].border
-
     // 主题切换信号
     signal themeChanged(string themeName)
+
     // 主题色配置
     property var themeConfig: {
         "default": {
@@ -51,4 +39,18 @@ QtObject {
             "border": "#D8DDEB"
         }
     }
+
+    // 颜色绑定
+    property color primary: root.themeConfig[currentTheme].primary
+    property color primaryLight: root.themeConfig[currentTheme].primary_light
+    property color success: root.themeConfig[currentTheme].success
+    property color warning: root.themeConfig[currentTheme].warning
+    property color danger: root.themeConfig[currentTheme].danger
+    property color textColor: root.themeConfig[currentTheme].textNormarl
+    property color textWhite: "#FFFFFF"
+    property color colorWhite: "#FFFFFF"
+    property color textNormal: root.themeConfig[currentTheme].textNormarl
+    property color textGray: root.themeConfig[currentTheme].textGray
+    property color borderColor: root.themeConfig[currentTheme].border
+
 }

@@ -7,21 +7,21 @@ import "../_components"
 // 左侧菜单
 Item {
     id: sideMenu
-    implicitWidth: 240
-    implicitHeight: 720
+    implicitWidth:240
+    implicitHeight: 800
 
     // 定义页面切换信号
     signal pageChanged(int page)
 
     // 当前菜单所在页面
-    property string currentPage: "patient/Index.qml"
+    property string currentPage: "patient/PatientIndex.qml"
 
     // 数据模型
     ListModel {
         id: menuModel
         ListElement {
             name: "病例管理"
-            page: "patient/Index.qml"
+            page: "patient/PatientIndex.qml"
             pageIndex: 0
             isParent: true
             expanded: false
@@ -32,12 +32,12 @@ Item {
         // 检测
         ListElement {
             name: "检测"
-            page: "detection/Index.qml"
+            page: "detection/DetectionIndex.qml"
             pageIndex: 1
             isParent: true
             expanded: false
             isActive: false
-            icon: "qrc:/assets/menu/chart.svg"
+            icon: "qrc:/assets/menu/pencil.svg"
             hasChild: false
         }
         // 分析
@@ -46,7 +46,7 @@ Item {
             isParent: true
             expanded: false
             isActive: false
-            icon: "qrc:/assets/menu/pencil.svg"
+            icon: "qrc:/assets/menu/chart.svg"
             hasChild: true
         }
         ListElement {
@@ -118,9 +118,9 @@ Item {
                 width: 216
                 height: 36
                 x: 12
-                color: model.isActive ? ThemeManager.primaryLight : 'transparent'
+                color: model.isActive ? '#E5F3FF' : 'transparent'
                 radius: 4
-                // Behavior on color { ColorAnimation { duration: 0 } } // 颜色过渡动画
+                // Behavior on color { ColorAnimation { duration: 100 } } // 颜色过渡动画
                 Image {
                     id: menu_icon
                     source: model.icon
@@ -135,7 +135,7 @@ Item {
                     anchors.verticalCenter: parent.verticalCenter
                     x: menu_icon.x + menu_icon.width + 8
                     font.pixelSize: 14
-                    color: model.isActive ? ThemeManager.primary : "#1A2133"
+                    color: model.isActive ? '#0B4DA2' : "#1A2133"
                 }
 
                 MouseArea {
@@ -151,7 +151,7 @@ Item {
                         }
                     }
                     onEntered: {
-                        menu_text.font.bold = true  // 鼠标进入时, 字体加粗
+                        menu_text.font.bold = true // 鼠标进入时, 字体加粗
                     }
                     onExited: {
                         menu_text.font.bold = false // 鼠标进入时, 字体恢复
@@ -171,17 +171,16 @@ Item {
         menuModel.setProperty(index, "isActive", true)
         // 设置 当前页面路径 && 发出pageChanged信号
         let childMenu = menuModel.get(index)
-        if(childMenu) {
+        if (childMenu) {
             let pageIndex = childMenu.pageIndex
             let pageUrl = childMenu.page
-            console.log('切换page:',pageIndex, pageUrl)
+            console.log('切换page:', pageIndex, pageUrl)
             if (pageIndex >= 0) {
                 sideMenu.currentPage = pageUrl
                 sideMenu.pageChanged(pageIndex)
             }
             console.log("要切换的页面：", childMenu.page)
-        }
-        else {
+        } else {
             console.warn('未配置正确的页面URL')
         }
     }
@@ -189,17 +188,17 @@ Item {
     // 跳转到页面
     function jumpTo(pagePath) {
         console.log('跳转到页面：', pagePath)
-        let activeIndex = 0;
+        let activeIndex = 0
         // 取消所有激活状态
         for (var i = 0; i < menuModel.count; i++) {
             let childMenu = menuModel.get(i)
             let pageUrl = childMenu.page
-            if(pagePath === pageUrl) {
+            if (pagePath === pageUrl) {
                 activeIndex = i
-                break;
+                break
             }
         }
-        console.log('跳转到页面 activeIndex=',activeIndex,',pagePath=',pagePath)
+        console.log('跳转到页面 activeIndex=', activeIndex, ',pagePath=', pagePath)
         activeMenuAndParent(activeIndex, pagePath)
     }
 }
