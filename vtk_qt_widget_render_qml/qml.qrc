@@ -5,5 +5,11 @@
         <file>qml/Settings.qml</file>
         <file>qml/NavigationMenu.qml</file>
         <file>qml/Login.qml</file>
+        <file>assets/icons/dashboard.svg</file>
+        <file>assets/menu/bingli.svg</file>
+        <file>assets/menu/chart.svg</file>
+        <file>assets/menu/chat-fill.svg</file>
+        <file>assets/menu/pencil.svg</file>
+        <file>qml/Components/ThemeManager.qml</file>
     </qresource>
 </RCC>

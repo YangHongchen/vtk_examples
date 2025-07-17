@@ -1,61 +1,209 @@
-import QtQuick 2.15
-import QtQuick.Controls 2.15
+import QtQuick
+import QtQuick.Controls
+import QtQuick.Layouts
 
-Rectangle {
-    id: root
-    width: 200
-    color: "#f5f5f5"  // 微调背景色
+import "./Components"
 
-    property var pages: ["仪表盘", "设置", "分析", "VTK"]
-    property int currentIndex: 0
-    signal pageChanged(int index)
+// 左侧菜单
+Item {
+    id: sideMenu
+    implicitWidth: 240
+    implicitHeight: 720
 
-    Column {
-        spacing: 1  // 缩小间距用分割线替代
-        anchors.fill:  parent
+    // 定义页面切换信号
+    signal pageChanged(int page)
 
-        Repeater {
-            model: pages
-            delegate: Rectangle {  // 改用Rectangle作为底层
-                width: parent.width
-                height: 48  // 规范高度
-                color: {
-                    currentIndex === index ? "#e3f2fd" :  // 选中态浅蓝
-                    mouseArea.containsMouse  ? "#eeeeee" : "transparent"  // 悬停态
+    // 当前菜单所在页面
+    property string currentPage: "patient/Index.qml"
+
+    // 数据模型
+    ListModel {
+        id: menuModel
+        ListElement {
+            name: "病例管理"
+            pageIndex: 0
+            isParent: true
+            expanded: false
+            isActive: true
+            icon: "qrc:/assets/menu/chart.svg"
+            hasChild: false
+            page: "patient/Index.qml"
+        }
+
+        // 检测
+        ListElement {
+            name: "检测"
+            page: "detection/Index.qml"
+            pageIndex: 1
+            isParent: true
+            expanded: false
+            isActive: false
+            icon: "qrc:/assets/menu/chart.svg"
+            hasChild: false
+        }
+
+        // 分析
+        ListElement {
+            name: "分析"
+            isParent: true
+            expanded: false
+            isActive: false
+            icon: "qrc:/assets/menu/pencil.svg"
+            hasChild: true
+
+        }
+        ListElement {
+            name: "演示"
+            isParent: false
+            parentName: "分析"
+            isActive: false
+            hasChild: false
+            page: "analysis/Model.qml"
+            pageIndex: 3
+        }
+        ListElement {
+            name: "轨迹"
+            isParent: false
+            parentName: "分析"
+            isActive: false
+            hasChild: false
+            page: "analysis/Tracks.qml"
+            pageIndex: 4
+
+        }
+        ListElement {
+            name: "虚拟人"
+            isParent: false
+            parentName: "分析"
+            isActive: false
+            hasChild: false
+            page: "analysis/3D.qml"
+            pageIndex: 5
+        }
+        ListElement {
+            name: "碰撞"
+            isParent: false
+            parentName: "碰撞"
+            isActive: false
+            hasChild: false
+            page: "analysis/Collision.qml"
+            pageIndex: 6
+        }
+
+        // 报告
+        ListElement {
+            name: "报告"
+            isParent: true
+            expanded: false
+            isActive: false
+            icon: "qrc:/assets/menu/chat-fill.svg"
+            hasChild: false
+            page: "report/Index.qml"
+            pageIndex: 7
+        }
+    }
+
+    ListView {
+        id: listView
+        width: 240
+        height: parent.height
+        y: 24
+        clip: true // 防止内容溢出渲染
+        interactive: false
+        ScrollBar.vertical: ScrollBar {
+            policy: ScrollBar.AsNeeded
+        }
+        model: menuModel
+        delegate: Item {
+            width: ListView.view.width
+            height: 40
+            visible: true
+            Rectangle {
+                id: menu_item
+                width: 216
+                height: 36
+                x: 12
+                color: model.isActive ? ThemeManager.primaryLight : 'transparent'
+                radius: 4
+                // Behavior on color { ColorAnimation { duration: 0 } } // 颜色过渡动画
+                Image {
+                    id: menu_icon
+                    source: model.icon
+                    width: 20
+                    height: model.isParent ? 20 : 0
+                    anchors.verticalCenter: parent.verticalCenter
+                    x: 12
                 }
-
                 Text {
-                    text: modelData
-                    color: currentIndex === index ? "#1976d2" : "#333333"  // 颜色调整
-                    font {
-                        pixelSize: 14
-                        bold: currentIndex === index
-                    }
-                    anchors {
-                        left: parent.left
-                        leftMargin: 24  // 规范间距
-                        verticalCenter: parent.verticalCenter
-                    }
-                }
-
-                // 底部边框
-                Rectangle {
-                    width: parent.width
-                    height: 1
-                    color: "#e0e0e0"
-                    anchors.bottom:  parent.bottom
+                    id: menu_text
+                    text: model.name
+                    anchors.verticalCenter: parent.verticalCenter
+                    x: menu_icon.x + menu_icon.width + 8
+                    font.pixelSize: 14
+                    color: model.isActive ? ThemeManager.primary : "#1A2133"
                 }
 
                 MouseArea {
-                    id: mouseArea
-                    anchors.fill:  parent
-                    hoverEnabled: true
+                    anchors.fill: parent
+                    hoverEnabled: true // 启用悬停检测
                     onClicked: {
-                        currentIndex = index
-                        root.pageChanged(index)
+                        if (model.isParent && model.hasChild) {
+                            activeMenuAndParent(index + 1, model.page) // 默认选中第一个子菜单
+                            return
+                        } else {
+                            // 默认选中子菜单或无子菜单的一级菜单
+                            activeMenuAndParent(index)
+                        }
+                    }
+                    onEntered: {
+                        menu_text.font.bold = true  // 鼠标进入时, 字体加粗
+                    }
+                    onExited: {
+                        menu_text.font.bold = false // 鼠标进入时, 字体恢复
                     }
                 }
             }
         }
+    }
+
+    // 激活当前选中的菜单和其父菜单
+    function activeMenuAndParent(index, page) {
+        // 取消所有激活状态
+        for (var i = 0; i < menuModel.count; i++) {
+            menuModel.setProperty(i, "isActive", false)
+        }
+        // 设置当前项激活
+        menuModel.setProperty(index, "isActive", true)
+        // 设置 当前页面路径 && 发出pageChanged信号
+        let childMenu = menuModel.get(index)
+        if(childMenu) {
+            let pageIndex = childMenu.pageIndex
+            let pageUrl = childMenu.page
+            if (pageIndex) {
+                sideMenu.currentPage = pageUrl
+                sideMenu.pageChanged(pageIndex)
+            }
+            console.log("要切换的页面：", childMenu.page)
+        }
+        else {
+            console.warn('未配置正确的页面URL')
+        }
+    }
+
+    // 跳转到页面
+    function jumpTo(pagePath) {
+        console.log('跳转到页面：', pagePath)
+        let activeIndex = 0;
+        // 取消所有激活状态
+        for (var i = 0; i < menuModel.count; i++) {
+            let childMenu = menuModel.get(i)
+            let pageUrl = childMenu.page
+            if(pagePath === pageUrl) {
+                activeIndex = i
+                break;
+            }
+        }
+        console.log('跳转到页面 activeIndex=',activeIndex,',pagePath=',pagePath)
+        activeMenuAndParent(activeIndex, pagePath)
     }
 }
