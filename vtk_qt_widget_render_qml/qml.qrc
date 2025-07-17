@@ -10,6 +10,12 @@
         <file>assets/menu/chart.svg</file>
         <file>assets/menu/chat-fill.svg</file>
         <file>assets/menu/pencil.svg</file>
-        <file>qml/Components/ThemeManager.qml</file>
+        <file>qml/patient/PatientIndex.qml</file>
+        <file>qml/analysis/AnalysisModel.qml</file>
+        <file>qml/_components/ThemeManager.qml</file>
+        <file>qml/detection/DetectionIndex.qml</file>
+        <file>qml/report/ReportIndex.qml</file>
+        <file>qml/analysis/AnalysisTracks.qml</file>
+        <file>qml/analysis/AnalysisAnalyze.qml</file>
     </qresource>
 </RCC>

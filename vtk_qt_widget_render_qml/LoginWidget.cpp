@@ -63,3 +63,18 @@ void LoginWidget::handleLoginCanceled(int code)
 {
     qDebug() << "接受到用户登录取消：code="<<code;
 }
+
+void LoginWidget::showEvent(QShowEvent *event)
+{
+    QWidget::showEvent(event);
+    // Set window flags to only show minimize and close buttons
+    if (windowHandle()) {
+        windowHandle()->setFlags(
+            Qt::Window |                    // It's a window
+            Qt::WindowTitleHint |           // Has a title bar
+            Qt::WindowSystemMenuHint |      // Has system menu
+            Qt::WindowMinimizeButtonHint |  // Show minimize button
+            Qt::WindowCloseButtonHint       // Show close button
+            );
+    }
+}

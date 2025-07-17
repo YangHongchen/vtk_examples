@@ -5,10 +5,9 @@
 #include <QStackedWidget>
 #include <QQuickWidget>
 #include <QHBoxLayout>
-
+#include "src/patient/PatientController.h"
 
 class VtkRenderWidget;  // 前置声明自定义Widget
-
 
 class MainWindow : public QMainWindow {
     Q_OBJECT
@@ -21,10 +20,17 @@ private slots:
 private:
     void addQmlPage(const QString &qmlPath);
 
+    void setupUI();
+    void refreshUI();
+    void setupCpps();
+
 private:
     QQuickWidget *m_navWidget;
     QStackedWidget *m_contentStack;
-    VtkRenderWidget *m_vtkWidget = nullptr;  // 自定义Widget指针
+    VtkRenderWidget *m_vtkWidget = nullptr;
+
+    // 资源类
+    PatientController *m_patientController = nullptr;
 };
 
 

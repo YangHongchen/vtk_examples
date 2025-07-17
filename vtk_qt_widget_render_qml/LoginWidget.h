@@ -27,6 +27,10 @@ public slots:
      */
     void handleLoginCanceled(int code);
 
+protected:
+         void showEvent(QShowEvent *event) override;
+
+
 private:
       QQuickWidget *m_quickWidget;
 };

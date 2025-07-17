@@ -46,14 +46,32 @@ find_package(VTK REQUIRED)
 qt_standard_project_setup()
 
 add_executable(${PROJECT_NAME}
+    # 入口文件
     main.cpp
-    mainwindow.h
-    mainwindow.cpp
+    # 主窗口（负责登录后页面管理）
+    MainWindow.h
+    MainWindow.cpp
+
+    # Qml Context注册类
+
+
+
+    # 自定义组件（目前是vtk效果测试组件）
     CustomWidget.h
     CustomWidget.cpp
+
     # 登录窗口
     LoginWidget.h
     LoginWidget.cpp
+
+    # 病例管理
+    src/patient/PatientController.h
+    src/patient/PatientController.cpp
+
+    # 登录
+    src/user/LoginController.h
+    src/user/LoginController.cpp
+
 )
 
 #-----------------------------------------------------------------------------
@@ -70,7 +88,6 @@ qt_add_qml_module(${PROJECT_NAME}
         qml/Analysis.qml
     RESOURCE_PREFIX "/qml"  # 显式指定资源前缀
 )
-
 
 #-----------------------------------------------------------------------------
 # 资源文件处理（替代qt_add_resources）

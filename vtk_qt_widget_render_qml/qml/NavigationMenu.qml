@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 
-import "./Components"
+import "./_components"
 
 // 左侧菜单
 Item {
@@ -21,15 +21,14 @@ Item {
         id: menuModel
         ListElement {
             name: "病例管理"
+            page: "patient/Index.qml"
             pageIndex: 0
             isParent: true
             expanded: false
             isActive: true
             icon: "qrc:/assets/menu/chart.svg"
             hasChild: false
-            page: "patient/Index.qml"
         }
-
         // 检测
         ListElement {
             name: "检测"
@@ -41,7 +40,6 @@ Item {
             icon: "qrc:/assets/menu/chart.svg"
             hasChild: false
         }
-
         // 分析
         ListElement {
             name: "分析"
@@ -50,56 +48,53 @@ Item {
             isActive: false
             icon: "qrc:/assets/menu/pencil.svg"
             hasChild: true
-
         }
         ListElement {
             name: "演示"
+            page: "analysis/Model.qml"
+            pageIndex: 3
             isParent: false
             parentName: "分析"
             isActive: false
             hasChild: false
-            page: "analysis/Model.qml"
-            pageIndex: 3
         }
         ListElement {
             name: "轨迹"
+            page: "analysis/Tracks.qml"
+            pageIndex: 4
             isParent: false
             parentName: "分析"
             isActive: false
             hasChild: false
-            page: "analysis/Tracks.qml"
-            pageIndex: 4
-
         }
         ListElement {
             name: "虚拟人"
+            page: "analysis/3D.qml"
+            pageIndex: 5
             isParent: false
             parentName: "分析"
             isActive: false
             hasChild: false
-            page: "analysis/3D.qml"
-            pageIndex: 5
         }
         ListElement {
             name: "碰撞"
+            page: "analysis/Collision.qml"
+            pageIndex: 6
             isParent: false
             parentName: "碰撞"
             isActive: false
             hasChild: false
-            page: "analysis/Collision.qml"
-            pageIndex: 6
         }
-
         // 报告
         ListElement {
             name: "报告"
+            page: "report/Index.qml"
+            pageIndex: 7
             isParent: true
             expanded: false
             isActive: false
             icon: "qrc:/assets/menu/chat-fill.svg"
             hasChild: false
-            page: "report/Index.qml"
-            pageIndex: 7
         }
     }
 
@@ -179,7 +174,8 @@ Item {
         if(childMenu) {
             let pageIndex = childMenu.pageIndex
             let pageUrl = childMenu.page
-            if (pageIndex) {
+            console.log('切换page:',pageIndex, pageUrl)
+            if (pageIndex >= 0) {
                 sideMenu.currentPage = pageUrl
                 sideMenu.pageChanged(pageIndex)
             }
