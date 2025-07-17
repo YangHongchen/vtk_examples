@@ -1,15 +1,19 @@
-#include "MainWindow.h"
 #include <QApplication>
-#include "LoginWidget.h"
 #include <QMessageBox>
-#include <QQmlApplicationEngine>
+
+#include "LoginWidget.h"
+#include "MainWindow.h"
+#include  "src/database/Database.h"
 
 int main(int argc, char *argv[])
 {
-    // 必须在QApplication之前设置
-    // 强制使用 OpenGL 渲染后端
+    // 强制使用 OpenGL 渲染后端 (必须在QApplication之前设置)
     qputenv("QSG_RHI_BACKEND", "opengl");
     QApplication app(argc, argv);
+
+    // 初始化数据库表
+    Database db;
+    db.init();
 
     // 初始化登录页面
     LoginWidget loginWidget;

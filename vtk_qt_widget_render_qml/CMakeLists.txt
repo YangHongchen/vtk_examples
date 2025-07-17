@@ -38,6 +38,15 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTORCC ON)
 
+
+#-----------------------------------------------------------------------------
+# 引入qxorm库
+#-----------------------------------------------------------------------------
+set(QXORM_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/3rd/qxorm/include")
+set(QXORM_LIB_DIR "${CMAKE_SOURCE_DIR}/3rd/qxorm/lib")
+include_directories(${QXORM_INCLUDE_DIR})
+link_directories(${QXORM_LIB_DIR})
+
 #-----------------------------------------------------------------------------
 # QxORM 数据库映射类编译配置
 #-----------------------------------------------------------------------------
@@ -62,15 +71,6 @@ find_package(Qt6 6.5 REQUIRED COMPONENTS
     Multimedia
     Pdf
 )
-
-#-----------------------------------------------------------------------------
-# 引入qxorm库
-#-----------------------------------------------------------------------------
-set(QXORM_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/3rd/qxorm/include")
-set(QXORM_LIB_DIR "${CMAKE_SOURCE_DIR}/3rd/qxorm/lib")
-include_directories(${QXORM_INCLUDE_DIR})
-link_directories(${QXORM_LIB_DIR})
-
 
 #-----------------------------------------------------------------------------
 # VTK模块查找（关键组件说明）
@@ -181,7 +181,6 @@ vtk_module_autoinit(
 
 
 include(GNUInstallDirs)
-
 install(TARGETS ${PROJECT_NAME}
     BUNDLE  DESTINATION .
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
