@@ -32,7 +32,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     m_vtkWidget = new VtkRenderWidget();
     m_contentStack->addWidget(m_vtkWidget);  // 索引3
 
-    // 3.布局设置
+    // 3.布局设置（导航站1/5，右侧空间内容占比4/5）
     mainLayout->addWidget(m_navWidget, 1);
     mainLayout->addWidget(m_contentStack, 4);
     setCentralWidget(centralWidget);

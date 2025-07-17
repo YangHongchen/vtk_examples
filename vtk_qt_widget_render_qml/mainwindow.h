@@ -20,11 +20,11 @@ private slots:
 
 private:
     void addQmlPage(const QString &qmlPath);
+
 private:
     QQuickWidget *m_navWidget;
     QStackedWidget *m_contentStack;
     VtkRenderWidget *m_vtkWidget = nullptr;  // 自定义Widget指针
-
 };
 
 

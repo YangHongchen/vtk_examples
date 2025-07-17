@@ -1,28 +1,31 @@
 #include "mainwindow.h"
 
 #include <QApplication>
+#include "LoginWidget.h"
+#include <QMessageBox>
 
 int main(int argc, char *argv[])
 {
 
     // 必须在QApplication之前设置
     qputenv("QSG_RHI_BACKEND", "opengl");  // 强制使用 OpenGL 渲染后端
-
-    QSurfaceFormat format;
-    format.setVersion(3,  3);
-    format.setProfile(QSurfaceFormat::CoreProfile);
-    format.setDepthBufferSize(24);
-    format.setStencilBufferSize(8);
-    format.setSamples(8);  // 多重采样抗锯齿
-    QSurfaceFormat::setDefaultFormat(format);
-
-
     QApplication app(argc, argv);
 
+    LoginWidget loginWidget;
+    MainWindow mainWindow;
 
-    MainWindow w;
-    w.show();
+    // 监听登录成功
+    QObject::connect(&loginWidget, &LoginWidget::loginSuccess, [&]() {
+        loginWidget.hide();  // or loginWidget.close() to destroy it
+        // mainWindow.show();
+        mainWindow.showMaximized();
 
+    });
+    // 监听登录失败
+    QObject::connect(&loginWidget, &LoginWidget::loginFail, [&](int code, const QString& errorMessage) {
+        QMessageBox::critical(&loginWidget, "Login Failed", errorMessage);
+    });
 
+    loginWidget.show();
     return app.exec();
 }

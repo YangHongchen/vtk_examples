@@ -10,8 +10,7 @@
 #include <vtkRenderer.h>
 #include <vtkGenericOpenGLRenderWindow.h>
 
-VtkRenderWidget::VtkRenderWidget(QWidget *parent)
-    : QWidget(parent),
+VtkRenderWidget::VtkRenderWidget(QWidget *parent) : QWidget(parent),
     m_vtkWidget(new QVTKOpenGLNativeWidget(this))
 {
     QVBoxLayout* layout = new QVBoxLayout(this);

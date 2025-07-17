@@ -51,7 +51,9 @@ add_executable(${PROJECT_NAME}
     mainwindow.cpp
     CustomWidget.h
     CustomWidget.cpp
-
+    # 登录窗口
+    LoginWidget.h
+    LoginWidget.cpp
 )
 
 #-----------------------------------------------------------------------------
