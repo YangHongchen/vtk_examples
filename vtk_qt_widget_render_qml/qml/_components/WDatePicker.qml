@@ -15,7 +15,7 @@ Item {
     property Item anchorItem
 
     // 当前年份
-    property variant currentYear :new Date().getFullYear()
+    property int currentYear :new Date().getFullYear()
 
     // 当前选中日期，会在弹窗中更新并触发信号
     property date selectedDate: {
@@ -38,8 +38,8 @@ Item {
 
     // 星期与月份国际化支持
     property var weekdayNames: Qt.locale().name.startsWith("zh")
-        ? ["日", "一", "二", "三", "四", "五", "六"]
-        : ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+        ? ["一", "二", "三", "四", "五", "六", "日"]
+        : ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
 
     property var monthNames: Qt.locale().name.startsWith("zh")
         ? ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"]
@@ -56,7 +56,9 @@ Item {
         const year = date.getFullYear()
         const month = (date.getMonth()  + 1).toString().padStart(2, '0')
         const day = date.getDate().toString().padStart(2,  '0')
-        return `${year}-${month}-${day}`
+        const formattedDate =  `${year}-${month}-${day}`
+        console.log('格式化后的 日期', formattedDate)
+        return formattedDate
     }
 
     Popup {
