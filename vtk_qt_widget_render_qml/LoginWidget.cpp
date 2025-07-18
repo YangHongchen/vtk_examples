@@ -9,7 +9,7 @@
 LoginWidget::LoginWidget(QWidget *parent): QWidget{parent}
 {
     // 要这样写（widget要继承当前类） 否则无法接收到qml发出的信号
-    m_quickWidget = new QQuickWidget(QUrl("qrc:/qml/Login.qml"), this);
+    m_quickWidget = new QQuickWidget(QUrl("qrc:/qml/LoginPage.qml"), this);
     m_quickWidget->setResizeMode(QQuickWidget::SizeRootObjectToView);
     QObject *loginQmlRoot = m_quickWidget->rootObject();
     if(!loginQmlRoot) {
@@ -29,7 +29,7 @@ LoginWidget::LoginWidget(QWidget *parent): QWidget{parent}
 
     // 初始化窗口
     setWindowTitle("登录");
-    resize(600,400);
+    resize(1024,640);
 }
 
 void LoginWidget::handleLoginRequest(QString username, QString password)

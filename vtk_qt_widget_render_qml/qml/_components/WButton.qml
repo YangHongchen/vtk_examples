@@ -35,34 +35,35 @@ Control {
     enum Theme { Default, Primary, Success, Warning, Danger }
     property int theme: WButton.Default
 
+    // 沉稳配色方案
     property color backgroundColor: {
         switch(theme) {
-        case WButton.Primary: return ThemeManager.primary
-        case WButton.Success: return ThemeManager.success
-        case WButton.Warning: return ThemeManager.warning
-        case WButton.Danger: return ThemeManager.danger
-        default: return ThemeManager.colorWhite
+        case WButton.Primary: return "#0B4DA2"  // 沉稳蓝色
+        case WButton.Success: return "#16a34a"  // 沉稳绿色
+        case WButton.Warning: return "#d97706"  // 沉稳橙色
+        case WButton.Danger: return "#dc2626"   // 沉稳红色
+        default: return "#ffffff"               // 白色
         }
     }
 
     property color borderColor: {
         switch(theme) {
-        case WButton.Primary: return ThemeManager.primary
-        case WButton.Success: return ThemeManager.success
-        case WButton.Warning: return ThemeManager.warning
-        case WButton.Danger: return ThemeManager.danger
-        default: return ThemeManager.borderColor
+        case WButton.Primary: return "#0B4DA2"
+        case WButton.Success: return "#16a34a"
+        case WButton.Warning: return "#d97706"
+        case WButton.Danger: return "#dc2626"
+        default: return "#d1d5db"  // 浅灰色边框
         }
     }
 
     property color textColor: {
         switch(theme) {
-        case WButton.Default: return ThemeManager.textNormal
-        default: return ThemeManager.textWhite
+        case WButton.Default: return "#1f2937"  // 深灰色文字
+        default: return "#ffffff"               // 白色文字
         }
     }
 
-    property color disabledColor: ThemeManager.textGray
+    property color disabledColor: "#9ca3af"  // 中灰色禁用状态
     property int borderRadius: 8
     property int borderWidth: 1
 
@@ -70,7 +71,15 @@ Control {
     property string text: ""
     property string iconSource: ""
     property int _spacing: 8
-    property int fontSize: 14
+    property int fontSize: {
+        switch(sizePreset) {
+        case WButton.Mini: return 12
+        case WButton.Small: return 13
+        case WButton.Medium: return 14
+        case WButton.Large: return 15
+        default: return 14
+        }
+    }
     property int fontWeight: Font.Medium
 
     // ====================== 状态属性 ======================
@@ -84,40 +93,47 @@ Control {
     signal hoveredChanged(bool hovered)
 
     // ====================== 内容布局 ======================
-    contentItem: Row {
-        spacing: root._spacing
-        layoutDirection: Qt.LeftToRight
+    contentItem: Item {
+        implicitWidth: row.implicitWidth
+        implicitHeight: row.implicitHeight
         anchors.centerIn:  parent
 
-        // 加载状态指示器
-        BusyIndicator {
-            width: 16
-            height: 16
-            running: root.loading
-            visible: root.loading
-            anchors.verticalCenter:  parent.verticalCenter
-        }
+        Row {
+            id: row
+            spacing: root._spacing
+            layoutDirection: Qt.LeftToRight
+            anchors.centerIn:  parent
 
-        // 图标
-        Image {
-            id: icon
-            width: 16
-            height: 16
-            source: root.iconSource
-            visible: root.iconSource  !== "" && !root.loading
-            anchors.verticalCenter:  parent.verticalCenter
-            sourceSize: Qt.size(width,  height)
-        }
+            // 加载状态指示器
+            BusyIndicator {
+                width: 16
+                height: 16
+                running: root.loading
+                visible: root.loading
+                anchors.verticalCenter:  parent.verticalCenter
+            }
 
-        // 文本
-        Label {
-            id: label
-            text: root.text
-            font.pixelSize:  root.fontSize
-            font.weight:  root.fontWeight
-            color: root.enabled  ? root.textColor  : root.disabledColor
-            visible: text !== ""
-            anchors.verticalCenter:  parent.verticalCenter
+            // 图标
+            Image {
+                id: icon
+                width: 16
+                height: 16
+                source: root.iconSource
+                visible: root.iconSource  !== "" && !root.loading
+                anchors.verticalCenter:  parent.verticalCenter
+                sourceSize: Qt.size(width,  height)
+            }
+
+            // 文本
+            Label {
+                id: label
+                text: root.text
+                font.pixelSize:  root.fontSize
+                font.weight:  root.fontWeight
+                color: root.enabled  ? root.textColor  : root.disabledColor
+                visible: text !== ""
+                anchors.verticalCenter:  parent.verticalCenter
+            }
         }
     }
 
@@ -127,12 +143,16 @@ Control {
         implicitHeight: root.implicitHeight
         radius: root.borderRadius
         color: root.flat  ? "transparent" :
-              (root.enabled  ? root.backgroundColor  : root.disabledColor)
+              (root.enabled  ? root.backgroundColor  : Qt.darker(root.disabledColor,  1.2))
         border.width:  root.flat  ? 0 : root.borderWidth
         border.color:  root.enabled  ? root.borderColor  : root.disabledColor
 
         // 悬停效果
-        opacity: mouseArea.containsMouse  ? 0.9 : 1.0
+        opacity: mouseArea.containsMouse  && root.enabled  ? 0.9 : 1.0
+
+        // 按下效果
+        scale: mouseArea.pressed  && root.enabled  ? 0.98 : 1.0
+        Behavior on scale { NumberAnimation { duration: 50 } }
     }
 
     // ====================== 交互处理 ======================
@@ -141,20 +161,18 @@ Control {
         anchors.fill:  parent
         hoverEnabled: true
         onClicked: {
-            if (!root.loading)  {
+            if (!root.loading  && root.enabled)  {
                 clickAnim.start()
                 root.clicked()
             }
         }
         onPressed: {
-            if (!root.loading)  {
-                pressAnim.start()
+            if (!root.loading  && root.enabled)  {
                 root.pressed()
             }
         }
         onReleased: {
-            if (!root.loading)  {
-                pressAnim.stop()
+            if (!root.loading  && root.enabled)  {
                 root.released()
             }
         }
@@ -163,7 +181,7 @@ Control {
         }
     }
 
-    // ====================== 动画效果 ======================
+    // ====================== 点击动画 ======================
     SequentialAnimation {
         id: clickAnim
         PropertyAnimation {
@@ -182,23 +200,17 @@ Control {
         }
     }
 
-    PropertyAnimation {
-        id: pressAnim
-        target: root
-        property: "scale"
-        to: 0.98
-        duration: 50
-    }
-
     // ====================== 阴影效果 ======================
-    layer.enabled:  !root.flat
+    layer.enabled:  !root.flat  && root.enabled
     layer.effect:  DropShadow {
         transparentBorder: true
         horizontalOffset: 0
-        verticalOffset: 2
+        verticalOffset: root.enabled  ? 2 : 0
         color: "#20000000"
+        radius: root.enabled  ? 4 : 0
         samples: 8
         spread: 0.1
-        visible: !root.flat
+        Behavior on verticalOffset { NumberAnimation { duration: 100 } }
+        Behavior on radius { NumberAnimation { duration: 100 } }
     }
 }

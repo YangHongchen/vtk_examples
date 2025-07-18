@@ -4,7 +4,7 @@
         <file>qml/Dashboard.qml</file>
         <file>qml/Settings.qml</file>
         <file>qml/NavigationMenu.qml</file>
-        <file>qml/Login.qml</file>
+        <file>qml/LoginPage.qml</file>
         <file>assets/icons/dashboard.svg</file>
         <file>assets/menu/bingli.svg</file>
         <file>assets/menu/chart.svg</file>
@@ -54,5 +54,7 @@
         <file>assets/icons/visibility.svg</file>
         <file>assets/icons/visibility_off.svg</file>
         <file>assets/icons/calendar-fill.svg</file>
+        <file>assets/images/login_background.jpg</file>
+        <file>assets/images/logo.png</file>
     </qresource>
 </RCC>
