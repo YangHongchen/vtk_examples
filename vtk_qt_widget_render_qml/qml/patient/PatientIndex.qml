@@ -40,17 +40,12 @@ Item {
                         Item {
                             Layout.fillWidth: true
                         }
-                        Button {
+                        WButton {
                             text: qsTr("新增病例")
-                            icon: "qrc:/assets/icons/plus.svg"
-                            theme: "primary"
-                            Layout.alignment: Qt.AlignVCenter
-                            size: "small"
-                            radius: 8
-                            width: 108
-                            height: 40
-                            onClicked: {
-                                // patientEdit.visible = true
+                            theme: WButton.Primary
+                            iconSource: "qrc:/assets/icons/plus.svg"
+                            onClicked:{
+                                patientEditPopup.visible = true
                             }
                         }
                         Item {
@@ -68,8 +63,6 @@ Item {
                         id: txt_keyword
                         width: parent.width - _margin * 2
                         height: 36
-                        topMargin: 4
-                        bottomMargin: 4
                         fontSize: 14
                         x: _margin
                         y: (parent.height - height) / 2
@@ -108,6 +101,13 @@ Item {
             Layout.fillHeight: true
             color: "#ffeaa7"
         }
+    }
+
+
+    PatientEditPopup {
+        id:patientEditPopup
+        visible: true
+        anchors.centerIn: parent
     }
 
 }

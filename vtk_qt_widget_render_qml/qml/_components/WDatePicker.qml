@@ -6,8 +6,7 @@ import Qt5Compat.GraphicalEffects
 Item {
     id: datePicker
 
-    // 弹窗显示控制，由外部按钮设置为 true 打开
-    property bool popupVisible: false
+    visible: false
 
     // 外部提供默认日期（支持字符串或 date 类型）
     property variant defaultDate: undefined
@@ -49,9 +48,20 @@ Item {
     // 日期选择完成后触发的信号（选中或清除）
     signal dateSelected(date newDate)
 
+    // 新增日期格式属性
+    property string dateFormat: "yyyy-MM-dd"
+
+    function formatDate(date) {
+        if (!date) return ""
+        const year = date.getFullYear()
+        const month = (date.getMonth()  + 1).toString().padStart(2, '0')
+        const day = date.getDate().toString().padStart(2,  '0')
+        return `${year}-${month}-${day}`
+    }
+
     Popup {
         id: calendarPopup
-        visible: datePicker.popupVisible
+        visible: datePicker.visible
         closePolicy: Popup.CloseOnPressOutside | Popup.CloseOnEscape
         padding: 8
         width: 300
@@ -59,7 +69,8 @@ Item {
 
         // 正确定位：紧贴 anchorItem 右侧并顶部对齐
         x: anchorItem ? anchorItem.mapToItem(null, anchorItem.x, 0).x : 0
-        y: anchorItem ? anchorItem.mapToItem(null, 0, 0).y : 0
+        y: anchorItem ? anchorItem.mapToItem(null,  0, anchorItem.height  + 4).y : 0
+
 
         background: Rectangle {
             color: "white"
@@ -75,7 +86,7 @@ Item {
             }
         }
 
-        onClosed: datePicker.popupVisible = false
+        onClosed: datePicker.visible = false
 
         ColumnLayout {
             anchors.fill: parent
@@ -217,7 +228,7 @@ Item {
                         onClicked: {
                             if (model.month === calendar.month) {
                                 datePicker.selectedDate = new Date(model.year, model.month, model.day)
-                                datePicker.dateSelected(datePicker.selectedDate)
+                                datePicker.dateSelected(datePicker.formatDate(datePicker.selectedDate))
                                 calendarPopup.close()
                             }
                         }
@@ -235,7 +246,7 @@ Item {
                     font.pixelSize: 12
                     onClicked: {
                         datePicker.selectedDate = new Date()
-                        datePicker.dateSelected(datePicker.selectedDate)
+                        datePicker.dateSelected(datePicker.formatDate(datePicker.selectedDate))
                         calendarPopup.close()
                     }
                 }

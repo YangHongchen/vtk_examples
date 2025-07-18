@@ -19,7 +19,7 @@
         <file>qml/analysis/AnalysisAnalyze.qml</file>
         <file>qml/_widgets/SideMenu.qml</file>
         <file>qml/_components/ValidatedTextField.qml</file>
-        <file>qml/_components/Button.qml</file>
+        <file>qml/_components/WButton.qml</file>
         <file>qml/_components/WImageSvg.qml</file>
         <file>qml/_components/WTextField.qml</file>
         <file>qml/_components/WNotification.qml</file>
@@ -49,5 +49,10 @@
         <file>assets/icons/zoom-in.svg</file>
         <file>assets/icons/zoom-out.svg</file>
         <file>qml/_components/WDatePicker.qml</file>
+        <file>qml/patient/PatientEditPopup.qml</file>
+        <file>assets/icons/close.svg</file>
+        <file>assets/icons/visibility.svg</file>
+        <file>assets/icons/visibility_off.svg</file>
+        <file>assets/icons/calendar-fill.svg</file>
     </qresource>
 </RCC>
