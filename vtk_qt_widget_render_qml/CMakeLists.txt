@@ -106,6 +106,11 @@ add_executable(${PROJECT_NAME}
     # 病例管理
     src/patient/PatientController.h
     src/patient/PatientController.cpp
+    src/patient/Patient.h
+    src/patient/Patient.cpp
+    src/patient/PatientDao.h
+    src/patient/PatientDao.cpp
+
     # 登录
     src/user/LoginController.h
     src/user/LoginController.cpp
@@ -113,6 +118,7 @@ add_executable(${PROJECT_NAME}
     src/user/User.cpp
     src/user/UserDao.h
     src/user/UserDao.cpp
+
 )
 
 #-----------------------------------------------------------------------------

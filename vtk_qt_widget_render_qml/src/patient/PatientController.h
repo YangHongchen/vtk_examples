@@ -17,13 +17,9 @@ public:
     explicit PatientController(QObject *parent = nullptr);
 
 
-
 public:
 
-    Q_INVOKABLE void setName(const QString &name) {
-        m_name = name;
-        emit nameChanged(m_name);
-    }
+    Q_INVOKABLE void setName(const QString &name);
 
 signals:
     void nameChanged(const QString &name);

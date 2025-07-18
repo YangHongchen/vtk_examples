@@ -5,6 +5,7 @@
 #include "src/user/User.h"
 #include "src/common/EncryptUtils.h"
 #include "src/user/UserDao.h"
+#include "src/patient/Patient.h"
 
 void Database::init()
 {
@@ -16,7 +17,6 @@ void Database::init()
         // 获取数据库链接
         QSqlDatabase db = DBManager::instance().getDatabase();
         QSqlError daoError;
-
 
         // 初始化 User 表  ==========
         daoError = qx::dao::create_table<User> (&db);
@@ -35,6 +35,13 @@ void Database::init()
                 qDebug() << "初始化管理员用户成功，用户名:admin, 密码：123456";
             }
         }
+
+        // 初始化 Patient 表  ==========
+        daoError = qx::dao::create_table<Patient> (&db);
+        if (daoError.type() != QSqlError::NoError)
+            qCritical() << "创建 Patient 表失败:" << daoError.text();
+        else
+            qDebug() << "Patient 表创建成功";
 
 
     }
