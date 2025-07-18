@@ -11,6 +11,8 @@ LoginWidget::LoginWidget(QWidget *parent): QWidget{parent}
     // 要这样写（widget要继承当前类） 否则无法接收到qml发出的信号
     m_quickWidget = new QQuickWidget(QUrl("qrc:/qml/LoginPage.qml"), this);
     m_quickWidget->setResizeMode(QQuickWidget::SizeRootObjectToView);
+    m_quickWidget->setContentsMargins(0,0,0,0);
+
     QObject *loginQmlRoot = m_quickWidget->rootObject();
     if(!loginQmlRoot) {
         qCritical() << "QML根对象未创建！";
@@ -30,6 +32,9 @@ LoginWidget::LoginWidget(QWidget *parent): QWidget{parent}
     // 初始化窗口
     setWindowTitle("登录");
     resize(1024,640);
+    setContentsMargins(0,0,0,0);
+    setStyleSheet("margin: 0px; padding: 0px;");
+
 }
 
 void LoginWidget::handleLoginRequest(QString username, QString password)

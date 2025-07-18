@@ -10,6 +10,7 @@ Item {
     Layout.leftMargin: _padding
     Layout.rightMargin: _padding
 
+
     // 登录成功信号
     signal loginSuccess(string username)
 
@@ -39,113 +40,114 @@ Item {
         z: 2
 
         // 顶部工具栏
-        Item {
-            id: topBar
-            Layout.fillWidth: true
-            height: 56
-            RowLayout {
-                anchors.fill: parent
-                // 自定义标题
-                Item {
-                    id: title
-                    implicitWidth: 300
-                    implicitHeight: topBar.height
-                    RowLayout {
-                        anchors.fill: parent
-                        WImageSvg {
-                            source: "qrc:/assets/images/logo.png"
-                            width: _width
-                            height: _height
-                            Layout.alignment: Qt.AlignLeft | Qt.AlignVCenter
-                            Layout.leftMargin: 16
-                        }
-                        // 自定义标题位置
-                        Text {
-                            id: titleLabel
-                            text: '电子面弓'
-                            font.pixelSize: 16
-                            color: "#ffffff"
-                            Layout.alignment: Qt.AlignLeft | Qt.AlignVCenter
-                        }
-                        // 自动占用甚于空间，左边元素向左
-                        Item {
-                            Layout.fillWidth: true
-                        }
-                    }
-                }
+        // Item {
+        //     id: topBar
+        //     Layout.fillWidth: true
+        //     height: 56
+        //     visible:false
+        //     RowLayout {
+        //         anchors.fill: parent
+        //         // 自定义标题
+        //         Item {
+        //             id: title
+        //             implicitWidth: 300
+        //             implicitHeight: topBar.height
+        //             RowLayout {
+        //                 anchors.fill: parent
+        //                 WImageSvg {
+        //                     source: "qrc:/assets/images/logo.png"
+        //                     width: _width
+        //                     height: _height
+        //                     Layout.alignment: Qt.AlignLeft | Qt.AlignVCenter
+        //                     Layout.leftMargin: 16
+        //                 }
+        //                 // 自定义标题位置
+        //                 Text {
+        //                     id: titleLabel
+        //                     text: '电子面弓'
+        //                     font.pixelSize: 16
+        //                     color: "#ffffff"
+        //                     Layout.alignment: Qt.AlignLeft | Qt.AlignVCenter
+        //                 }
+        //                 // 自动占用甚于空间，左边元素向左
+        //                 Item {
+        //                     Layout.fillWidth: true
+        //                 }
+        //             }
+        //         }
 
-                // 最小化按钮
-                Rectangle {
-                    id: minimizeButton
-                    width: _width
-                    height: _height
-                    x: closeButton.x - width - 8
-                    color: 'transparent'
-                    Image {
-                        id: imgMini
-                        source: "qrc:/window_minimize.svg"
-                        anchors.centerIn: parent
-                        width: _width / 2
-                        height: _height / 2
-                        sourceSize {
-                            // 双保险尺寸控制
-                            width: _width / 2
-                            height: _height / 2
-                        }
-                    }
-                    ColorOverlay {
-                        anchors.fill: imgMini
-                        source: imgMini
-                        color: "#ffffff" // 动态修改此属性即可更新颜色
-                    }
-                    MouseArea {
-                        anchors.fill: parent
-                        cursorShape: Qt.PointingHandCursor
-                        onClicked: {
-                            window.showMinimized()
-                        }
-                    }
-                }
+        //         // 最小化按钮
+        //         Rectangle {
+        //             id: minimizeButton
+        //             width: _width
+        //             height: _height
+        //             x: closeButton.x - width - 8
+        //             color: 'transparent'
+        //             Image {
+        //                 id: imgMini
+        //                 source: "qrc:/window_minimize.svg"
+        //                 anchors.centerIn: parent
+        //                 width: _width / 2
+        //                 height: _height / 2
+        //                 sourceSize {
+        //                     // 双保险尺寸控制
+        //                     width: _width / 2
+        //                     height: _height / 2
+        //                 }
+        //             }
+        //             ColorOverlay {
+        //                 anchors.fill: imgMini
+        //                 source: imgMini
+        //                 color: "#ffffff" // 动态修改此属性即可更新颜色
+        //             }
+        //             MouseArea {
+        //                 anchors.fill: parent
+        //                 cursorShape: Qt.PointingHandCursor
+        //                 onClicked: {
+        //                     window.showMinimized()
+        //                 }
+        //             }
+        //         }
 
-                // 关闭按钮
-                Rectangle {
-                    id: closeButton
-                    width: _width
-                    height: _height
-                    x: topBar.width - width - 16
-                    color: 'transparent'
-                    Image {
-                        id:svgClose
-                        source: "qrc:/window_close.svg"
-                        width: _width / 2
-                        height: _height / 2
-                        anchors.centerIn: parent
-                        sourceSize {
-                            width: _width / 2
-                            height: _height / 2
-                        }
-                    }
-                    ColorOverlay {
-                        anchors.fill: svgClose
-                        source: svgClose
-                        color: "#ffffff" // 动态修改此属性即可更新颜色
-                    }
-                    MouseArea {
-                        anchors.fill: parent
-                        cursorShape: Qt.PointingHandCursor
-                        onClicked: {
-                            window.close()
-                        }
-                        onEntered: {
-                            closeButton.color = ThemeManager.danger
-                        }
-                        onExited: {
-                            closeButton.color = "transparent"
-                        }
-                    }
-                }
-            }
-        }
+        //         // 关闭按钮
+        //         Rectangle {
+        //             id: closeButton
+        //             width: _width
+        //             height: _height
+        //             x: topBar.width - width - 16
+        //             color: 'transparent'
+        //             Image {
+        //                 id:svgClose
+        //                 source: "qrc:/window_close.svg"
+        //                 width: _width / 2
+        //                 height: _height / 2
+        //                 anchors.centerIn: parent
+        //                 sourceSize {
+        //                     width: _width / 2
+        //                     height: _height / 2
+        //                 }
+        //             }
+        //             ColorOverlay {
+        //                 anchors.fill: svgClose
+        //                 source: svgClose
+        //                 color: "#ffffff" // 动态修改此属性即可更新颜色
+        //             }
+        //             MouseArea {
+        //                 anchors.fill: parent
+        //                 cursorShape: Qt.PointingHandCursor
+        //                 onClicked: {
+        //                     window.close()
+        //                 }
+        //                 onEntered: {
+        //                     closeButton.color = ThemeManager.danger
+        //                 }
+        //                 onExited: {
+        //                     closeButton.color = "transparent"
+        //                 }
+        //             }
+        //         }
+        //     }
+        // }
 
         // 底部内容
         Rectangle {
@@ -153,7 +155,7 @@ Item {
             Layout.fillHeight: true
             color: 'transparent'
             Rectangle {
-                width: parent.width * 0.33
+                width: parent.width * 0.36
                 height: 450
                 radius: 24
                 anchors.centerIn: parent
