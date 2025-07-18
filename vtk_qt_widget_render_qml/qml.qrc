@@ -48,5 +48,6 @@
         <file>assets/icons/women.svg</file>
         <file>assets/icons/zoom-in.svg</file>
         <file>assets/icons/zoom-out.svg</file>
+        <file>qml/_components/WDatePicker.qml</file>
     </qresource>
 </RCC>
