@@ -50,10 +50,10 @@ Control {
 
     implicitWidth: {
         switch(sizePreset) {
-        case WTextField.Mini: return 100
-        case WTextField.Small: return 150
-        case WTextField.Medium: return 200
-        case WTextField.Large: return 300
+        case WTextField.Mini: return 60
+        case WTextField.Small: return 108
+        case WTextField.Medium: return 120
+        case WTextField.Large: return 160
         default: return customWidth > 0 ? customWidth : 200
         }
     }
@@ -62,8 +62,8 @@ Control {
         switch(sizePreset) {
         case WTextField.Mini: return 24
         case WTextField.Small: return 32
-        case WTextField.Medium: return 48
-        case WTextField.Large: return 64
+        case WTextField.Medium: return 40
+        case WTextField.Large: return 48
         default: return customHeight > 0 ? customHeight : 48
         }
     }

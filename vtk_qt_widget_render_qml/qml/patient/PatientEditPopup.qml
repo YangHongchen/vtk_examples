@@ -62,15 +62,16 @@ Popup {
                     right: parent.right
                     bottom: footer.top
                     margins: 20
+
                 }
                 clip: true
 
                 // 表单内容容器
                 ColumnLayout {
                     width: scrollView.availableWidth
-                    spacing: 20
+                    spacing: 15
 
-                    // 姓
+                    // 姓 =============
                     RowLayout {
                         spacing: 15
                         Text {
@@ -88,7 +89,7 @@ Popup {
                         }
                     }
 
-                    // 名
+                    // 名 =============
                     RowLayout {
                         spacing: 15
                         Text {
@@ -106,7 +107,7 @@ Popup {
                         }
                     }
 
-                    // 性别
+                    // 性别 =============
                     RowLayout {
                         spacing: 15
                         Text {
@@ -135,7 +136,7 @@ Popup {
                         }
                     }
 
-                    // 生日
+                    // 生日 =============
                     RowLayout {
                         spacing: 15
                         Text {
@@ -168,7 +169,7 @@ Popup {
                         }
                     }
 
-                    // 手机号
+                    // 手机号 =============
                     RowLayout {
                         spacing: 15
                         Text {

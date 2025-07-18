@@ -23,11 +23,11 @@ Control {
 
     implicitHeight: {
         switch(sizePreset) {
-        case WButton.Mini: return 32
-        case WButton.Small: return 40
-        case WButton.Medium: return 48
-        case WButton.Large: return 56
-        default: return customHeight > 0 ? customHeight : 48
+        case WButton.Mini: return 24
+        case WButton.Small: return 32
+        case WButton.Medium: return 40
+        case WButton.Large: return 48
+        default: return customHeight > 0 ? customHeight : 40
         }
     }
 
@@ -71,12 +71,13 @@ Control {
     property string text: ""
     property string iconSource: ""
     property int _spacing: 8
+
     property int fontSize: {
         switch(sizePreset) {
         case WButton.Mini: return 12
-        case WButton.Small: return 13
-        case WButton.Medium: return 14
-        case WButton.Large: return 15
+        case WButton.Small: return 14
+        case WButton.Medium: return 16
+        case WButton.Large: return 20
         default: return 14
         }
     }
