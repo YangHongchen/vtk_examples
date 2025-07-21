@@ -147,11 +147,13 @@ Item {
 
             PatientDetail {
                 id: dt
-                pid: patientPage.currentPatiant?patientPage.currentPatiant.id: "0"
+                patientId: patientPage.currentPatiant?patientPage.currentPatiant.id: "0"
                 fullName: patientPage.currentPatiant?patientPage.currentPatiant.fullName: "-"
                 gender: patientPage.currentPatiant?patientPage.currentPatiant.gender: 2
                 age: patientPage.currentPatiant?patientPage.currentPatiant.age: 0
                 birthDay: patientPage.currentPatiant?patientPage.currentPatiant.birthDay: "0000-00-00"
+                phone: patientPage.currentPatiant?patientPage.currentPatiant.phone: "-"
+                lastTestingTime: patientPage.currentPatiant?patientPage.currentPatiant.lastTestingTime:  "0000-00-00"
             }
         }
     }

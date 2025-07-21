@@ -34,7 +34,7 @@ class PatientObject : public QObject {
     Q_PROPERTY (QString avatar READ avatar WRITE setAvatar NOTIFY avatarChanged)
     Q_PROPERTY (QString createTime READ createTime WRITE setCreateTime NOTIFY createTimeChanged)
     Q_PROPERTY (QString updateTime READ updateTime WRITE setUpdateTime NOTIFY updateTimeChanged)
-    Q_PROPERTY (QDateTime lastTestingTime READ lastTestingTime WRITE setLastTestingTime NOTIFY lastTestingTimeChanged)
+    Q_PROPERTY (QString lastTestingTime READ lastTestingTime WRITE setLastTestingTime NOTIFY lastTestingTimeChanged)
     Q_PROPERTY (int deleted READ deleted WRITE setDeleted NOTIFY deletedChanged)
     Q_PROPERTY (int status READ status WRITE setStatus NOTIFY statusChanged)
 
@@ -199,8 +199,8 @@ class PatientObject : public QObject {
         m_updateTime = v; emit updateTimeChanged();
     }
 
-    QDateTime lastTestingTime() const { return m_lastTestingTime; }
-    void setLastTestingTime (const QDateTime &v)
+    QString lastTestingTime() const { return m_lastTestingTime; }
+    void setLastTestingTime (const QString &v)
     {
         if (m_lastTestingTime == v) return;
         m_lastTestingTime = v; emit lastTestingTimeChanged();
@@ -331,7 +331,7 @@ class PatientObject : public QObject {
     QString m_avatar;
     QString m_createTime;
     QString m_updateTime;
-    QDateTime m_lastTestingTime;
+    QString m_lastTestingTime;
     int m_deleted = 0;
     int m_status = 0;
 
@@ -371,7 +371,7 @@ class PatientObject : public QObject {
         obj->m_avatar = patient.avatar;
         obj->m_createTime = patient.createTime.date().toString (Qt::ISODate);
         obj->m_updateTime = patient.updateTime.date().toString (Qt::ISODate);
-        obj->m_lastTestingTime = patient.lastTestingTime;
+        obj->m_lastTestingTime = patient.lastTestingTime.date().toString (Qt::ISODate);
         obj->m_deleted = patient.deleted;
         obj->m_status = patient.status;
 

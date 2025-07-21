@@ -60,5 +60,10 @@
         <file>qml/_components/table/TableCell.qml</file>
         <file>qml/patient/PatientListItem.qml</file>
         <file>qml/patient/PatientDetail.qml</file>
+        <file>qml/_widgets/UploadButton.qml</file>
+        <file>assets/icons/patient/jaw.svg</file>
+        <file>assets/icons/patient/mandible.svg</file>
+        <file>assets/icons/patient/skull.svg</file>
+        <file>assets/icons/patient/upper_jaw.svg</file>
     </qresource>
 </RCC>
