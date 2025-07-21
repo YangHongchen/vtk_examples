@@ -124,8 +124,6 @@ Item {
                     Layout.fillWidth: true
                     height: 20
                     color: 'red'
-
-
                 }
             }
         }

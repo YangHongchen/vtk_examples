@@ -33,7 +33,7 @@ Rectangle {
 
     ColumnLayout {
         anchors.fill: parent
-        spacing: 8
+        spacing: 1
         // 病人信息
         Rectangle {
             id: patient_info
@@ -54,7 +54,7 @@ Rectangle {
                         Layout.alignment: Qt.AlignVCenter | Qt.AlignLeft
                     }
                     WImageSvg {
-                        source:root.gender === 0 ? "qrc:/sex_women.svg" : "qrc:/sex_men.svg"
+                        source:root.gender === 0 ? "qrc:/assets/icons/women.svg" : "qrc:/assets/icons/men.svg"
                         width: 14
                         height: 14
                         color: root.gender === 0 ? "#F98981" : "#4080FF"

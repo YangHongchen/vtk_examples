@@ -16,7 +16,7 @@ class PatientObject : public QObject {
     Q_PROPERTY (QString fullName READ fullName WRITE setFullName NOTIFY fullNameChanged)
     Q_PROPERTY (int gender READ gender WRITE setGender NOTIFY genderChanged)
     Q_PROPERTY (QString code READ code WRITE setCode NOTIFY codeChanged)
-    Q_PROPERTY (QString birthDay READ birthDay WRITE setBirthDay NOTIFY birthdayChanged)
+    Q_PROPERTY (QString birthDay READ birthDay WRITE setBirthDay NOTIFY birthDayChanged)
     Q_PROPERTY (QString technician READ technician WRITE setTechnician NOTIFY technicianChanged)
     Q_PROPERTY (QString email READ email WRITE setEmail NOTIFY emailChanged)
     Q_PROPERTY (QString phone READ phone WRITE setPhone NOTIFY phoneChanged)
@@ -275,6 +275,8 @@ class PatientObject : public QObject {
         if (m_lowerDentitionStlThumbnailUrl == v) return;
         m_lowerDentitionStlThumbnailUrl = v; emit lowerDentitionStlThumbnailUrlChanged();
     }
+
+
   signals:
     void idChanged();
     void firstNameChanged();
@@ -385,42 +387,6 @@ class PatientObject : public QObject {
         obj->m_lowerDentitionStlThumbnailUrl = patient.lowerDentitionStlThumbnailUrl;
         return obj;
     }
-
-    void notifyAllPropertiesChanged()
-    {
-        emit idChanged();
-        emit firstNameChanged();
-        emit lastNameChanged();
-        emit fullNameChanged();
-        emit genderChanged();
-        emit codeChanged();
-        emit birthDayChanged();
-        emit technicianChanged();
-        emit emailChanged();
-        emit phoneChanged();
-        emit countryChanged();
-        emit provinceChanged();
-        emit cityChanged();
-        emit streetChanged();
-        emit addressChanged();
-        emit labelsChanged();
-        emit commentsChanged();
-        emit avatarChanged();
-        emit createTimeChanged();
-        emit updateTimeChanged();
-        emit lastTestingTimeChanged();
-        emit deletedChanged();
-        emit statusChanged();
-        emit maxillaStlUrlChanged();
-        emit maxillaStlThumbnailUrlChanged();
-        emit mandibleStlUrlChanged();
-        emit mandibleStlThumbnailUrlChanged();
-        emit upperDentitionStlUrlChanged();
-        emit upperDentitionStlThumbnailUrlChanged();
-        emit lowerDentitionStlUrlChanged();
-        emit lowerDentitionStlThumbnailUrlChanged();
-    }
-
 };
 
 #endif // PATIENTOBJECT_H

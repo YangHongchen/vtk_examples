@@ -46,7 +46,7 @@ Item {
         : ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 
     // 日期选择完成后触发的信号（选中或清除）
-    signal dateSelected(date newDate)
+    signal dateSelected(string newDate)
 
     // 新增日期格式属性
     property string dateFormat: "yyyy-MM-dd"
