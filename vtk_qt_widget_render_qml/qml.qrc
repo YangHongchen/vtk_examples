@@ -56,5 +56,7 @@
         <file>assets/icons/calendar-fill.svg</file>
         <file>assets/images/login_background.jpg</file>
         <file>assets/images/logo.png</file>
+        <file>qml/_components/ElementStyleTable.qml</file>
+        <file>qml/_components/table/TableCell.qml</file>
     </qresource>
 </RCC>
