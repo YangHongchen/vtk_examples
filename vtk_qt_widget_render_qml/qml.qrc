@@ -58,5 +58,6 @@
         <file>assets/images/logo.png</file>
         <file>qml/_components/ElementStyleTable.qml</file>
         <file>qml/_components/table/TableCell.qml</file>
+        <file>qml/patient/PatientListItem.qml</file>
     </qresource>
 </RCC>

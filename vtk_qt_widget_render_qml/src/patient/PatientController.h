@@ -2,37 +2,42 @@
 #define PATIENTCONTROLLER_H
 
 #include <QObject>
-#include "PatientModel.h"
-#include "Patient.h"
+
+#include "src/patient/PatientModel.h"
 #include "src/patient/PatientDao.h"
 
-class PatientController : public QObject
-{
+class PatientController : public QObject {
     Q_OBJECT
-    Q_PROPERTY(PatientModel* model READ model CONSTANT)
-    Q_PROPERTY(Patient* currentPatient READ currentPatient NOTIFY currentPatientChanged)
+    Q_PROPERTY (PatientModel* model READ model CONSTANT)
 
-public:
-    Q_INVOKABLE void loadPatients();
-    Q_INVOKABLE void selectPatient(int row);
+  public:
 
-public:
-    static PatientController* instance();
-    PatientModel* model() const { return m_model; }
-    Patient* currentPatient() const { return m_currentPatient; }
+    // 选中病例（列表鼠标点击切换病例）
+    // Q_INVOKABLE void selectPatient (int patientId);
 
-signals:
+    // 病例列表(查询)
+    Q_INVOKABLE void loadPatientsConditional (const QString keyword = "", int page = 1, int pageSize = 10);
+
+  public:
+    static PatientController *instance();
+
+
+    PatientModel *model() const
+    {
+        return m_model;
+    }
+
+  signals:
     void currentPatientChanged();
 
-private:
-    explicit PatientController(QObject *parent = nullptr);
-        ~PatientController();
+  private:
+    explicit PatientController (QObject *parent = nullptr);
+    ~PatientController();
 
-private:
-    static PatientController* s_instance;
+  private:
+    static PatientController *s_instance;
 
-    PatientModel* m_model;
-    Patient* m_currentPatient;
+    PatientModel *m_model = nullptr;
     PatientDao *m_patientDao = nullptr;
 
 };

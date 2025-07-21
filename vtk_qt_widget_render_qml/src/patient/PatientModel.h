@@ -16,6 +16,10 @@ class PatientModel : public QAbstractListModel {
     Q_PROPERTY (int pageCount READ pageCount NOTIFY paginationChanged)
 
 
+    Q_PROPERTY (Patient* currentPatient READ currentPatient NOTIFY currentPatientChanged)
+
+
+
   public:
     // 核心角色定义（按医疗数据类别分组）
     enum PatientRoles
@@ -66,6 +70,12 @@ class PatientModel : public QAbstractListModel {
     void addPatients (const QVector<Patient> &patients);
     void clear();
 
+    // 当前病例
+    Patient *currentPatient() const { return m_currentPatient; }
+    void setCurrentPatient (Patient *patient);
+
+  public:
+
     // 分页功能
     Q_INVOKABLE int totalCount() const;
     Q_INVOKABLE int pageSize() const;
@@ -83,7 +93,7 @@ class PatientModel : public QAbstractListModel {
     void dataUpdated();
     void stlModelsLoaded (int patientId);
     void paginationChanged();
-
+    void currentPatientChanged();
 
   private:
     explicit PatientModel (QObject *parent = nullptr);
@@ -97,6 +107,8 @@ class PatientModel : public QAbstractListModel {
 
     static PatientModel *m_instance;
 
+
+    Patient *m_currentPatient = nullptr;
 
 };
 

@@ -10,16 +10,14 @@ Item {
     property int _margin: 16 // 设置边距，相对于父元素
     property bool loaded: false
 
-    // 信号：查询病例列表
-    signal queryPatients(string keyword, int page, int pageSize)
+    // 查询条件（关键词）
+    property alias keyword: txt_keyword.text
+
 
     Component.onCompleted: {
-        if(!patientPage.loaded) {
+        if (!patientPage.loaded) {
             patientPage.loaded = true
-            console.log('[病例管理页面] 首次加载，调用 loadPatients ')
-            PatientController.loadPatients()
-        } else {
-          console.log('[病例管理页面]重复加载 ')
+            PatientController.loadPatientsConditional(patientPage.keyword, 1, 20)
         }
     }
 
@@ -82,8 +80,7 @@ Item {
                         y: (parent.height - height) / 2
                         placeholderText: qsTr("输入姓名或电话筛选")
                         onTextChanged: {
-
-                            // PatientManager.getPatientList(text, 1, 20);
+                            PatientController.loadPatientsConditional(patientPage.keyword, 1, 20)
                         }
                     }
                 }
@@ -91,9 +88,63 @@ Item {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
                     color: '#fff4e6'
+                    ListView {
+                        id: listView
+                        width: parent.width
+                        height: parent.height
+                        model: PatientModel
+                        delegate: PatientListItem {
+                            _id:  model.id
+                            firstName: model.firstName
+                            lastName: model.lastName
+                            phone: model.phone
+                            birthDay: modelData.birthday
+                            sex: model.gender
+                            selected: index === listView.currentIndex
+                            MouseArea {
+                                anchors.fill: parent
+                                cursorShape: Qt.PointingHandCursor
+                                onClicked: {
+                                    console.log("选中当前病人信息：", model.fullName)
+                                    listView.currentIndex = index
+                                }
+                            }
+                        }
 
-                    Text {
-                        text: PatientModel.totalCount || "totalCount"
+                        Component.onCompleted: {
+                            // 页面加载，自动更新数据
+                            PatientManager.getPatientList("",1, 20);
+                        }
+
+
+                        // delegate: Rectangle {
+                        //     width: ListView.view.width
+                        //     height: 60
+                        //     color: index % 2 === 0 ? "#f8f8f8" : "#ffffff"
+
+                        //     Row {
+                        //         anchors.verticalCenter: parent.verticalCenter
+                        //         spacing: 10
+
+                        //         Text {
+                        //             text: model.fullName  // 你在 C++ 中定义的 FullNameRole
+                        //             font.bold: true
+                        //         }
+
+                        //         Text {
+                        //             text: model.phone
+                        //             color: "gray"
+                        //         }
+                        //     }
+
+                        //     MouseArea {
+                        //         anchors.fill: parent
+                        //         onClicked: {
+                        //             console.log("Selected patient ID:", model.id)
+                        //             // 可以调用控制器加载详情
+                        //         }
+                        //     }
+                        // }
                     }
                 }
 

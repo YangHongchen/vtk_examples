@@ -4,9 +4,8 @@
 #include "src/patient/Patient.h"
 #include <QRegularExpression>
 
-class PatientDao : public BaseDao<Patient>
-{
-public:
+class PatientDao : public BaseDao<Patient> {
+  public:
     explicit PatientDao() = default;
 
     /**
@@ -14,21 +13,21 @@ public:
      * @param id
      * @return
      */
-    std::shared_ptr<Patient> findOneById(long id);
+    std::shared_ptr<Patient> findOnePatientById (long id);
 
     /**
      * @brief findOneByPhone
      * @param id
      * @return
      */
-    std::optional<Patient> findOneByPhone(const QString  &phone) ;
+    std::optional<Patient> findOneByPhone (const QString  &phone) ;
 
     /**
      * @brief savePatient
      * @param patient
      * @return
      */
-    bool savePatient(Patient& patient);
+    bool savePatient (Patient& patient);
 
     /**
      * @brief findAll
@@ -48,22 +47,22 @@ public:
     void test();
 
 
-public:
+  public:
     /**
      * @brief checkExists
      * @param patient
      * @return
      */
-    bool checkExists(const Patient &patient) ;
+    bool checkExists (const Patient &patient) ;
 
-private:
+  private:
 
     /**
      * @brief validatePatient
      * @param patient
      * @return
      */
-    bool validatePatient(Patient &patient);
+    bool validatePatient (Patient &patient);
 
 
 

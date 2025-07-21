@@ -12,9 +12,9 @@ PatientController *PatientController::instance()
 
 PatientController::PatientController (QObject *parent) : QObject (parent),
     m_model (PatientModel::instance()),
-    m_currentPatient (nullptr),
     m_patientDao (new PatientDao)
 {
+    qDebug() << "PatientController 服务初始化";
 }
 
 PatientController::~PatientController()
@@ -22,20 +22,29 @@ PatientController::~PatientController()
     qDebug() << "~销毁PatientController";
 }
 
-void PatientController::loadPatients()
+// void PatientController::selectPatient (int patientId)
+// {
+//     if (patientId < 1)
+//         return;
+//     auto patientPtr = m_patientDao->findOnePatientById (patientId);
+//     m_model->setCurrentPatient (patientPtr.get());
+// }
+
+void PatientController::loadPatientsConditional (const QString keyword, int page, int pageSize)
 {
-    qDebug() << "<<< loadPatients";
-    auto list = m_patientDao->findAll();  // 你的数据库查询
-    if (!list.isEmpty())
+    if (page < 1) page = 1;
+    if (pageSize < 1) pageSize = 20;
+    QString _keyword = keyword.trimmed();
+    auto patientPaginationResult =  m_patientDao->findPatientsCondition (_keyword, page, pageSize);
+    // 更新total
+    if (patientPaginationResult.total() > 0)
     {
-        auto vector = m_patientDao->sharedPtrListToVector (list);
-        m_model->addPatients (vector);
-        m_currentPatient = &vector.first();  // 默认选择第一个
-        emit currentPatientChanged();
+        auto patientList = patientPaginationResult.data();
+        auto patientVector = m_patientDao->sharedPtrListToVector (patientList);
+        m_model->addPatients (patientVector);
     }
-}
-
-void PatientController::selectPatient (int row)
-{
-
+    else
+    {
+        qWarning() << "未查询到任何的病例数据,keyword=" << keyword;
+    }
 }
