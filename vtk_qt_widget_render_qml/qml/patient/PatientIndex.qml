@@ -44,7 +44,10 @@ Item {
                             width: _margin
                         }
                         Text {
-                            text: qsTr("病人列表")
+                            // text: qsTr("病人列表")
+
+                            text: PatientModel.currentPateint ? PatientModel.currentPateint.fullName: "xxxxx"
+
                             font.pixelSize: 20
                             font.weight: 600
                             Layout.alignment: Qt.AlignLeft | Qt.AlignHCenter
@@ -107,6 +110,7 @@ Item {
                                 onClicked: {
                                     console.log("选中当前病人信息：", model.fullName)
                                     listView.currentIndex = index
+                                    PatientController.selectPatient(model.id)
                                 }
                             }
                         }
@@ -116,35 +120,6 @@ Item {
                             PatientManager.getPatientList("",1, 20);
                         }
 
-
-                        // delegate: Rectangle {
-                        //     width: ListView.view.width
-                        //     height: 60
-                        //     color: index % 2 === 0 ? "#f8f8f8" : "#ffffff"
-
-                        //     Row {
-                        //         anchors.verticalCenter: parent.verticalCenter
-                        //         spacing: 10
-
-                        //         Text {
-                        //             text: model.fullName  // 你在 C++ 中定义的 FullNameRole
-                        //             font.bold: true
-                        //         }
-
-                        //         Text {
-                        //             text: model.phone
-                        //             color: "gray"
-                        //         }
-                        //     }
-
-                        //     MouseArea {
-                        //         anchors.fill: parent
-                        //         onClicked: {
-                        //             console.log("Selected patient ID:", model.id)
-                        //             // 可以调用控制器加载详情
-                        //         }
-                        //     }
-                        // }
                     }
                 }
 
@@ -152,6 +127,10 @@ Item {
                     Layout.fillWidth: true
                     height: 60
                     color: '#f3f0ff'
+
+                    PatientDetail {
+
+                    }
                 }
             }
         }

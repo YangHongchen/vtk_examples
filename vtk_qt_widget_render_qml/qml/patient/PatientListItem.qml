@@ -66,7 +66,7 @@ Rectangle {
                             // 姓名
                             text: root.lastName + " " + root.firstName
                             Layout.alignment: Qt.AlignLeft | Qt.AlignVCenter
-                            color: ThemeManager.textNormal
+                            color: "#1A2133"
                             font.pixelSize: 14
                             font.weight: 500
                         }
@@ -86,7 +86,7 @@ Rectangle {
                             // 手机
                             text: root.phone
                             Layout.alignment: Qt.AlignLeft | Qt.AlignVCenter
-                            color: ThemeManager.textGray
+                            color: "#9FA7BD"
                         }
                         Item {
                             // 中间自动填充
@@ -96,7 +96,7 @@ Rectangle {
                             // 生日
                             text: root.birthDay
                             Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
-                            color: ThemeManager.textGray
+                            color: "#9FA7BD"
                         }
                     }
                 }

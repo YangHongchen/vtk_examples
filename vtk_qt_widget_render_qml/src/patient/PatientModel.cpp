@@ -137,6 +137,26 @@ void PatientModel::clear()
     emit dataUpdated();
 }
 
+void PatientModel::setCurrentPatient (const Patient &patient)
+{
+    const long newId = patient.id;
+    const long oldId = m_currentPatientObject ? m_currentPatientObject->id() : 0;
+    if (newId == oldId)
+        return; // 无变化，不触发信号
+
+    // 删除上一个选中的病例数据对象
+    if (m_currentPatientObject)
+        m_currentPatientObject->deleteLater();
+
+    // 新初始化病例对象
+    m_currentPatientObject = new PatientObject;
+    m_currentPatientObject = m_currentPatientObject->toPatientObject (patient);
+
+    qDebug() << ">>>>>>> PatientModel的当前病例更新：" << m_currentPatientObject->fullName();
+    emit currentPatientChanged();
+    emit currentPatientIdChanged (m_currentPatientObject->id());
+}
+
 // 分页逻辑
 void PatientModel::updateVisiblePatients()
 {

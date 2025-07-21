@@ -3,8 +3,7 @@
 #include "src/database/export.h"
 // #include <QObject>
 
-class PATIENT_DLL_EXPORT Patient
-{
+class PATIENT_DLL_EXPORT Patient {
     // Q_OBJECT
 
     // // 使用 MEMBER 自动绑定属性
@@ -40,7 +39,7 @@ class PATIENT_DLL_EXPORT Patient
     // Q_PROPERTY(QString lowerDentitionStlUrl MEMBER lowerDentitionStlUrl NOTIFY lowerDentitionStlUrlChanged)
     // Q_PROPERTY(QString lowerDentitionStlThumbnailUrl MEMBER lowerDentitionStlThumbnailUrl NOTIFY lowerDentitionStlThumbnailUrlChanged)
 
-signals:
+  signals:
     // 所有属性的变更信号
     void idChanged();
     void firstNameChanged();
@@ -74,7 +73,7 @@ signals:
     void lowerDentitionStlUrlChanged();
     void lowerDentitionStlThumbnailUrlChanged();
 
-public:
+  public:
     Patient() : id (0) { }
     virtual ~Patient() { }
 

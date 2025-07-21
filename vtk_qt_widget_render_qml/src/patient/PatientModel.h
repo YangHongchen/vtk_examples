@@ -6,6 +6,7 @@
 #include <QUrl>
 
 #include "src/patient/Patient.h"
+#include "src/patient/PatientObject.h"
 
 class PatientModel : public QAbstractListModel {
     Q_OBJECT
@@ -15,10 +16,9 @@ class PatientModel : public QAbstractListModel {
     Q_PROPERTY (int currentPage READ currentPage NOTIFY paginationChanged)
     Q_PROPERTY (int pageCount READ pageCount NOTIFY paginationChanged)
 
-
-    Q_PROPERTY (Patient* currentPatient READ currentPatient NOTIFY currentPatientChanged)
-
-
+    // 当前选中病例
+    Q_PROPERTY (PatientObject* currentPatient READ currentPatient NOTIFY currentPatientChanged)
+    Q_PROPERTY (long currentPatientId READ currentPatientId NOTIFY currentPatientIdChanged)
 
   public:
     // 核心角色定义（按医疗数据类别分组）
@@ -71,8 +71,13 @@ class PatientModel : public QAbstractListModel {
     void clear();
 
     // 当前病例
-    Patient *currentPatient() const { return m_currentPatient; }
-    void setCurrentPatient (Patient *patient);
+    PatientObject *currentPatient() const { return m_currentPatientObject; }
+    void setCurrentPatient (const Patient &patient);
+
+    long currentPatientId() const
+    {
+        return m_currentPatientId;
+    }
 
   public:
 
@@ -94,6 +99,7 @@ class PatientModel : public QAbstractListModel {
     void stlModelsLoaded (int patientId);
     void paginationChanged();
     void currentPatientChanged();
+    void currentPatientIdChanged (long patientId);
 
   private:
     explicit PatientModel (QObject *parent = nullptr);
@@ -107,8 +113,9 @@ class PatientModel : public QAbstractListModel {
 
     static PatientModel *m_instance;
 
-
-    Patient *m_currentPatient = nullptr;
+    // 当前病例
+    PatientObject *m_currentPatientObject = nullptr;
+    long m_currentPatientId = 0;
 
 };
 

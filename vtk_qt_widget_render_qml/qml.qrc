@@ -59,5 +59,6 @@
         <file>qml/_components/ElementStyleTable.qml</file>
         <file>qml/_components/table/TableCell.qml</file>
         <file>qml/patient/PatientListItem.qml</file>
+        <file>qml/patient/PatientDetail.qml</file>
     </qresource>
 </RCC>

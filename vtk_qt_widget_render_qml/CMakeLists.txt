@@ -112,6 +112,8 @@ add_executable(${PROJECT_NAME}
     src/patient/PatientDao.cpp
     src/patient/PatientModel.h
     src/patient/PatientModel.cpp
+    src/patient/PatientObject.h
+    src/patient/PatientObject.cpp
     # 登录
     src/user/LoginController.h
     src/user/LoginController.cpp
@@ -131,7 +133,6 @@ qt_add_qml_module(${PROJECT_NAME}
     VERSION 1.0
     RESOURCE_PREFIX "/qml"  # 显式指定资源前缀
 )
-
 
 #-----------------------------------------------------------------------------
 # 资源文件处理（替代qt_add_resources）
