@@ -98,7 +98,7 @@ Item {
                             firstName: model.firstName
                             lastName: model.lastName
                             phone: model.phone
-                            birthDay: modelData.birthday
+                            birthDay: model.birthday
                             sex: model.gender
                             selected: index === listView.currentIndex
                             MouseArea {

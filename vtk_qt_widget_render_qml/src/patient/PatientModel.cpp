@@ -1,8 +1,8 @@
 #include "src/patient/PatientModel.h"
 
-PatientModel* PatientModel::m_instance = nullptr;
+PatientModel *PatientModel::m_instance = nullptr;
 
-PatientModel::PatientModel(QObject *parent) : QAbstractListModel(parent)
+PatientModel::PatientModel (QObject *parent) : QAbstractListModel (parent)
 {
 
 }
@@ -10,57 +10,61 @@ PatientModel::PatientModel(QObject *parent) : QAbstractListModel(parent)
 // 返回当前页数据行数
 PatientModel *PatientModel::instance()
 {
-    if (!m_instance) {
+    if (!m_instance)
+    {
         m_instance = new PatientModel(); // 或者考虑 QScopedPointer/QSharedPointer
     }
     return m_instance;
 }
 
-int PatientModel::rowCount(const QModelIndex &parent) const
+int PatientModel::rowCount (const QModelIndex &parent) const
 {
     if (parent.isValid())
         return 0;
     return m_visiblePatients.size();
 }
 
+
 // 返回某一行某个 role 对应的数据
-QVariant PatientModel::data(const QModelIndex &index, int role) const
+// 返回的数据字段在这里格式化
+QVariant PatientModel::data (const QModelIndex &index, int role) const
 {
     if (!index.isValid() || index.row() < 0 || index.row() >= m_visiblePatients.size())
         return QVariant();
-    const Patient &patient = m_visiblePatients.at(index.row());
-    switch (role) {
-        case IdRole: return QVariant::fromValue<qint64>(patient.id);
-        case FirstNameRole: return patient.firstName;
-        case LastNameRole: return patient.lastName;
-        case FullNameRole: return patient.fullName;
-        case GenderRole: return patient.gender;
-        case CodeRole: return patient.code;
-        case BirthdayRole: return patient.birthday;
-        case TechnicianRole: return patient.technician;
-        case EmailRole: return patient.email;
-        case PhoneRole: return patient.phone;
-        case CountryRole: return patient.country;
-        case ProvinceRole: return patient.province;
-        case CityRole: return patient.city;
-        case StreetRole: return patient.street;
-        case AddressRole: return patient.address;
-        case LabelsRole: return patient.labels;
-        case CommentsRole: return patient.comments;
-        case AvatarRole: return patient.avatar;
-        case CreateTimeRole: return patient.createTime;
-        case UpdateTimeRole: return patient.updateTime;
-        case LastTestingTimeRole: return patient.lastTestingTime;
-        case DeletedRole: return patient.deleted;
-        case StatusRole: return patient.status;
-        case MaxillaStlUrlRole: return patient.maxillaStlUrl;
-        case MaxillaStlThumbnailUrlRole: return patient.maxillaStlThumbnailUrl;
-        case MandibleStlUrlRole: return patient.mandibleStlUrl;
-        case MandibleStlThumbnailUrlRole: return patient.mandibleStlThumbnailUrl;
-        case UpperDentitionStlUrlRole: return patient.upperDentitionStlUrl;
-        case UpperDentitionStlThumbnailUrlRole: return patient.upperDentitionStlThumbnailUrl;
-        case LowerDentitionStlUrlRole: return patient.lowerDentitionStlUrl;
-        case LowerDentitionStlThumbnailUrlRole: return patient.lowerDentitionStlThumbnailUrl;
+    const Patient &patient = m_visiblePatients.at (index.row());
+    switch (role)
+    {
+    case IdRole: return QVariant::fromValue<qint64> (patient.id);
+    case FirstNameRole: return patient.firstName;
+    case LastNameRole: return patient.lastName;
+    case FullNameRole: return patient.fullName;
+    case GenderRole: return patient.gender;
+    case CodeRole: return patient.code;
+    case BirthdayRole: return patient.birthday.date().toString (Qt::ISODate);
+    case TechnicianRole: return patient.technician;
+    case EmailRole: return patient.email;
+    case PhoneRole: return patient.phone;
+    case CountryRole: return patient.country;
+    case ProvinceRole: return patient.province;
+    case CityRole: return patient.city;
+    case StreetRole: return patient.street;
+    case AddressRole: return patient.address;
+    case LabelsRole: return patient.labels;
+    case CommentsRole: return patient.comments;
+    case AvatarRole: return patient.avatar;
+    case CreateTimeRole: return patient.createTime.date().toString (Qt::ISODate);
+    case UpdateTimeRole: return patient.updateTime.date().toString (Qt::ISODate);
+    case LastTestingTimeRole: return patient.lastTestingTime;
+    case DeletedRole: return patient.deleted;
+    case StatusRole: return patient.status;
+    case MaxillaStlUrlRole: return patient.maxillaStlUrl;
+    case MaxillaStlThumbnailUrlRole: return patient.maxillaStlThumbnailUrl;
+    case MandibleStlUrlRole: return patient.mandibleStlUrl;
+    case MandibleStlThumbnailUrlRole: return patient.mandibleStlThumbnailUrl;
+    case UpperDentitionStlUrlRole: return patient.upperDentitionStlUrl;
+    case UpperDentitionStlThumbnailUrlRole: return patient.upperDentitionStlThumbnailUrl;
+    case LowerDentitionStlUrlRole: return patient.lowerDentitionStlUrl;
+    case LowerDentitionStlThumbnailUrlRole: return patient.lowerDentitionStlThumbnailUrl;
     default:
         return QVariant();
     }
@@ -104,20 +108,20 @@ QHash<int, QByteArray> PatientModel::roleNames() const
 }
 
 // 添加一个病人
-void PatientModel::addPatient(const Patient &patient)
+void PatientModel::addPatient (const Patient &patient)
 {
     beginResetModel();
-    m_allPatients.append(patient);
+    m_allPatients.append (patient);
     updateVisiblePatients();
     endResetModel();
     emit dataUpdated();
 }
 
 // 批量添加
-void PatientModel::addPatients(const QVector<Patient> &patients)
+void PatientModel::addPatients (const QVector<Patient> &patients)
 {
     beginResetModel();
-    m_allPatients.append(patients);
+    m_allPatients.append (patients);
     updateVisiblePatients();
     endResetModel();
     emit dataUpdated();
@@ -138,10 +142,12 @@ void PatientModel::updateVisiblePatients()
 {
     m_visiblePatients.clear();
     int start = m_currentPage * m_pageSize;
-    int end = qMin(start + m_pageSize, m_allPatients.size());
-    if (start < m_allPatients.size()) {
-        for (int i = start; i < end; ++i) {
-            m_visiblePatients.append(m_allPatients[i]);
+    int end = qMin (start + m_pageSize, m_allPatients.size());
+    if (start < m_allPatients.size())
+    {
+        for (int i = start; i < end; ++i)
+        {
+            m_visiblePatients.append (m_allPatients[i]);
         }
     }
     emit paginationChanged();
@@ -170,7 +176,8 @@ int PatientModel::pageCount() const
 
 void PatientModel::nextPage()
 {
-    if (m_currentPage < pageCount() - 1) {
+    if (m_currentPage < pageCount() - 1)
+    {
         ++m_currentPage;
         beginResetModel();
         updateVisiblePatients();
@@ -180,7 +187,8 @@ void PatientModel::nextPage()
 
 void PatientModel::previousPage()
 {
-    if (m_currentPage > 0) {
+    if (m_currentPage > 0)
+    {
         --m_currentPage;
         beginResetModel();
         updateVisiblePatients();
@@ -188,9 +196,10 @@ void PatientModel::previousPage()
     }
 }
 
-void PatientModel::setPage(int page)
+void PatientModel::setPage (int page)
 {
-    if (page >= 0 && page < pageCount()) {
+    if (page >= 0 && page < pageCount())
+    {
         m_currentPage = page;
         beginResetModel();
         updateVisiblePatients();
@@ -198,9 +207,10 @@ void PatientModel::setPage(int page)
     }
 }
 
-void PatientModel::setPageSize(int size)
+void PatientModel::setPageSize (int size)
 {
-    if (size > 0 && size != m_pageSize) {
+    if (size > 0 && size != m_pageSize)
+    {
         m_pageSize = size;
         m_currentPage = 0;
         beginResetModel();
@@ -210,10 +220,11 @@ void PatientModel::setPageSize(int size)
 }
 
 // 获取原始 Patient 对象
-Patient PatientModel::get(int index) const
+Patient PatientModel::get (int index) const
 {
-    if (index >= 0 && index < m_visiblePatients.size()) {
-        return m_visiblePatients.at(index);
+    if (index >= 0 && index < m_visiblePatients.size())
+    {
+        return m_visiblePatients.at (index);
     }
     return Patient{};
 }

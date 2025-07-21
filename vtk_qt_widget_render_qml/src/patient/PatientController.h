@@ -12,15 +12,11 @@ class PatientController : public QObject {
 
   public:
 
-    // 选中病例（列表鼠标点击切换病例）
-    // Q_INVOKABLE void selectPatient (int patientId);
-
     // 病例列表(查询)
     Q_INVOKABLE void loadPatientsConditional (const QString keyword = "", int page = 1, int pageSize = 10);
 
   public:
     static PatientController *instance();
-
 
     PatientModel *model() const
     {

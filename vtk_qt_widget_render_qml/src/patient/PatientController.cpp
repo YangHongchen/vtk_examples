@@ -22,13 +22,6 @@ PatientController::~PatientController()
     qDebug() << "~销毁PatientController";
 }
 
-// void PatientController::selectPatient (int patientId)
-// {
-//     if (patientId < 1)
-//         return;
-//     auto patientPtr = m_patientDao->findOnePatientById (patientId);
-//     m_model->setCurrentPatient (patientPtr.get());
-// }
 
 void PatientController::loadPatientsConditional (const QString keyword, int page, int pageSize)
 {
@@ -41,6 +34,7 @@ void PatientController::loadPatientsConditional (const QString keyword, int page
     {
         auto patientList = patientPaginationResult.data();
         auto patientVector = m_patientDao->sharedPtrListToVector (patientList);
+        m_model->clear();
         m_model->addPatients (patientVector);
     }
     else
