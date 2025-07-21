@@ -21,6 +21,7 @@ public slots:
      * @brief 登录按钮点击事件
      */
     void handleLoginRequest(QString username,  QString password);
+
     /**
      * @brief handleLoginCanceled
      * @param code

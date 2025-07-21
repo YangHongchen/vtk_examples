@@ -26,13 +26,14 @@ signals:
 
 private:
     explicit PatientController(QObject *parent = nullptr);
+        ~PatientController();
 
 private:
     static PatientController* s_instance;
+
     PatientModel* m_model;
     Patient* m_currentPatient;
-    PatientDao m_patientDao;
-
+    PatientDao *m_patientDao = nullptr;
 
 };
 

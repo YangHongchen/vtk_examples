@@ -60,11 +60,11 @@ class BaseDao
       }
 
       /**
-     * @brief 通过查询条件更新
-     * @param query
-     * @param t
-     * @return
-     */
+         * @brief 通过查询条件更新
+         * @param query
+         * @param t
+         * @return
+         */
       bool updateByQuery (qx::QxSqlQuery &query,  T &t, const QStringList &columns)
       {
           for (const QString &ss : columns)
@@ -123,6 +123,11 @@ class BaseDao
      */
       QList<std::shared_ptr<T>> findAll (const qx::QxSqlQuery &query = qx::QxSqlQuery())
       {
+          if(!m_db.isOpen()) {
+              qDebug() << "数据库未打开";
+          } else {
+               qDebug() << "数据库打开";
+          }
           qx::QxCollection<long, T> collection;
           QSqlError sqlError = qx::dao::fetch_by_query (query, collection, &m_db);
           if (sqlError.type() != QSqlError::NoError)

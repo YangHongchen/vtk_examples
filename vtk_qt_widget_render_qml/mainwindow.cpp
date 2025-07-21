@@ -1,10 +1,9 @@
 #include "MainWindow.h"
 #include <QPushButton>
 #include <QQuickItem>
+#include <QQuickView>
 #include <QLabel>
-#include "CustomWidget.h"
 #include <QQmlContext>
-
 
 // MainWindow.cpp
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
@@ -26,24 +25,33 @@ void MainWindow::handlePageChange(int index)
 
 void MainWindow::addQmlPage(const QString &qmlPath)
 {
-    QQuickWidget *qmlWidget = new QQuickWidget();
-    if(m_patientController) {
-        auto rootContext=  qmlWidget->rootContext();
-        // 这里注册类。最好用单例实现
-        rootContext->setContextProperty("PatientController", m_patientController);
-        rootContext->setContextProperty("PatientModel", m_patientModel);
+    qDebug() << "正在添加 QML 页面:" << qmlPath;
 
-    } else {
-        qCritical() << "Pateint 服务初始化失败！";
-    }
+    // 创建 QQuickView（比 QQuickWidget 更稳定，不会重复加载）
+    QQuickView *view = new QQuickView();
 
-    qmlWidget->setResizeMode(QQuickWidget::SizeRootObjectToView);
-    qmlWidget->setSource(QUrl(qmlPath));
-    m_contentStack->addWidget(qmlWidget);
+    // 设置上下文属性（必须在 setSource 之前）
+    QQmlContext *context = view->rootContext();
+    if (m_patientController)
+        context->setContextProperty("PatientController", m_patientController);
+    if (m_patientModel)
+        context->setContextProperty("PatientModel", m_patientModel);
+
+    // 加载 QML 页面
+    view->setSource(QUrl(qmlPath));
+    view->setResizeMode(QQuickView::SizeRootObjectToView);
+
+    // 将 QQuickView 封装为 QWidget 并加入页面堆栈
+    QWidget *container = QWidget::createWindowContainer(view, this);
+    container->setMinimumSize(800, 600); // 可根据实际需求调整
+    container->setFocusPolicy(Qt::StrongFocus); // 支持键盘焦点等
+
+    m_contentStack->addWidget(container);
 }
 
 void MainWindow::setupUI()
 {
+    qDebug()<< "setup ui-------------------------------- ";
     // 0.主布局
     QWidget *centralWidget = new QWidget(this);
     QHBoxLayout *mainLayout = new QHBoxLayout(centralWidget);
@@ -62,14 +70,15 @@ void MainWindow::setupUI()
     // 2. 右侧内容区 (Widget实现： 这里的加载顺序，要和导航qml组件定义的pageIndex的顺序一致）
     m_contentStack = new QStackedWidget();
     addQmlPage("qrc:/qml/patient/PatientIndex.qml");
-    addQmlPage("qrc:/qml/detection/DetectionIndex.qml");
-    addQmlPage("qrc:/qml/analysis/AnalysisModel.qml");
-    addQmlPage("qrc:/qml/analysis/AnalysisTracks.qml");
-    addQmlPage("qrc:/qml/analysis/AnalysisAnalyze.qml");
+    // addQmlPage("qrc:/qml/detection/DetectionIndex.qml");
+
+    // addQmlPage("qrc:/qml/analysis/AnalysisModel.qml");
+    // addQmlPage("qrc:/qml/analysis/AnalysisTracks.qml");
+    // addQmlPage("qrc:/qml/analysis/AnalysisAnalyze.qml");
 
     // 3. 添加自定义Widget页面（索引3）
-    m_vtkWidget = new VtkRenderWidget();
-    m_contentStack->addWidget(m_vtkWidget);
+    // m_vtkWidget = new VtkRenderWidget();
+    // m_contentStack->addWidget(m_vtkWidget);
 
     // 4.布局设置（导航站1/5，右侧空间内容占比4/5）
     mainLayout->addWidget(m_navWidget, 1);
@@ -85,7 +94,7 @@ void MainWindow::refreshUI()
 void MainWindow::setupCpps()
 {
     qDebug()<< "初始化类:";
-    m_navWidget->rootContext()->setContextProperty("patientController", m_patientController);
+    // m_navWidget->rootContext()->setContextProperty("patientController", m_patientController);
 }
 
 

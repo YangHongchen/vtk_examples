@@ -40,7 +40,6 @@ LoginWidget::LoginWidget(QWidget *parent): QWidget{parent}
 void LoginWidget::handleLoginRequest(QString username, QString password)
 {
     qDebug() << "用户登录请求：username="<<username<<", password="<< password;
-
     // DEBUG: 模拟数据库中的正确的用户名 & 密码
     const QString origin_username = "admin";
     const QString origin_password = "123456";
@@ -80,6 +79,6 @@ void LoginWidget::showEvent(QShowEvent *event)
             Qt::WindowSystemMenuHint |      // Has system menu
             Qt::WindowMinimizeButtonHint |  // Show minimize button
             Qt::WindowCloseButtonHint       // Show close button
-            );
+        );
     }
 }

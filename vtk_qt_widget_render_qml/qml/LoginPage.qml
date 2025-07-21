@@ -173,7 +173,7 @@ Item {
                         Text {
                             text: qsTr("欢迎登录")
                             font.pixelSize: 32
-                            color: ThemeManager.primary
+                            color: "red"
                             font.weight: 500
                             anchors.horizontalCenter: parent.horizontalCenter
                             anchors.bottom: parent.bottom
