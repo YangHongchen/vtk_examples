@@ -16,8 +16,9 @@ std::optional<Patient> PatientDao::findOneByPhone(const QString &phone)
     return findOne(query);
 }
 
-QList<std::shared_ptr<Patient>> PatientDao::findAll()
+QList<std::shared_ptr<Patient>> PatientDao::findAllPatients()
 {
+   qDebug()<<"PATIENT_DAO::findAll()";
    return findAll();
 }
 
@@ -62,6 +63,11 @@ PaginationResult<Patient> PatientDao::findPatientsCondition(const QString keywor
     // createTime, updateTime 倒序
     query.orderDesc ("update_time");
     return findAllPagination (query, page, pageSize);
+}
+
+void PatientDao::test()
+{
+    qDebug()<< "test";
 }
 
 bool PatientDao::validatePatient(Patient &patient)

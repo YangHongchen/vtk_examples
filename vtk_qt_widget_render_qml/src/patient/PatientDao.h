@@ -34,7 +34,7 @@ public:
      * @brief findAll
      * @return
      */
-    QList<std::shared_ptr<Patient>> findAll();
+    QList<std::shared_ptr<Patient>> findAllPatients();
 
     /**
      * @brief findAllPagination
@@ -44,6 +44,9 @@ public:
      * @return
      */
     PaginationResult<Patient> findPatientsCondition (const QString keyword = "", int page = 1, int pageSize = 10);
+
+    void test();
+
 
 public:
     /**
@@ -61,6 +64,8 @@ private:
      * @return
      */
     bool validatePatient(Patient &patient);
+
+
 
 
 };
