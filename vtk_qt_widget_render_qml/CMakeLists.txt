@@ -38,7 +38,6 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTORCC ON)
 
-
 #-----------------------------------------------------------------------------
 # 引入qxorm库
 #-----------------------------------------------------------------------------
@@ -70,6 +69,7 @@ find_package(Qt6 6.5 REQUIRED COMPONENTS
     Sql
     Multimedia
     Pdf
+    Positioning
 )
 
 #-----------------------------------------------------------------------------
@@ -110,7 +110,8 @@ add_executable(${PROJECT_NAME}
     src/patient/Patient.cpp
     src/patient/PatientDao.h
     src/patient/PatientDao.cpp
-
+    src/patient/PatientModel.h
+    src/patient/PatientModel.cpp
     # 登录
     src/user/LoginController.h
     src/user/LoginController.cpp
@@ -130,6 +131,7 @@ qt_add_qml_module(${PROJECT_NAME}
     VERSION 1.0
     RESOURCE_PREFIX "/qml"  # 显式指定资源前缀
 )
+
 
 #-----------------------------------------------------------------------------
 # 资源文件处理（替代qt_add_resources）
@@ -152,6 +154,7 @@ target_link_libraries(${PROJECT_NAME}
         Qt6::Multimedia
         Qt6::Pdf
         Qt6::Network
+        Qt6::Positioning
 )
 
 # ✅ 链接 QxOrm 库

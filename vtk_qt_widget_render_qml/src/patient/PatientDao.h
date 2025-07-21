@@ -60,7 +60,7 @@ private:
      * @param patient
      * @return
      */
-    bool validatePatient(Patient&patient) ;
+    bool validatePatient(Patient &patient);
 
 
 };

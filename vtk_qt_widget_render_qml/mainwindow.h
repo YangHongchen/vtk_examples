@@ -6,6 +6,7 @@
 #include <QQuickWidget>
 #include <QHBoxLayout>
 #include "src/patient/PatientController.h"
+#include "src/patient/PatientModel.h"
 
 class VtkRenderWidget;  // 前置声明自定义Widget
 
@@ -31,6 +32,8 @@ private:
 
     // 资源类
     PatientController *m_patientController = nullptr;
+    PatientModel *m_patientModel = nullptr;
+
 };
 
 

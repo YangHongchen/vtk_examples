@@ -1,14 +1,34 @@
 #include "PatientController.h"
+#include "src/patient/PatientDao.h"
 
-PatientController::PatientController(QObject *parent):QObject(parent)
+PatientController* PatientController::s_instance = nullptr;
+
+PatientController* PatientController::instance()
 {
-    qDebug()<< "Patient Controller Called.";
+    if (!s_instance)
+        s_instance = new PatientController();
+    return s_instance;
 }
 
-void PatientController::setName(const QString &name)
+PatientController::PatientController(QObject *parent) : QObject(parent),
+    m_model(PatientModel::instance()),
+    m_currentPatient(nullptr)
 {
+}
 
-    m_name = name;
-    emit nameChanged(m_name);
+void PatientController::loadPatients()
+{
+    auto list = m_patientDao.findAll();  // 你的数据库查询
+    auto vector = m_patientDao.sharedPtrListToVector(list);
+    m_model->addPatients(vector);
+    if (!list.isEmpty()) {
+        m_currentPatient = &vector.first();  // 默认选择第一个
+        emit currentPatientChanged();
+    }
+}
+
+
+void PatientController::selectPatient(int row)
+{
 
 }

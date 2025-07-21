@@ -5,10 +5,12 @@
 #include "CustomWidget.h"
 #include <QQmlContext>
 
+
 // MainWindow.cpp
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
-    m_patientController = new PatientController(this);
+    m_patientController = PatientController::instance();
+    m_patientModel = PatientModel::instance();
     setupUI();
 }
 
@@ -26,7 +28,11 @@ void MainWindow::addQmlPage(const QString &qmlPath)
 {
     QQuickWidget *qmlWidget = new QQuickWidget();
     if(m_patientController) {
-         qmlWidget->rootContext()->setContextProperty("patientController", m_patientController);  // ✅ 先设置 context
+        auto rootContext=  qmlWidget->rootContext();
+        // 这里注册类。最好用单例实现
+        rootContext->setContextProperty("PatientController", m_patientController);
+        rootContext->setContextProperty("PatientModel", m_patientModel);
+
     } else {
         qCritical() << "Pateint 服务初始化失败！";
     }
@@ -79,7 +85,6 @@ void MainWindow::refreshUI()
 void MainWindow::setupCpps()
 {
     qDebug()<< "初始化类:";
-    m_patientController = new PatientController;
     m_navWidget->rootContext()->setContextProperty("patientController", m_patientController);
 }
 

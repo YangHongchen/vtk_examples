@@ -212,6 +212,16 @@ class BaseDao
           }
           return true;
       }
+
+
+      static QVector<T> sharedPtrListToVector(const QList<std::shared_ptr<T>>& list) {
+          QVector<T> vec;
+          vec.reserve(list.size());
+          for (const auto& ptr : list) {
+              if (ptr) vec.append(*ptr);
+          }
+          return vec;
+      }
   protected:
       QSqlDatabase m_db;
 };

@@ -10,7 +10,6 @@ Item {
     Layout.leftMargin: _padding
     Layout.rightMargin: _padding
 
-
     // 登录成功信号
     signal loginSuccess(string username)
 
