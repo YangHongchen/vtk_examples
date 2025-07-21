@@ -149,7 +149,7 @@ void PatientModel::setCurrentPatient (const Patient &patient)
     }
 
     // 3. 内存安全操作（RAII+线程安全）
-    QPointer<PatientObject> oldObject = m_currentPatientObject;
+    PatientObject* oldObject = m_currentPatientObject;
     m_currentPatientObject = PatientObject::toPatientObject (patient); // 静态工厂方法
 
     // 4. 批量信号发射（减少QML绑定刷新次数）

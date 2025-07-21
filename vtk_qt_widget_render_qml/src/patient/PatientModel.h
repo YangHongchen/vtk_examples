@@ -22,6 +22,7 @@ class PatientModel : public QAbstractListModel {
     Q_PROPERTY (long currentPatientId READ currentPatientId NOTIFY currentPatientIdChanged)
 
   public:
+
     // 核心角色定义（按医疗数据类别分组）
     enum PatientRoles
     {
@@ -99,7 +100,7 @@ class PatientModel : public QAbstractListModel {
     void dataUpdated();
     void stlModelsLoaded (int patientId);
     void paginationChanged();
-    void currentPatientChanged (QPointer<PatientObject> obj);
+    void currentPatientChanged (PatientObject* obj);
     void currentPatientIdChanged (long patientId);
 
   private:
@@ -115,7 +116,7 @@ class PatientModel : public QAbstractListModel {
     static PatientModel *m_instance;
 
     // 当前病例
-    QPointer<PatientObject> m_currentPatientObject ;
+    PatientObject *m_currentPatientObject = nullptr ;
     long m_currentPatientId = 0;
 
 };

@@ -13,7 +13,6 @@ Item {
     // 查询条件（关键词）
     property alias keyword: txt_keyword.text
 
-
     Component.onCompleted: {
         if (!patientPage.loaded) {
             patientPage.loaded = true
@@ -44,10 +43,9 @@ Item {
                             width: _margin
                         }
                         Text {
+                            id:flag2
                             // text: qsTr("病人列表")
-
-                            text: PatientModel.currentPateint ? PatientModel.currentPateint.fullName: "xxxxx"
-
+                            text: PatientModel.currentPatientId || "0"
                             font.pixelSize: 20
                             font.weight: 600
                             Layout.alignment: Qt.AlignLeft | Qt.AlignHCenter
@@ -119,7 +117,6 @@ Item {
                             // 页面加载，自动更新数据
                             PatientManager.getPatientList("",1, 20);
                         }
-
                     }
                 }
 
@@ -129,6 +126,7 @@ Item {
                     color: '#f3f0ff'
 
                     PatientDetail {
+                        id:dt
 
                     }
                 }
@@ -149,6 +147,18 @@ Item {
             Layout.fillWidth: true
             Layout.fillHeight: true
             color: "#ffeaa7"
+        }
+    }
+
+    Connections {
+        target: PatientModel
+        function onCurrentPatientIdChanged(id) {
+            console.log('病例的id变化：',id)
+            flag2.text = id
+            dt.patientId = id
+        }
+        function onCurrentPatientChanged(_pt) {
+            console.log('病例发生变化：',JSON.stringify(_pt))
         }
     }
 

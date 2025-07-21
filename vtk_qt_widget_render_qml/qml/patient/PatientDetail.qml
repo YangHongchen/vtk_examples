@@ -5,10 +5,16 @@ Rectangle {
     implicitHeight: parent?parent.height:600
     color: "purple"
 
+    property alias patientId: txt.text
+
+
     Text {
-        text: PatientModel.currentPateint? PatientModel.currentPateint.fullName:"未选中病例"
+        id:txt
+
+        font.pixelSize: 32
         anchors.centerIn: parent
-        font.pixelSize: 24
-        color: 'red'
     }
 }
+
+
+
