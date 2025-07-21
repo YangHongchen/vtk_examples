@@ -13,6 +13,8 @@ Item {
     // 查询条件（关键词）
     property alias keyword: txt_keyword.text
 
+    property variant currentPatiant
+
     Component.onCompleted: {
         if (!patientPage.loaded) {
             patientPage.loaded = true
@@ -23,7 +25,6 @@ Item {
     RowLayout {
         anchors.fill: parent
         spacing: 0
-
         // 左侧: 病人列表 ---------------
         Rectangle {
             id: patient_left_rect
@@ -44,8 +45,7 @@ Item {
                         }
                         Text {
                             id:flag2
-                            // text: qsTr("病人列表")
-                            text: PatientModel.currentPatientId || "0"
+                            text: qsTr("病人列表")
                             font.pixelSize: 20
                             font.weight: 600
                             Layout.alignment: Qt.AlignLeft | Qt.AlignHCenter
@@ -122,13 +122,10 @@ Item {
 
                 Rectangle {
                     Layout.fillWidth: true
-                    height: 60
-                    color: '#f3f0ff'
+                    height: 20
+                    color: 'red'
 
-                    PatientDetail {
-                        id:dt
 
-                    }
                 }
             }
         }
@@ -147,6 +144,15 @@ Item {
             Layout.fillWidth: true
             Layout.fillHeight: true
             color: "#ffeaa7"
+
+            PatientDetail {
+                id: dt
+                pid: patientPage.currentPatiant?patientPage.currentPatiant.id: "0"
+                fullName: patientPage.currentPatiant?patientPage.currentPatiant.fullName: "-"
+                gender: patientPage.currentPatiant?patientPage.currentPatiant.gender: 2
+                age: patientPage.currentPatiant?patientPage.currentPatiant.age: 0
+                birthDay: patientPage.currentPatiant?patientPage.currentPatiant.birthDay: "0000-00-00"
+            }
         }
     }
 
@@ -154,11 +160,10 @@ Item {
         target: PatientModel
         function onCurrentPatientIdChanged(id) {
             console.log('病例的id变化：',id)
-            flag2.text = id
-            dt.patientId = id
         }
         function onCurrentPatientChanged(_pt) {
             console.log('病例发生变化：',JSON.stringify(_pt))
+            patientPage.currentPatiant = _pt
         }
     }
 

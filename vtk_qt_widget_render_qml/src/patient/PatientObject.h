@@ -16,7 +16,7 @@ class PatientObject : public QObject {
     Q_PROPERTY (QString fullName READ fullName WRITE setFullName NOTIFY fullNameChanged)
     Q_PROPERTY (int gender READ gender WRITE setGender NOTIFY genderChanged)
     Q_PROPERTY (QString code READ code WRITE setCode NOTIFY codeChanged)
-    Q_PROPERTY (QDateTime birthday READ birthday WRITE setBirthday NOTIFY birthdayChanged)
+    Q_PROPERTY (QString birthDay READ birthDay WRITE setBirthDay NOTIFY birthdayChanged)
     Q_PROPERTY (QString technician READ technician WRITE setTechnician NOTIFY technicianChanged)
     Q_PROPERTY (QString email READ email WRITE setEmail NOTIFY emailChanged)
     Q_PROPERTY (QString phone READ phone WRITE setPhone NOTIFY phoneChanged)
@@ -32,8 +32,8 @@ class PatientObject : public QObject {
     Q_PROPERTY (QString labels READ labels WRITE setLabels NOTIFY labelsChanged)
     Q_PROPERTY (QString comments READ comments WRITE setComments NOTIFY commentsChanged)
     Q_PROPERTY (QString avatar READ avatar WRITE setAvatar NOTIFY avatarChanged)
-    Q_PROPERTY (QDateTime createTime READ createTime WRITE setCreateTime NOTIFY createTimeChanged)
-    Q_PROPERTY (QDateTime updateTime READ updateTime WRITE setUpdateTime NOTIFY updateTimeChanged)
+    Q_PROPERTY (QString createTime READ createTime WRITE setCreateTime NOTIFY createTimeChanged)
+    Q_PROPERTY (QString updateTime READ updateTime WRITE setUpdateTime NOTIFY updateTimeChanged)
     Q_PROPERTY (QDateTime lastTestingTime READ lastTestingTime WRITE setLastTestingTime NOTIFY lastTestingTimeChanged)
     Q_PROPERTY (int deleted READ deleted WRITE setDeleted NOTIFY deletedChanged)
     Q_PROPERTY (int status READ status WRITE setStatus NOTIFY statusChanged)
@@ -101,11 +101,11 @@ class PatientObject : public QObject {
         m_code = v; emit codeChanged();
     }
 
-    QDateTime birthday() const { return m_birthday; }
-    void setBirthday (const QDateTime &v)
+    QString birthDay() const { return m_birthDay; }
+    void setBirthDay (const QString &v)
     {
-        if (m_birthday == v) return;
-        m_birthday = v; emit birthdayChanged();
+        if (m_birthDay == v) return;
+        m_birthDay = v; emit birthDayChanged();
     }
 
     QString technician() const { return m_technician; }
@@ -185,15 +185,15 @@ class PatientObject : public QObject {
         m_avatar = v; emit avatarChanged();
     }
 
-    QDateTime createTime() const { return m_createTime; }
-    void setCreateTime (const QDateTime &v)
+    QString createTime() const { return m_createTime; }
+    void setCreateTime (const QString &v)
     {
         if (m_createTime == v) return;
         m_createTime = v; emit createTimeChanged();
     }
 
-    QDateTime updateTime() const { return m_updateTime; }
-    void setUpdateTime (const QDateTime &v)
+    QString updateTime() const { return m_updateTime; }
+    void setUpdateTime (const QString &v)
     {
         if (m_updateTime == v) return;
         m_updateTime = v; emit updateTimeChanged();
@@ -282,7 +282,7 @@ class PatientObject : public QObject {
     void fullNameChanged();
     void genderChanged();
     void codeChanged();
-    void birthdayChanged();
+    void birthDayChanged();
     void technicianChanged();
     void emailChanged();
     void phoneChanged();
@@ -315,7 +315,7 @@ class PatientObject : public QObject {
     QString m_fullName;
     int m_gender = 0;
     QString m_code;
-    QDateTime m_birthday;
+    QString m_birthDay;
     QString m_technician;
     QString m_email;
     QString m_phone;
@@ -329,8 +329,8 @@ class PatientObject : public QObject {
     QString m_labels;
     QString m_comments;
     QString m_avatar;
-    QDateTime m_createTime;
-    QDateTime m_updateTime;
+    QString m_createTime;
+    QString m_updateTime;
     QDateTime m_lastTestingTime;
     int m_deleted = 0;
     int m_status = 0;
@@ -355,7 +355,7 @@ class PatientObject : public QObject {
         obj->m_fullName = patient.fullName;
         obj->m_gender = patient.gender;
         obj->m_code = patient.code;
-        obj->m_birthday = patient.birthday;
+        obj->m_birthDay = patient.birthday.date().toString (Qt::ISODate);
         obj->m_technician = patient.technician;
         obj->m_email = patient.email;
         obj->m_phone = patient.phone;
@@ -369,8 +369,8 @@ class PatientObject : public QObject {
         obj->m_labels = patient.labels;
         obj->m_comments = patient.comments;
         obj->m_avatar = patient.avatar;
-        obj->m_createTime = patient.createTime;
-        obj->m_updateTime = patient.updateTime;
+        obj->m_createTime = patient.createTime.date().toString (Qt::ISODate);
+        obj->m_updateTime = patient.updateTime.date().toString (Qt::ISODate);
         obj->m_lastTestingTime = patient.lastTestingTime;
         obj->m_deleted = patient.deleted;
         obj->m_status = patient.status;
@@ -386,7 +386,6 @@ class PatientObject : public QObject {
         return obj;
     }
 
-
     void notifyAllPropertiesChanged()
     {
         emit idChanged();
@@ -395,7 +394,7 @@ class PatientObject : public QObject {
         emit fullNameChanged();
         emit genderChanged();
         emit codeChanged();
-        emit birthdayChanged();
+        emit birthDayChanged();
         emit technicianChanged();
         emit emailChanged();
         emit phoneChanged();
