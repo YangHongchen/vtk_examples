@@ -22,18 +22,27 @@ Rectangle {
     // 最近检查日期
     property string lastTestingTime:  "0000-00-00"
 
-    // 上传模型
+    // 上传模型(模型URL)
+    property string mandibleStllUrl: ''
+    property string maxillaStllUrl: ''
+    property string upperDentitionStllUrl: ''
+    property string lowerDentitionStllUrl: ''
+
+    // 上传模型(缩略图URL)
     property string mandibleStlThumbnailUrl: ''
     property string maxillaStlThumbnailUrl: ''
     property string upperDentitionStlThumbnailUrl: ''
     property string lowerDentitionStlThumbnailUrl: ''
 
+
+    // 模型上传类型
     property int stlUploadType: 1
 
 
     ColumnLayout {
         anchors.fill: parent
         spacing: 1
+
         // 病人信息
         Rectangle {
             id: patient_info

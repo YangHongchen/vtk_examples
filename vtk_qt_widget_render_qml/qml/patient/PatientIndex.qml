@@ -171,5 +171,8 @@ Item {
     PatientEditPopup {
         id: patientEditPopup
         anchors.centerIn: parent
+        onAccepted: function (f,l,ph,bir,gen){
+            console.log('提交的数据')
+        }
     }
 }

@@ -8,8 +8,8 @@ import "../_components"
 
 Popup {
     id: addPatientPopup
-    width: Math.min(600,  parent ? parent.width  * 0.9 : 600)
-    height: Math.min(700,  parent ? parent.height  * 0.9 : 700)
+    width: Math.min(600, parent ? parent.width * 0.9 : 600)
+    height: Math.min(700, parent ? parent.height * 0.9 : 700)
     modal: true
     focus: true
     closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
@@ -18,22 +18,43 @@ Popup {
     property int mainContentWidth: 800
     property int mainContentHeight: 700
 
-    signal accepted(string firstName, string lastName, string birthday, string phone, string gender)
-    signal cancelled()
+    // form表单字段属性
+    property int id: 0
+    property alias firstName: txt_firstName.text
+    property alias lastName: txt_lastName.text
+    property int gender: 2
+    property alias phone: txt_phone.text
+    property alias birthDay: txt_birthDay.text
+
+    // 基于表单生成数据
+    function gatherFormData() {
+        var formDataObj = {
+            "id": id,
+            "firstName": firstName,
+            "lastName": lastName,
+            "gender": gender,
+            "phone": phone,
+            "birthDay": birthDay
+        }
+        return formDataObj
+    }
+
+    signal accepted(var formDataObj)
+    signal cancelled
 
     background: Rectangle {
         color: "#80000000"
-        anchors.fill:  parent
+        anchors.fill: parent
     }
 
     Item {
         id: popupContent
-        anchors.centerIn:  parent
+        anchors.centerIn: parent
         width: mainContentWidth
         height: mainContentHeight
 
         Rectangle {
-            anchors.fill:  parent
+            anchors.fill: parent
             color: "#ffffff"
 
             // 标题栏 (固定在顶部)
@@ -42,14 +63,14 @@ Popup {
                 width: parent.width
                 height: 50
                 color: '#005a9e'
-                anchors.top:  parent.top
+                anchors.top: parent.top
                 Text {
                     text: language === "zh_CN" ? "新增病例" : "Add New Patient"
                     font.weight: 500
-                    font.pixelSize:  18
+                    font.pixelSize: 18
                     color: "#ffffff"
                     anchors.verticalCenter: parent.verticalCenter
-                    x:15
+                    x: 15
                 }
             }
 
@@ -62,7 +83,6 @@ Popup {
                     right: parent.right
                     bottom: footer.top
                     margins: 20
-
                 }
                 clip: true
 
@@ -76,14 +96,15 @@ Popup {
                         spacing: 15
                         Text {
                             text: language === "zh_CN" ? "姓：" : "First Name:"
-                            font.pixelSize:  16
+                            font.pixelSize: 16
                             color: "#555555"
-                            Layout.preferredWidth:  100  // 固定标签宽度
-                            Layout.alignment:  Qt.AlignRight
+                            Layout.preferredWidth: 100 // 固定标签宽度
+                            Layout.alignment: Qt.AlignRight
                         }
                         WTextField {
-                            id: firstNameField
-                            Layout.preferredWidth:  300  // 固定输入框宽度
+                            id: txt_lastName
+
+                            Layout.preferredWidth: 300 // 固定输入框宽度
                             placeholderText: language === "zh_CN" ? "请输入姓" : "Enter first name"
                             validator: "none"
                         }
@@ -93,15 +114,16 @@ Popup {
                     RowLayout {
                         spacing: 15
                         Text {
+
                             text: language === "zh_CN" ? "名：" : "Last Name:"
-                            font.pixelSize:  16
+                            font.pixelSize: 16
                             color: "#555555"
-                            Layout.preferredWidth:  100
-                            Layout.alignment:  Qt.AlignRight
+                            Layout.preferredWidth: 100
+                            Layout.alignment: Qt.AlignRight
                         }
                         WTextField {
-                            id: lastNameField
-                            Layout.preferredWidth:  300
+                            id: txt_firstName
+                            Layout.preferredWidth: 300
                             placeholderText: language === "zh_CN" ? "请输入名" : "Enter last name"
                             validator: "none"
                         }
@@ -112,26 +134,52 @@ Popup {
                         spacing: 15
                         Text {
                             text: language === "zh_CN" ? "性别：" : "Gender:"
-                            font.pixelSize:  16
+                            font.pixelSize: 16
                             color: "#555555"
-                            Layout.preferredWidth:  100
-                            Layout.alignment:  Qt.AlignRight
+                            Layout.preferredWidth: 100
+                            Layout.alignment: Qt.AlignRight
                         }
+
                         RowLayout {
                             spacing: 15
-                            Layout.preferredWidth:  300
+                            Layout.preferredWidth: 300
+
+                            ButtonGroup {
+                                id: genderGroup
+                                onCheckedButtonChanged: {
+                                    // 更新绑定属性
+                                    if (checkedButton) {
+                                        selectedGender = checkedButton.text
+                                    }
+                                }
+                            }
+
                             RadioButton {
                                 id: maleRadio
                                 text: language === "zh_CN" ? "男" : "Male"
-                                checked: true
+                                property int value: 1
+                                checked: gender = value
+                                onCheckedChanged: if (checked)
+                                                      gender = value
+                                ButtonGroup.group: genderGroup
                             }
                             RadioButton {
                                 id: femaleRadio
                                 text: language === "zh_CN" ? "女" : "Female"
+                                property int value: 0
+                                checked: gender = value
+                                onCheckedChanged: if (checked)
+                                                      gender = value
+                                ButtonGroup.group: genderGroup
                             }
                             RadioButton {
                                 id: otherRadio
                                 text: language === "zh_CN" ? "其他" : "Other"
+                                property int value: 2
+                                checked: gender = value
+                                onCheckedChanged: if (checked)
+                                                      gender = value
+                                ButtonGroup.group: genderGroup
                             }
                         }
                     }
@@ -141,16 +189,16 @@ Popup {
                         spacing: 15
                         Text {
                             text: language === "zh_CN" ? "生日：" : "Birthday:"
-                            font.pixelSize:  16
+                            font.pixelSize: 16
                             color: "#555555"
-                            Layout.preferredWidth:  100
-                            Layout.alignment:  Qt.AlignRight
+                            Layout.preferredWidth: 100
+                            Layout.alignment: Qt.AlignRight
                         }
                         RowLayout {
                             spacing: 10
                             WTextField {
-                                id: birthDayField
-                                Layout.preferredWidth:  300  // 固定输入框宽度
+                                id: txt_birthDay
+                                Layout.preferredWidth: 300 // 固定输入框宽度
                                 placeholderText: language === "zh_CN" ? "选择生日" : "Select date"
                             }
                             Button {
@@ -163,7 +211,7 @@ Popup {
                             WDatePicker {
                                 id: datePicker
                                 anchorItem: birthDayField
-                                onDateSelected: (date) => birthDayField.text  = date
+                                onDateSelected: date => txt_birthDay.text = date
                                 visible: false
                             }
                         }
@@ -174,14 +222,14 @@ Popup {
                         spacing: 15
                         Text {
                             text: language === "zh_CN" ? "手机号：" : "Phone:"
-                            font.pixelSize:  16
+                            font.pixelSize: 16
                             color: "#555555"
-                            Layout.preferredWidth:  100
-                            Layout.alignment:  Qt.AlignRight
+                            Layout.preferredWidth: 100
+                            Layout.alignment: Qt.AlignRight
                         }
                         WTextField {
-                            id: phoneField
-                            Layout.preferredWidth:  300
+                            id: txt_phone
+                            Layout.preferredWidth: 300
                             placeholderText: language === "zh_CN" ? "请输入手机号" : "Enter phone number"
                             validator: "phone"
                         }
@@ -201,12 +249,12 @@ Popup {
                 }
 
                 RowLayout {
-                    anchors.centerIn:  parent
+                    anchors.centerIn: parent
                     spacing: 30
 
                     Button {
                         text: language === "zh_CN" ? "取消" : "Cancel"
-                        font.pixelSize:  14
+                        font.pixelSize: 14
                         width: 120
                         height: 40
                         onClicked: {
@@ -217,24 +265,14 @@ Popup {
 
                     Button {
                         text: language === "zh_CN" ? "确认" : "Confirm"
-                        font.pixelSize:  14
+                        font.pixelSize: 14
                         width: 120
                         height: 40
                         enabled: formValid()
                         onClicked: {
-                            const gender = maleRadio.checked  ?
-                                (language === "zh_CN" ? "男" : "Male") :
-                                femaleRadio.checked  ?
-                                (language === "zh_CN" ? "女" : "Female") :
-                                (language === "zh_CN" ? "其他" : "Other")
-
-                            addPatientPopup.accepted(
-                                firstNameField.text,
-                                lastNameField.text,
-                                birthDayField.text,
-                                phoneField.text,
-                                gender
-                            )
+                            var formDataObj = gatherFormData()
+                            console.log('生成的表单数据：', JSON.stringify(formDataObj))
+                            accepted(formDataObj)
                             addPatientPopup.close()
                         }
                     }
@@ -243,23 +281,21 @@ Popup {
         }
     }
 
+    // 校验表单数据（合法则可以提交）
     function formValid() {
-        return firstNameField.text.length  > 0 &&
-               lastNameField.text.length  > 0 &&
-               birthDayField.text  !== "" &&
-               phoneField.isValid()
+        return txt_firstName.text.length > 0 && txt_lastName.text.length > 0
+                && txt_birthDay.text !== "" && txt_phone.isValid()
     }
 
     function resetForm() {
-        firstNameField.text  = ""
-        lastNameField.text  = ""
-        maleRadio.checked  = true
-        birthDayField.text  = ""
-        phoneField.text  = ""
+        txt_firstName.text = ""
+        txt_lastName.text = ""
+        txt_birthDay.text = ""
+        txt_phone.text = ""
     }
 
     onOpened: {
-        firstNameField.forceActiveFocus()
+        txt_firstName.forceActiveFocus()
         resetForm()
     }
 }
