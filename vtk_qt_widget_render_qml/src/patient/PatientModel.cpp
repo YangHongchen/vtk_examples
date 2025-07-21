@@ -139,10 +139,14 @@ void PatientModel::clear()
 
 void PatientModel::setCurrentPatient (const Patient &patient)
 {
+
     const long newId = patient.id;
     const long oldId = m_currentPatientObject ? m_currentPatientObject->id() : 0;
-    if (newId == oldId)
+    if (newId == oldId && newId > 0)
+    {
+        qDebug() << "无变化，不触发信号";
         return; // 无变化，不触发信号
+    }
 
     // 删除上一个选中的病例数据对象
     if (m_currentPatientObject)
@@ -155,6 +159,8 @@ void PatientModel::setCurrentPatient (const Patient &patient)
     qDebug() << ">>>>>>> PatientModel的当前病例更新：" << m_currentPatientObject->fullName();
     emit currentPatientChanged();
     emit currentPatientIdChanged (m_currentPatientObject->id());
+
+    emit dataUpdated();
 }
 
 // 分页逻辑
