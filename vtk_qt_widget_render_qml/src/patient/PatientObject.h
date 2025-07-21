@@ -346,7 +346,7 @@ class PatientObject : public QObject {
 
   public:
     // 工具方法，更新当前PateintObject，基于查询的Patient
-    PatientObject *toPatientObject (const Patient &patient, QObject *parent = nullptr)
+    static  PatientObject *toPatientObject (const Patient &patient, QObject *parent = nullptr)
     {
         auto obj = new PatientObject (parent);
         obj->m_id = patient.id;
@@ -383,9 +383,6 @@ class PatientObject : public QObject {
         obj->m_upperDentitionStlThumbnailUrl = patient.upperDentitionStlThumbnailUrl;
         obj->m_lowerDentitionStlUrl = patient.lowerDentitionStlUrl;
         obj->m_lowerDentitionStlThumbnailUrl = patient.lowerDentitionStlThumbnailUrl;
-
-        notifyAllPropertiesChanged();
-
         return obj;
     }
 

@@ -139,28 +139,31 @@ void PatientModel::clear()
 
 void PatientModel::setCurrentPatient (const Patient &patient)
 {
-
-    const long newId = patient.id;
-    const long oldId = m_currentPatientObject ? m_currentPatientObject->id() : 0;
-    if (newId == oldId && newId > 0)
+    // 2. 原子化ID比较（避免竞态条件）
+    const qint64 newId = patient.id;
+    const qint64 oldId = m_currentPatientObject ? m_currentPatientObject->id() : -1;
+    if (newId == oldId)
     {
-        qDebug() << "无变化，不触发信号";
-        return; // 无变化，不触发信号
+        qDebug() << "[PatientModel] No change detected, skip update";
+        return;
     }
 
-    // 删除上一个选中的病例数据对象
-    if (m_currentPatientObject)
-        m_currentPatientObject->deleteLater();
+    // 3. 内存安全操作（RAII+线程安全）
+    QPointer<PatientObject> oldObject = m_currentPatientObject;
+    m_currentPatientObject = PatientObject::toPatientObject (patient); // 静态工厂方法
 
-    // 新初始化病例对象
-    m_currentPatientObject = new PatientObject;
-    m_currentPatientObject = m_currentPatientObject->toPatientObject (patient);
+    // 4. 批量信号发射（减少QML绑定刷新次数）
+    QMetaObject::invokeMethod (this, [this, oldObject, newId]()
+    {
+        if (oldObject) oldObject->deleteLater();
 
-    qDebug() << ">>>>>>> PatientModel的当前病例更新：" << m_currentPatientObject->fullName();
-    emit currentPatientChanged();
-    emit currentPatientIdChanged (m_currentPatientObject->id());
+        beginResetModel();
+        emit currentPatientChanged (m_currentPatientObject); // 传递新对象指针
+        emit currentPatientIdChanged (newId);
+        endResetModel();
 
-    emit dataUpdated();
+        qInfo() << "$$$ [PatientModel] Current patient changed to ID:" << newId;
+    }, Qt::QueuedConnection); // 确保跨线程安全
 }
 
 // 分页逻辑

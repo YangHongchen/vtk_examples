@@ -4,6 +4,7 @@
 #include <QAbstractListModel>
 #include <QGeoCoordinate>
 #include <QUrl>
+#include <QPointer>
 
 #include "src/patient/Patient.h"
 #include "src/patient/PatientObject.h"
@@ -98,7 +99,7 @@ class PatientModel : public QAbstractListModel {
     void dataUpdated();
     void stlModelsLoaded (int patientId);
     void paginationChanged();
-    void currentPatientChanged();
+    void currentPatientChanged (QPointer<PatientObject> obj);
     void currentPatientIdChanged (long patientId);
 
   private:
@@ -114,7 +115,7 @@ class PatientModel : public QAbstractListModel {
     static PatientModel *m_instance;
 
     // 当前病例
-    PatientObject *m_currentPatientObject = nullptr;
+    QPointer<PatientObject> m_currentPatientObject ;
     long m_currentPatientId = 0;
 
 };
