@@ -22,6 +22,27 @@ PatientController::~PatientController()
     qDebug() << "~销毁PatientController";
 }
 
+bool PatientController::validateForm (const QVariantMap &formData)
+{
+
+    // {"id":0,"firstName":"22","lastName":"22","gender":0,"phone":"13345453456","birthDay":"2025-07-09"}
+
+    qDebug() << "firstName" << formData["firstName"].toString();
+    qDebug() << "lastName" << formData["lastName"].toString();
+    qDebug() << "gender" << formData["gender"].toInt();
+    qDebug() << "birthDay" << formData["birthDay"].toString();
+    qDebug() << "phone" << formData["phone"].toString();
+
+
+    return !formData["firstName"].toString().isEmpty()
+           && !formData["lastName"].toString().isEmpty()
+           && !formData["birthDay"].toString().isEmpty()
+           && !formData["phone"].toString().isEmpty()
+           && (formData["gender"].toInt() >= 0
+               && formData["gender"].toInt() <= 2
+              );
+}
+
 void PatientController::loadPatientsConditional (const QString keyword, int page, int pageSize)
 {
     if (page < 1) page = 1;
@@ -60,4 +81,55 @@ void PatientController::selectPatient (long patientId)
     qDebug() << "成功选中病例:" << patient.fullName;
 
     m_model->setCurrentPatient (patient);
+}
+
+bool PatientController::submitPatientFormData (const QVariantMap &formData)
+{
+    qDebug() << "提交病例表单数据";
+
+    // 数据校验
+    if (!validateForm (formData))
+    {
+        qDebug() << "表单数据校验失败";
+        emit error (500, "表单数据校验失败");
+        return false;
+    }
+
+    // 转换数据
+    Patient patient;
+    int id = (formData["id"].toInt());
+    patient.firstName = (formData["firstName"].toString());
+    patient.lastName = (formData["lastName"].toString());
+    patient.fullName = patient.lastName + patient.firstName;
+    patient.gender = (formData["gender"].toInt());
+    patient.phone = (formData["phone"].toString());
+    patient.birthday  = QDateTime::fromString (formData["birthDay"].toString(), "yyyy-MM-dd");
+    patient.deleted = 0;
+    QDateTime currentTime = QDateTime::currentDateTime();  // 默认当前时间
+    bool ret  = false;
+    if (id > 0)
+    {
+        patient.updateTime = currentTime;
+        ret = m_patientDao->update (patient);
+        if (!ret)
+        {
+            qWarning() << "更新病例数据，失败";
+        }
+        emit success();
+        qWarning() << "chenggong";
+    }
+    else
+    {
+        patient.createTime      = currentTime;
+        patient.updateTime      = currentTime;
+        patient.lastTestingTime = currentTime;
+        ret = m_patientDao->save (patient);
+        if (!ret)
+        {
+            qWarning() << "新增病例数据，失败";
+        }
+        qWarning() << "chenggong2";
+        emit success();
+    }
+
 }

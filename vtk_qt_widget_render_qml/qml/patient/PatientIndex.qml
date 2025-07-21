@@ -171,8 +171,12 @@ Item {
     PatientEditPopup {
         id: patientEditPopup
         anchors.centerIn: parent
-        onAccepted: function (f,l,ph,bir,gen){
-            console.log('提交的数据')
+        onAccepted: function (formDataObj){
+            console.log('病例编辑表单，提交的数据',JSON.stringify(formDataObj))
+            PatientController.submitPatientFormData(formDataObj)
+        }
+        onCancelled: {
+            console.log('表单取消提交！')
         }
     }
 }
