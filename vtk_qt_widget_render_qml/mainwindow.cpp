@@ -5,11 +5,13 @@
 #include <QLabel>
 #include <QQmlContext>
 
+
 // MainWindow.cpp
 MainWindow::MainWindow (QWidget *parent) : QMainWindow (parent)
 {
     m_patientController = PatientController::instance();
     m_patientModel = PatientModel::instance();
+    m_patientFileTransferManager = PatientFileTransferManager::instance();
     setupUI();
 }
 
@@ -37,6 +39,9 @@ void MainWindow::addQmlPage (const QString &qmlPath)
         context->setContextProperty ("PatientController", m_patientController);
     if (m_patientModel)
         context->setContextProperty ("PatientModel", m_patientModel);
+    // 病例模型文件上传
+    if (m_patientFileTransferManager)
+        context->setContextProperty ("PatientFileTransferManager", m_patientFileTransferManager);
 
     // 加载 QML 页面
     view->setSource (QUrl (qmlPath));

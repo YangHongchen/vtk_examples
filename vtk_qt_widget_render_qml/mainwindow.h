@@ -7,25 +7,26 @@
 #include <QHBoxLayout>
 #include "src/patient/PatientController.h"
 #include "src/patient/PatientModel.h"
+#include "src/common/PatientFileTransferManager.h"
 
 class VtkRenderWidget;  // 前置声明自定义Widget
 
 class MainWindow : public QMainWindow {
     Q_OBJECT
-public:
-    explicit MainWindow(QWidget *parent = nullptr);
+  public:
+    explicit MainWindow (QWidget *parent = nullptr);
 
-private slots:
-    void handlePageChange(int index);
+  private slots:
+    void handlePageChange (int index);
 
-private:
-    void addQmlPage(const QString &qmlPath);
+  private:
+    void addQmlPage (const QString &qmlPath);
 
     void setupUI();
     void refreshUI();
     void setupCpps();
 
-private:
+  private:
     QQuickWidget *m_navWidget;
     QStackedWidget *m_contentStack;
     VtkRenderWidget *m_vtkWidget = nullptr;
@@ -33,6 +34,7 @@ private:
     // 资源类
     PatientController *m_patientController = nullptr;
     PatientModel *m_patientModel = nullptr;
+    PatientFileTransferManager *m_patientFileTransferManager = nullptr;
 
 };
 

@@ -13,7 +13,9 @@ class PatientFileTransferManager  : public QObject {
     Q_PROPERTY (bool uploading READ isUploading NOTIFY uploadingStateChanged)
 
   public:
-    explicit PatientFileTransferManager (QObject *parent = nullptr);
+    // 获取单例实例对象
+    static PatientFileTransferManager *instance();
+
     ~PatientFileTransferManager();
     bool isUploading() const { return m_uploading; }
 
@@ -32,6 +34,11 @@ class PatientFileTransferManager  : public QObject {
     void onPatientChanged (PatientObject* selectedPatient);
 
   private:
+    explicit PatientFileTransferManager (QObject *parent = nullptr);
+
+  private:
+    static PatientFileTransferManager *s_instance;
+
     bool m_uploading = false;
     QString m_uploadDirectory;
 

@@ -149,6 +149,7 @@ Rectangle{
                 // 发起上传请求
                 onUpdateRequest:(type,url) =>{
                     console.log('文件上传请求：type, url:', type, url)
+                    PatientFileTransferManager.copyFileToUploadDirectory(url)
                 }
             }
         }
