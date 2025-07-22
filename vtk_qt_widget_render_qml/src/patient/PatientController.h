@@ -18,7 +18,7 @@ class PatientController : public QObject {
     // 病例列表(查询)
     Q_INVOKABLE void loadPatientsConditional (const QString keyword = "", int page = 1, int pageSize = 10);
     // 切换病例
-    Q_INVOKABLE void selectPatient (long patientId);
+    Q_INVOKABLE void selectPatient (long patientId, bool forceUpdate = false);
     // 提交病例编辑
     Q_INVOKABLE bool submitPatientFormData (const QVariantMap &formData);
     // 更新病例上传模型

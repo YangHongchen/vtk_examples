@@ -137,22 +137,20 @@ void PatientModel::clear()
     emit dataUpdated();
 }
 
-void PatientModel::setCurrentPatient (const Patient &patient)
+void PatientModel::setCurrentPatient (const Patient &patient, bool forceUpdate)
 {
-    // 2. 原子化ID比较（避免竞态条件）
+    // 1. 原子化ID比较（避免竞态条件）
     const qint64 newId = patient.id;
     const qint64 oldId = m_currentPatientObject ? m_currentPatientObject->id() : -1;
-    if (newId == oldId)
+    if (newId == oldId && !forceUpdate)
     {
         qDebug() << "[PatientModel] No change detected, skip update";
         return;
     }
-
-    // 3. 内存安全操作（RAII+线程安全）
+    // 2. 内存安全操作（RAII+线程安全）
     PatientObject* oldObject = m_currentPatientObject;
     m_currentPatientObject = PatientObject::toPatientObject (patient); // 静态工厂方法
-
-    // 4. 批量信号发射（减少QML绑定刷新次数）
+    // 3. 批量信号发射（减少QML绑定刷新次数）
     QMetaObject::invokeMethod (this, [this, oldObject, newId]()
     {
         if (oldObject) oldObject->deleteLater();
@@ -161,7 +159,6 @@ void PatientModel::setCurrentPatient (const Patient &patient)
         emit currentPatientChanged (m_currentPatientObject); // 传递新对象指针
         emit currentPatientIdChanged (newId);
         endResetModel();
-
         qInfo() << "$$$ [PatientModel] Current patient changed to ID:" << newId;
     }, Qt::QueuedConnection); // 确保跨线程安全
 }

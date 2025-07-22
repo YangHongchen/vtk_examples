@@ -161,6 +161,7 @@ Item {
         }
     }
 
+
     // 激活当前选中的菜单和其父菜单
     function activeMenuAndParent(index, page) {
         // 取消所有激活状态

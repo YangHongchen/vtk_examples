@@ -104,6 +104,8 @@ add_executable(${PROJECT_NAME}
     src/common/PatientFileTransferManager.cpp
     src/common/FileUtils.h
     src/common/FileUtils.cpp
+    src/common/VtkStlPreviewGenerator.h
+    src/common/VtkStlPreviewGenerator.cpp
     # 自定义组件（目前是vtk效果测试组件）
     CustomWidget.h
     CustomWidget.cpp
@@ -139,7 +141,6 @@ qt_add_qml_module(${PROJECT_NAME}
     VERSION 1.0
     RESOURCE_PREFIX "/qml"  # 显式指定资源前缀
 )
-
 
 #-----------------------------------------------------------------------------
 # 资源文件处理（替代qt_add_resources）

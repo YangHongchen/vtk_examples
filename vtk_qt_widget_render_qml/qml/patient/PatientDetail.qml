@@ -23,10 +23,10 @@ Rectangle {
     property string lastTestingTime:  "0000-00-00"
 
     // 上传模型(模型URL)
-    property string mandibleStllUrl: ''
-    property string maxillaStllUrl: ''
-    property string upperDentitionStllUrl: ''
-    property string lowerDentitionStllUrl: ''
+    property string mandibleStlUrl: ''
+    property string maxillaStlUrl: ''
+    property string upperDentitionStlUrl: ''
+    property string lowerDentitionStlUrl: ''
 
     // 上传模型(缩略图URL)
     property string mandibleStlThumbnailUrl: ''
@@ -181,7 +181,7 @@ Rectangle {
                     text: qsTr("开始测量")
                     enabled: root.patientId > 0
                     onClicked:  {
-                        console.log('xxxxxxxxx 开始测量')
+
                     }
                 }
                 Item {
@@ -216,6 +216,19 @@ Rectangle {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
                     spacing: 0
+
+                    Text {
+                        text: "上颌模型：" + root.maxillaStlUrl
+                    }
+                    Text {
+                        text: "下颌模型：" + root.mandibleStlUrl
+                    }
+                    Text {
+                        text: "上牙列模型：" + root.upperDentitionStlUrl
+                    }
+                    Text {
+                        text: "下牙列模型：" + root.lowerDentitionStlUrl
+                    }
 
                 }
             }

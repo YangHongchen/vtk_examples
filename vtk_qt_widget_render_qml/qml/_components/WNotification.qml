@@ -10,7 +10,6 @@ Item {
     implicitWidth: Math.min(contentRow.width  + 40, parent ? parent.width  * 0.9 : 400) // 内容宽度+边距
     // 定位到窗口顶层并居中
     parent: Overlay.overlay
-    anchors.horizontalCenter: parent.horizontalCenter
     y: -height
 
     // 可配置属性
@@ -31,7 +30,7 @@ Item {
         name: "visible"
         PropertyChanges {
             target: root
-            y: 20  // 距离顶部20像素
+            y: 50  // 距离顶部20像素
             opacity: 1
         }
     }

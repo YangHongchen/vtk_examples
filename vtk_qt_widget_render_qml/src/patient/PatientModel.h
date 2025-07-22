@@ -77,7 +77,13 @@ class PatientModel : public QAbstractListModel {
 
     // 当前病例
     PatientObject *currentPatient() const { return m_currentPatientObject; }
-    void setCurrentPatient (const Patient &patient);
+
+    /**
+     * @brief 更新当前病例
+     * @param patient     病例数据
+     * @param forceUpdate 强制触发更新
+     */
+    void setCurrentPatient (const Patient &patient, bool forceUpdate = false);
 
     long currentPatientId() const
     {

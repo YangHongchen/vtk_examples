@@ -52,25 +52,22 @@ void PatientController::loadPatientsConditional (const QString keyword, int page
     }
 }
 
-void PatientController::selectPatient (long patientId)
+void PatientController::selectPatient (long patientId, bool forceUpdate)
 {
     if (patientId < 1)
     {
         qWarning() << "无效的 patientId:" << patientId;
         return;
     }
-
     std::shared_ptr<Patient> patientPtr = m_patientDao->findOnePatientById (patientId);
     if (!patientPtr)
     {
         qWarning() << "选中病例数据不存在或已删除: id=" << patientId;
         return;
     }
-
     const Patient& patient = *patientPtr;
     qDebug() << "成功选中病例:" << patient.fullName;
-
-    m_model->setCurrentPatient (patient);
+    m_model->setCurrentPatient (patient, true);
 }
 
 bool PatientController::submitPatientFormData (const QVariantMap &formData)
@@ -119,11 +116,61 @@ bool PatientController::submitPatientFormData (const QVariantMap &formData)
     }
 }
 
-bool PatientController::updatePatientStl (const QString stlFilePath, int stlType)
+bool PatientController::updatePatientStl (const QString stlModelUrl, int stlType)
 {
-    qDebug() << ">>> stlFilePath = " << stlFilePath << ", stlType=" << stlType;
     auto currentPatient = m_model->currentPatient();
-    qDebug() << "获取当前病例的id=" << currentPatient->id();
+    if (currentPatient == nullptr)
+    {
+        emit error (500, "当前病例不存在或未选中");
+        return false;
+    }
+    long patientId = currentPatient->id();
+    if (patientId < 1)
+    {
+        emit error (500, "病例主键缺失");
+        return false;
+    }
 
+    std::shared_ptr<Patient> patientPtr = m_patientDao->findById (patientId);
+    if (patientPtr == nullptr)
+    {
+        emit error (500, "病例数据不存在");
+        return false;
+    }
+    Patient patient = *patientPtr;
+    if (stlType == 1) // 更新上颌模型
+    {
+        patient.maxillaStlUrl = stlModelUrl;
+        // patient.maxillaStlThumbnailUrl = stlThumbnailUrl;
+    }
+    else if (stlType == 2) // 更新下颌模型
+    {
+        patient.mandibleStlUrl = stlModelUrl;
+        // patient.mandibleStlThumbnailUrl = stlThumbnailUrl;
+    }
+    else if (stlType == 3)  // 更新上颌牙弓模型
+    {
+        patient.upperDentitionStlUrl = stlModelUrl;
+        // patient.upperDentitionStlThumbnailUrl = stlThumbnailUrl;
+    }
+    else if (stlType == 4) // 更新下颌牙弓模型
+    {
+        patient.lowerDentitionStlUrl = stlModelUrl;
+        // patient.lowerDentitionStlThumbnailUrl = stlThumbnailUrl;
+    }
+    else
+    {
+        emit error (500, "模型类型错误");
+        return false;
+    }
+    // 更新到数据库
+    bool ret = m_patientDao->update (patient);
+    if (ret)
+    {
+        // 触发当前病例数据: (强制刷新)
+        selectPatient (patient.id, true);
+        return true;
+    }
+    emit error (500, "更新模型文件失败");
     return false;
 }
