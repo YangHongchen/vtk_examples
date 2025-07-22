@@ -184,7 +184,7 @@ Popup {
                         image.y = 0
                     }
                 }
-                onWheel: {
+                onWheel: wheel => {
                     var zoomFactor = 1.0 + wheel.angleDelta.y  / 1200.0
                     scaleFactor = Math.min(Math.max(scaleFactor  * zoomFactor, 0.1), 10)
                 }

@@ -1,6 +1,7 @@
 import QtQuick 2.15
 import QtQuick.Layouts
 import QtQuick.Dialogs
+import QtQuick.Controls
 
 import "../_widgets"
 import "../_components"
@@ -301,5 +302,8 @@ Rectangle {
         id: previewer
         parent: Overlay.overlay
         source: "https://iknow-pic.cdn.bcebos.com/a71ea8d3fd1f4134679182fe371f95cad0c85e88"
+        anchors.centerIn: parent
+        width: 1000
+        height: 700
     }
 }
