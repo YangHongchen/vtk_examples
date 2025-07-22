@@ -22,13 +22,19 @@
 #include <vtkTransform.h>
 #include <vtkTransformPolyDataFilter.h>
 
+#include "src/config/ConfigManager.h"
+
 VtkStlPreviewGenerator::VtkStlPreviewGenerator (QObject *parent): QObject {parent}
 {
-
+    m_patientModel = PatientModel::instance();
 }
 
-void VtkStlPreviewGenerator::startGenerate (const QString &stlFilePath, const QString &outputDir, int imageSize,
-        int stlType)
+VtkStlPreviewGenerator::~VtkStlPreviewGenerator()
+{
+    m_patientModel = nullptr;
+}
+
+void VtkStlPreviewGenerator::startGenerate (const QString &stlFilePath,  int imageSize, int stlType)
 {
     // 在实际项目建议放到工作线程执行，这里为简化示例直接同步执行
     if (!QFileInfo::exists (stlFilePath))
@@ -36,17 +42,11 @@ void VtkStlPreviewGenerator::startGenerate (const QString &stlFilePath, const QS
         emit generationFailed (QStringLiteral ("STL file does not exist: %1").arg (stlFilePath));
         return;
     }
-    if (!QDir (outputDir).exists())
-    {
-        QDir().mkpath (outputDir);
-    }
-    QString outputFileName = QFileInfo (stlFilePath).completeBaseName() + "_preview.png";
-    QString outputFilePath = QDir (outputDir).filePath (outputFileName);
-
-    bool ok = generatePreview (stlFilePath.toStdString(), outputFilePath.toStdString(), imageSize);
+    const QString& outputFileName = getStlThumbnailSavePath (stlType);
+    bool ok = generatePreview (stlFilePath.toStdString(), outputFileName.toStdString(), imageSize);
     if (ok)
     {
-        emit thumbnailReady (outputFilePath, stlType);
+        emit thumbnailReady (outputFileName, stlType);
     }
     else
     {
@@ -157,7 +157,6 @@ bool VtkStlPreviewGenerator::generatePreview (const std::string &stlFilePath, co
 
     renderer->AddActor (actor);
     renderer->AddActor (gridActor);
-
     renderer->ResetCamera();
     renderWindow->Render();
 
@@ -173,7 +172,72 @@ bool VtkStlPreviewGenerator::generatePreview (const std::string &stlFilePath, co
     writer->SetFileName (outputImagePath.c_str());
     writer->SetInputConnection (w2if->GetOutputPort());
     writer->Write();
-
     return true;
+}
+
+QString VtkStlPreviewGenerator::getStlThumbnailSavePath (int stlType)
+{
+    auto currentPatient = m_patientModel->currentPatient();
+    if (!currentPatient)
+    {
+        qWarning() << "未选中病例，无法生成缩略图路径";
+        emit generationFailed ("未选中病例，无法生成缩略图路径");
+        return "";
+    }
+
+    const QString phone = currentPatient->phone().trimmed();
+    if (phone.isEmpty())
+    {
+        qWarning() << "当前病例电话号码为空";
+        emit generationFailed ("当前病例电话号码为空，无法上传文件");
+        return "";
+    }
+
+    QString appConfigPath = ConfigManager::instance()->getConfig ("Facebow/AppConfigLocation");
+    if (appConfigPath.isEmpty())
+    {
+        ConfigManager::instance()->reloadAppConfig();
+        appConfigPath = ConfigManager::instance()->getConfig ("Facebow/AppConfigLocation");
+    }
+
+    if (appConfigPath.isEmpty())
+    {
+        qWarning() << "AppConfig 路径未设置";
+        emit generationFailed ("AppConfig 路径未设置，无法上传文件");
+        return "";
+    }
+
+    // 构建目标目录路径
+    QDir patientDir (appConfigPath);
+    QString relativeDirPath = phone + "/stl_thumbnail";
+    QString fullDirPath = patientDir.filePath (relativeDirPath);
+
+    QDir targetDir (fullDirPath);
+    if (!targetDir.exists() && !targetDir.mkpath ("."))
+    {
+        qWarning() << "创建目标目录失败:" << fullDirPath;
+        emit generationFailed ("创建目标目录失败: " + fullDirPath);
+        return "";
+    }
+
+    // 根据 STL 类型生成对应缩略图文件名
+    QString filename;
+    switch (stlType)
+    {
+    case 1: filename = "maxilla_preview.png"; break;
+    case 2: filename = "mandible_preview.png"; break;
+    case 3: filename = "upper_dentition_preview.png"; break;
+    case 4: filename = "lower_dentition_preview.png"; break;
+    default:
+        qWarning() << "不支持的 STL 类型:" << stlType;
+        emit generationFailed ("不支持的 STL 类型: " + QString::number (stlType));
+        return "";
+    }
+
+    // 返回最终文件完整路径
+    qDebug() << "返回最终文件完整路径:" << targetDir.filePath (filename);
+
+    return targetDir.filePath (filename);
+
 }
 

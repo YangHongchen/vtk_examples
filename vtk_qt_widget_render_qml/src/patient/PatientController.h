@@ -22,7 +22,7 @@ class PatientController : public QObject {
     // 提交病例编辑
     Q_INVOKABLE bool submitPatientFormData (const QVariantMap &formData);
     // 更新病例上传模型
-    Q_INVOKABLE bool updatePatientStl (const QString stlFilePath, int stlType);
+    Q_INVOKABLE bool updatePatientStl (const QString &stlFilePath, int stlType);
 
   public:
     // 析构函数
@@ -45,9 +45,10 @@ class PatientController : public QObject {
   private:
     // 构造函数私有化（单例）Cont
     explicit PatientController (QObject *parent = nullptr);
-
     // 校验病例表单数据
     bool validateForm (const QVariantMap &formData);
+    // 基于stl文件生成缩略图
+    void startStlThumbnailGeneration (const QString& stlPath, int stlType);
 
   private:
     static PatientController *s_instance;

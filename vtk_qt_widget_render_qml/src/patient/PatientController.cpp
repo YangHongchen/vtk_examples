@@ -1,5 +1,7 @@
 #include "PatientController.h"
 #include "src/patient/PatientDao.h"
+#include "src/common/VtkStlPreviewGenerator.h"
+#include <QThread>
 
 PatientController *PatientController::s_instance = nullptr;
 
@@ -32,6 +34,8 @@ bool PatientController::validateForm (const QVariantMap &formData)
                && formData["gender"].toInt() <= 2
               );
 }
+
+
 
 void PatientController::loadPatientsConditional (const QString keyword, int page, int pageSize)
 {
@@ -72,105 +76,106 @@ void PatientController::selectPatient (long patientId, bool forceUpdate)
 
 bool PatientController::submitPatientFormData (const QVariantMap &formData)
 {
-    // 数据校验
     if (!validateForm (formData))
     {
-        qDebug() << "表单数据校验失败";
         emit error (500, "表单数据校验失败");
         return false;
     }
-    // 转换数据
+
     Patient patient;
-    int id = (formData["id"].toInt());
-    patient.firstName = (formData["firstName"].toString());
-    patient.lastName = (formData["lastName"].toString());
-    patient.fullName = patient.lastName + patient.firstName;
-    patient.gender = (formData["gender"].toInt());
-    patient.phone = (formData["phone"].toString());
-    patient.birthday  = QDateTime::fromString (formData["birthDay"].toString(), "yyyy-MM-dd");
-    patient.deleted = 0;
-    QDateTime currentTime = QDateTime::currentDateTime();  // 默认当前时间
-    bool ret  = false;
-    if (id > 0)
+    patient.id        = formData.value ("id").toInt();
+    patient.firstName = formData.value ("firstName").toString();
+    patient.lastName  = formData.value ("lastName").toString();
+    patient.fullName  = patient.lastName + patient.firstName;
+    patient.gender    = formData.value ("gender").toInt();
+    patient.phone     = formData.value ("phone").toString();
+    patient.birthday  = QDateTime::fromString (formData.value ("birthDay").toString(), "yyyy-MM-dd");
+    patient.deleted   = 0;
+
+    const QDateTime currentTime = QDateTime::currentDateTime();
+    patient.updateTime = currentTime;
+
+    bool ret = false;
+    if (patient.id > 0)
     {
-        patient.updateTime = currentTime;
         ret = m_patientDao->update (patient);
         if (!ret)
         {
-            qWarning() << "更新病例数据，失败";
+            emit error (500, "更新病例失败");
+            return false;
         }
-        emit success();
-        qWarning() << "chenggong";
     }
     else
     {
         patient.createTime      = currentTime;
-        patient.updateTime      = currentTime;
         patient.lastTestingTime = currentTime;
         ret = m_patientDao->save (patient);
         if (!ret)
         {
-            qWarning() << "新增病例数据，失败";
+            emit error (500, "新增病例失败");
+            return false;
         }
-        emit success();
     }
+    emit success();
+    return true;
 }
 
-bool PatientController::updatePatientStl (const QString stlModelUrl, int stlType)
+bool PatientController::updatePatientStl (const QString &stlModelUrl, int stlType)
 {
-    auto currentPatient = m_model->currentPatient();
-    if (currentPatient == nullptr)
+    PatientObject* patient = m_model->currentPatient();
+    if (!patient || patient->id() < 1)
     {
         emit error (500, "当前病例不存在或未选中");
         return false;
     }
-    long patientId = currentPatient->id();
-    if (patientId < 1)
-    {
-        emit error (500, "病例主键缺失");
-        return false;
-    }
-
-    std::shared_ptr<Patient> patientPtr = m_patientDao->findById (patientId);
+    std::shared_ptr<Patient> patientPtr =  m_patientDao->findOnePatientById (patient->id());
     if (patientPtr == nullptr)
     {
-        emit error (500, "病例数据不存在");
+        emit error (500, "当前病例不存在或未选中");
         return false;
     }
-    Patient patient = *patientPtr;
-    if (stlType == 1) // 更新上颌模型
+    // 直接修改指针指向的对象
+    switch (stlType)
     {
-        patient.maxillaStlUrl = stlModelUrl;
-        // patient.maxillaStlThumbnailUrl = stlThumbnailUrl;
-    }
-    else if (stlType == 2) // 更新下颌模型
-    {
-        patient.mandibleStlUrl = stlModelUrl;
-        // patient.mandibleStlThumbnailUrl = stlThumbnailUrl;
-    }
-    else if (stlType == 3)  // 更新上颌牙弓模型
-    {
-        patient.upperDentitionStlUrl = stlModelUrl;
-        // patient.upperDentitionStlThumbnailUrl = stlThumbnailUrl;
-    }
-    else if (stlType == 4) // 更新下颌牙弓模型
-    {
-        patient.lowerDentitionStlUrl = stlModelUrl;
-        // patient.lowerDentitionStlThumbnailUrl = stlThumbnailUrl;
-    }
-    else
-    {
+    case 1: patientPtr->maxillaStlUrl = stlModelUrl; break;
+    case 2: patientPtr->mandibleStlUrl = stlModelUrl; break;
+    case 3: patientPtr->upperDentitionStlUrl = stlModelUrl; break;
+    case 4: patientPtr->lowerDentitionStlUrl = stlModelUrl; break;
+    default:
         emit error (500, "模型类型错误");
         return false;
     }
-    // 更新到数据库
-    bool ret = m_patientDao->update (patient);
-    if (ret)
+    if (m_patientDao->update (*patientPtr))
     {
-        // 触发当前病例数据: (强制刷新)
-        selectPatient (patient.id, true);
+        //
+        startStlThumbnailGeneration (stlModelUrl, stlType);
+
+        // TODO: 监听生成缩略图成功后，再更新
+        qDebug() << "开始生成缩略图";
         return true;
     }
-    emit error (500, "更新模型文件失败");
+    emit error (500, "模型文件更新失败");
     return false;
 }
+
+void PatientController::startStlThumbnailGeneration (const QString &stlPath, int stlType)
+{
+    QThread* workerThread = new QThread (this);
+    VtkStlPreviewGenerator* generator = new VtkStlPreviewGenerator();
+    generator->moveToThread (workerThread);
+    // 基于上传类型，当前病例生成缩略图存放路径
+    connect (workerThread, &QThread::started, [generator, stlPath, stlType]()
+    {
+        generator->startGenerate (stlPath, 1024, stlType);
+    });
+    connect (generator, &VtkStlPreviewGenerator::thumbnailReady, this, [workerThread,
+             generator ] (const QString & imagePath, int stlType)
+    {
+        qDebug() << "生成的缩略图路径：" << imagePath << ", 模型类型：stlType=" << stlType;
+        workerThread->quit();
+    });
+    connect (workerThread, &QThread::finished, generator, &QObject::deleteLater);
+    connect (workerThread, &QThread::finished, workerThread, &QObject::deleteLater);
+    workerThread->start();
+}
+
