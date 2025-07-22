@@ -266,9 +266,10 @@ Popup {
                         }
                     }
 
-                    Button {
+                    WButton {
                         text: language === "zh_CN" ? "确认" : "Confirm"
                         font.pixelSize: 14
+                        theme: WButton.Primary
                         width: 120
                         height: 40
                         enabled: formValid()

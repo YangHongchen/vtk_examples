@@ -131,7 +131,7 @@ Rectangle {
         height: 100
         modal: true
         standardButtons: Dialog.Ok | Dialog.Cancel
-        onAccepted: PatientManager.deletePatient(root._id)
+        onAccepted: PatientController.deletePatient(root._id)
         onRejected: console.log("用户取消")
         contentItem: Column {
             spacing: 10
