@@ -21,7 +21,16 @@ PatientController::PatientController (QObject *parent) : QObject (parent),
 
 PatientController::~PatientController()
 {
-    qDebug() << "~销毁PatientController";
+    qDebug() << "~释放PatientController";
+    if (m_model)
+    {
+        m_model->deleteLater();
+    }
+    if (m_patientDao)
+    {
+        delete m_patientDao;
+        m_patientDao = nullptr;
+    }
 }
 
 bool PatientController::validateForm (const QVariantMap &formData)
