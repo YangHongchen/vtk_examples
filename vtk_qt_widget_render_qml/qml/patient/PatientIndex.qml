@@ -149,20 +149,9 @@ Rectangle{
                 // 发起上传请求
                 onUpdateRequest:(type,url) =>{
                     console.log('文件上传请求：type, url:', type, url)
-                    PatientFileTransferManager.copyFileToUploadDirectory(url)
+                    PatientFileTransferManager.copyFileToUploadDirectory(url, true, type)
                 }
             }
-        }
-    }
-
-    Connections {
-        target: PatientModel
-        function onCurrentPatientIdChanged(id) {
-            console.log('病例的id变化：',id)
-        }
-        function onCurrentPatientChanged(_pt) {
-            console.log('病例发生变化：',JSON.stringify(_pt))
-            patientPage.currentPatiant = _pt
         }
     }
 
@@ -178,4 +167,33 @@ Rectangle{
             console.log('表单取消提交！')
         }
     }
+
+    Connections {
+        target: PatientModel
+        function onCurrentPatientIdChanged(id) {
+            console.log('病例的id变化：',id)
+        }
+        function onCurrentPatientChanged(_pt) {
+            console.log('病例发生变化：',JSON.stringify(_pt))
+            patientPage.currentPatiant = _pt
+        }
+    }
+
+    Connections {
+        target: PatientFileTransferManager
+        // 文件上传完成
+        function onFileUploadCompleted(filePath, stlType) {
+            console.log('--> 文件上传完成:', filePath, stlType)
+            PatientController.updatePatientStl(filePath, stlType)
+        }
+        // 文件上传失败
+        function onFileUploadFailed(errorMessage) {
+            console.log('--> 文件上传失败:', errorMessage)
+        }
+        // 上传状态变更
+        function onUploadingStateChanged(uploading) {
+            console.log('--> 上传状态变更:', uploading)
+        }
+    }
+
 }

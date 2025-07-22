@@ -117,5 +117,13 @@ bool PatientController::submitPatientFormData (const QVariantMap &formData)
         }
         emit success();
     }
+}
 
+bool PatientController::updatePatientStl (const QString stlFilePath, int stlType)
+{
+    qDebug() << ">>> stlFilePath = " << stlFilePath << ", stlType=" << stlType;
+    auto currentPatient = m_model->currentPatient();
+    qDebug() << "获取当前病例的id=" << currentPatient->id();
+
+    return false;
 }

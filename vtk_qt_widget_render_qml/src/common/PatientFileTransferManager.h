@@ -20,12 +20,12 @@ class PatientFileTransferManager  : public QObject {
     bool isUploading() const { return m_uploading; }
 
     // QML 可调用接口
-    Q_INVOKABLE bool copyFileToUploadDirectory (const QString &sourcePath, bool overwrite = false);
+    Q_INVOKABLE bool copyFileToUploadDirectory (const QString &sourcePath, bool overwrite = false, int stlType = 0);
     Q_INVOKABLE bool moveFileToDirectory (const QString &sourcePath, const QString &targetDir, bool overwrite = false);
 
   signals:
     void fileUploadStarted();                             // 上传开始
-    void fileUploadCompleted (const QString &targetPath); // 上传完成
+    void fileUploadCompleted (const QString &targetPath, int stlType); // 上传完成
     void fileUploadFailed (const QString &errorMessage);  // 上传失败
     void uploadProgressUpdated (double progress);         // 上传进度更新（0.0 ~ 1.0）
     void uploadingStateChanged (bool uploading);          // 上传状态变更

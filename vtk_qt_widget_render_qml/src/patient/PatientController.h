@@ -21,6 +21,8 @@ class PatientController : public QObject {
     Q_INVOKABLE void selectPatient (long patientId);
     // 提交病例编辑
     Q_INVOKABLE bool submitPatientFormData (const QVariantMap &formData);
+    // 更新病例上传模型
+    Q_INVOKABLE bool updatePatientStl (const QString stlFilePath, int stlType);
 
   public:
     // 析构函数
