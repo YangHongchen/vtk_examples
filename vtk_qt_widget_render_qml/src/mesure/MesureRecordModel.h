@@ -64,7 +64,8 @@ class MesureRecordModel: public QAbstractListModel {
     explicit MesureRecordModel (QObject *parent = nullptr);
     void updateVisible();
 
-    static MesureRecordModel *m_instance;
+    static MesureRecordModel *s_instance;
+
     QVector<MesureRecord> m_allRecords;
     QVector<MesureRecord> m_visibleRecords;
 

@@ -5,10 +5,18 @@
 
 class MesureRecordController : public QObject {
     Q_OBJECT
+
   public:
+    static MesureRecordController *instance();
+    // 析构函数
+    ~MesureRecordController();
+  private:
     explicit MesureRecordController (QObject *parent = nullptr);
 
-  signals:
+
+  private:
+    static MesureRecordController *s_instance;
+
 };
 
 #endif // MESURE_RECORD_CONTROLLER_H

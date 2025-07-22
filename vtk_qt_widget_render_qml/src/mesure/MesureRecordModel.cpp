@@ -1,6 +1,6 @@
 #include "src/mesure/MesureRecordModel.h"
 
-MesureRecordModel *MesureRecordModel::m_instance = nullptr;
+MesureRecordModel *MesureRecordModel::s_instance = nullptr;
 
 MesureRecordModel::MesureRecordModel (QObject *parent) : QAbstractListModel (parent)
 {
@@ -9,11 +9,11 @@ MesureRecordModel::MesureRecordModel (QObject *parent) : QAbstractListModel (par
 
 MesureRecordModel *MesureRecordModel::instance()
 {
-    if (!m_instance)
+    if (!s_instance)
     {
-        m_instance = new MesureRecordModel();
+        s_instance = new MesureRecordModel();
     }
-    return m_instance;
+    return s_instance;
 }
 
 int MesureRecordModel::rowCount (const QModelIndex &parent) const

@@ -8,6 +8,8 @@
 #include "src/patient/PatientController.h"
 #include "src/patient/PatientModel.h"
 #include "src/common/PatientFileTransferManager.h"
+#include "src/mesure/MesureRecordController.h"
+#include "src/mesure/MesureRecordModel.h"
 
 class VtkRenderWidget;  // 前置声明自定义Widget
 
@@ -35,6 +37,8 @@ class MainWindow : public QMainWindow {
     PatientController *m_patientController = nullptr;
     PatientModel *m_patientModel = nullptr;
     PatientFileTransferManager *m_patientFileTransferManager = nullptr;
+    MesureRecordController *m_mesureRecordController = nullptr;
+    MesureRecordModel *m_mesureRecordModel = nullptr;
 
 };
 

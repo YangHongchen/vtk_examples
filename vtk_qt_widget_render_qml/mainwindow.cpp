@@ -5,13 +5,14 @@
 #include <QLabel>
 #include <QQmlContext>
 
-
 // MainWindow.cpp
 MainWindow::MainWindow (QWidget *parent) : QMainWindow (parent)
 {
     m_patientController = PatientController::instance();
     m_patientModel = PatientModel::instance();
     m_patientFileTransferManager = PatientFileTransferManager::instance();
+    m_mesureRecordController = MesureRecordController::instance();
+    m_mesureRecordModel = MesureRecordModel::instance();
     setupUI();
 }
 
@@ -35,13 +36,21 @@ void MainWindow::addQmlPage (const QString &qmlPath)
 
     // 设置上下文属性（必须在 setSource 之前）
     QQmlContext *context = view->rootContext();
+
+    if (m_patientFileTransferManager)
+        context->setContextProperty ("PatientFileTransferManager", m_patientFileTransferManager);
+
+    // 病例管理 -----
     if (m_patientController)
         context->setContextProperty ("PatientController", m_patientController);
     if (m_patientModel)
         context->setContextProperty ("PatientModel", m_patientModel);
-    // 病例模型文件上传
-    if (m_patientFileTransferManager)
-        context->setContextProperty ("PatientFileTransferManager", m_patientFileTransferManager);
+
+    // 检测记录 -----
+    if (m_mesureRecordController)
+        context->setContextProperty ("MesureRecordController", m_mesureRecordController);
+    if (m_mesureRecordModel)
+        context->setContextProperty ("MesureRecordModel", m_mesureRecordModel);
 
     // 加载 QML 页面
     view->setSource (QUrl (qmlPath));
