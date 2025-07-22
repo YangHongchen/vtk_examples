@@ -134,20 +134,22 @@ Rectangle{
             id: patient_right_rect
             Layout.fillWidth: true
             Layout.fillHeight: true
-
             PatientDetail {
                 id: dt
                 patientId: patientPage.currentPatiant?patientPage.currentPatiant.id: "0"
                 fullName: patientPage.currentPatiant?patientPage.currentPatiant.fullName: "-"
                 gender: patientPage.currentPatiant?patientPage.currentPatiant.gender: 2
-                // age: patientPage.currentPatiant?patientPage.currentPatiant.age: 0
                 birthDay: patientPage.currentPatiant?patientPage.currentPatiant.birthDay: "0000-00-00"
                 phone: patientPage.currentPatiant?patientPage.currentPatiant.phone: "-"
                 lastTestingTime: patientPage.currentPatiant?patientPage.currentPatiant.lastTestingTime:  "0000-00-00"
                 x:16
                 y:16
-                width:  parent.width - 16*2
-                height: parent.height-16*2
+                width:  parent.width - 16 * 2
+                height: parent.height - 16 * 2
+                // 发起上传请求
+                onUpdateRequest:(type,url) =>{
+                    console.log('文件上传请求：type, url:', type, url)
+                }
             }
         }
     }

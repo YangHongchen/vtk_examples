@@ -7,7 +7,7 @@ import "../_widgets"
 import "../_components"
 
 Rectangle {
-    id:root
+    id: root
     implicitWidth: parent?parent.width:800
     implicitHeight: parent?parent.height:600
     color: "#eaeef1"
@@ -38,6 +38,9 @@ Rectangle {
     // 模型上传类型
     property int stlUploadType: 1
 
+
+    // 定义信号：PatientIndex.qml 统一负责后端交互
+    signal updateRequest(int stlType, string stlFileUrl)
 
     ColumnLayout {
         anchors.fill: parent
@@ -219,6 +222,23 @@ Rectangle {
         }
         Item {
             Layout.fillHeight: true
+        }
+    }
+
+    // 文件选择 ==========
+    FileDialog {
+        id: fileDialog
+        title: qsTr("选择STL文件")
+        nameFilters: ["STL文件 (*.stl)", "所有文件 (*)"]
+        onAccepted: {
+            // 去除【file:///】前缀
+            var localPath = String(selectedFile).replace(/^file:\/{3}/, '')
+            console.log("Selected localPath（clearn file:///）:", localPath)
+            // 发出信号
+            updateRequest(root.stlUploadType, localPath)
+        }
+        onRejected: {
+            console.log("File selection canceled")
         }
     }
 

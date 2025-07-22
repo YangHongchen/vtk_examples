@@ -65,5 +65,6 @@
         <file>assets/icons/patient/mandible.svg</file>
         <file>assets/icons/patient/skull.svg</file>
         <file>assets/icons/patient/upper_jaw.svg</file>
+        <file>qml/_components/WMessageBox.qml</file>
     </qresource>
 </RCC>
