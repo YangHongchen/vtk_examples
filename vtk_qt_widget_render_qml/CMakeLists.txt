@@ -136,6 +136,12 @@ add_executable(${PROJECT_NAME}
     src/mesure/MesureRecordDao.h
     src/mesure/MesureRecordDao.cpp
     src/mesure/MesureRecordStatusEnum.h
+    src/mesure/MesureRecordController.h
+    src/mesure/MesureRecordController.cpp
+    src/mesure/MesureRecordModel.h
+    src/mesure/MesureRecordModel.cpp
+    src/mesure/MesureRecordObject.h
+    src/mesure/MesureRecordObject.cpp
 )
 
 #-----------------------------------------------------------------------------
