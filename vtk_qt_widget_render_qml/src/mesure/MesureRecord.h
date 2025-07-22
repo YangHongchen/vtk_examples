@@ -4,6 +4,7 @@
 #include "src/database/export.h"
 #include <QxOrm.h>
 #include <QMap>
+#include "src/mesure/MesureRecordStatusEnum.h"
 
 class MESURE_RECORD_H MesureRecord {
   public:
@@ -20,6 +21,15 @@ class MESURE_RECORD_H MesureRecord {
     QDateTime createTime;   // 创建日期
     QDateTime updateTime;   // 创建日期
     int deleted = 0;        // 软删除标识：0未删除，1已删除
+
+    // 创建枚举值到中文描述的映射
+    QMap<MesureRecordStatusEnum, QString> statusToChineseMap =
+    {
+        {MesureRecordStatusEnum::Pending, "待处理"},
+        {MesureRecordStatusEnum::Testing, "检测中"},
+        {MesureRecordStatusEnum::Completed, "已完成"},
+        {MesureRecordStatusEnum::Cancelled, "已取消"}
+    };
 };
 
 QX_REGISTER_HPP_MESURE_RECORD (MesureRecord, qx::trait::no_base_class_defined, 1)
