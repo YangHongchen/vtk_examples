@@ -94,9 +94,16 @@ add_executable(${PROJECT_NAME}
     src/database/export.h
     src/database/BaseDao.h
     src/database/BaseDao.cpp
+    # CONFIG
+    src/config/ConfigManager.h
+    src/config/ConfigManager.cpp
     # 通用函数
     src/common/EncryptUtils.h
     src/common/EncryptUtils.cpp
+    src/common/PatientFileTransferManager.h
+    src/common/PatientFileTransferManager.cpp
+    src/common/FileUtils.h
+    src/common/FileUtils.cpp
     # 自定义组件（目前是vtk效果测试组件）
     CustomWidget.h
     CustomWidget.cpp
@@ -121,7 +128,6 @@ add_executable(${PROJECT_NAME}
     src/user/User.cpp
     src/user/UserDao.h
     src/user/UserDao.cpp
-
 )
 
 #-----------------------------------------------------------------------------
@@ -133,6 +139,7 @@ qt_add_qml_module(${PROJECT_NAME}
     VERSION 1.0
     RESOURCE_PREFIX "/qml"  # 显式指定资源前缀
 )
+
 
 #-----------------------------------------------------------------------------
 # 资源文件处理（替代qt_add_resources）
@@ -175,7 +182,6 @@ vtk_module_autoinit(
     TARGETS ${PROJECT_NAME}
     MODULES ${VTK_LIBRARIES}
 )
-
 
 include(GNUInstallDirs)
 install(TARGETS ${PROJECT_NAME}
