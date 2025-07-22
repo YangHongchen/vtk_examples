@@ -10,7 +10,7 @@ Rectangle {
     id:root
     implicitWidth: parent?parent.width:800
     implicitHeight: parent?parent.height:600
-    color: "purple"
+    color: "#eaeef1"
 
     property int patientId : 0
     property string fullName: ""

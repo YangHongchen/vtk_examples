@@ -4,8 +4,9 @@ import QtQuick.Layouts
 
 import "../_components"
 
-Item {
+Rectangle{
     id: patientPage
+    color: "#eaeef1"
 
     property int _margin: 16 // 设置边距，相对于父元素
     property bool loaded: false
@@ -24,20 +25,21 @@ Item {
 
     RowLayout {
         anchors.fill: parent
-        spacing: 0
+        spacing: 2
         // 左侧: 病人列表 ---------------
         Rectangle {
             id: patient_left_rect
             width: 320
             Layout.fillHeight: true
-            color: "#ced6e0"
-
+            color: "#eaeef1"
             ColumnLayout {
                 anchors.fill: parent
+                spacing: 1
+
+                // 顶部标题 & 新增按钮 ==========
                 Rectangle {
                     Layout.fillWidth: true
                     height: 60
-                    color: '#f4fce3'
                     RowLayout {
                         anchors.fill: parent
                         Item {
@@ -67,11 +69,11 @@ Item {
                     }
                 }
 
-                // 搜索框
+                // 搜索框 ==========
                 Rectangle {
                     Layout.fillWidth: true
                     height: 60
-                    color: '#f4fce3'
+                    // color: '#f4fce3'
                     WTextField {
                         id: txt_keyword
                         width: parent.width - _margin * 2
@@ -85,10 +87,11 @@ Item {
                         }
                     }
                 }
+
+                // 病例列表 ==========
                 Rectangle {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
-                    color: '#fff4e6'
                     ListView {
                         id: listView
                         width: parent.width
@@ -112,19 +115,9 @@ Item {
                                 }
                             }
                         }
-
-                        Component.onCompleted: {
-                            // 页面加载，自动更新数据
-                            // PatientManager.getPatientList("",1, 20);
-                        }
                     }
                 }
 
-                Rectangle {
-                    Layout.fillWidth: true
-                    height: 20
-                    color: 'red'
-                }
             }
         }
 
@@ -133,7 +126,7 @@ Item {
             id: border_center
             width: 1
             Layout.fillHeight: true
-            color: "#f0f2f5"
+            color: "#eaeef1"
         }
 
         // 右侧: 病人详情 ---------------
@@ -141,7 +134,6 @@ Item {
             id: patient_right_rect
             Layout.fillWidth: true
             Layout.fillHeight: true
-            color: "#ffeaa7"
 
             PatientDetail {
                 id: dt
@@ -152,6 +144,10 @@ Item {
                 birthDay: patientPage.currentPatiant?patientPage.currentPatiant.birthDay: "0000-00-00"
                 phone: patientPage.currentPatiant?patientPage.currentPatiant.phone: "-"
                 lastTestingTime: patientPage.currentPatiant?patientPage.currentPatiant.lastTestingTime:  "0000-00-00"
+                x:16
+                y:16
+                width:  parent.width - 16*2
+                height: parent.height-16*2
             }
         }
     }
