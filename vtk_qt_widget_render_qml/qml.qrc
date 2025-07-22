@@ -66,5 +66,6 @@
         <file>assets/icons/patient/skull.svg</file>
         <file>assets/icons/patient/upper_jaw.svg</file>
         <file>qml/_components/WMessageBox.qml</file>
+        <file>qml/_components/WImagePreview.qml</file>
     </qresource>
 </RCC>

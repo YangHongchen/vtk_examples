@@ -2,17 +2,16 @@ import QtQuick 2.15
 import QtQuick.Layouts
 import QtQuick.Dialogs
 
-
 import "../_widgets"
 import "../_components"
 
 Rectangle {
     id: root
-    implicitWidth: parent?parent.width:800
-    implicitHeight: parent?parent.height:600
+    implicitWidth: parent ? parent.width : 800
+    implicitHeight: parent ? parent.height : 600
     color: "#eaeef1"
 
-    property int patientId : 0
+    property int patientId: 0
     property string fullName: ""
     property int gender: 2
     property string birthDay: "0000-00-00"
@@ -20,7 +19,7 @@ Rectangle {
     property int age: 0
 
     // 最近检查日期
-    property string lastTestingTime:  "0000-00-00"
+    property string lastTestingTime: "0000-00-00"
 
     // 上传模型(模型URL)
     property string mandibleStlUrl: ''
@@ -34,13 +33,24 @@ Rectangle {
     property string upperDentitionStlThumbnailUrl: ''
     property string lowerDentitionStlThumbnailUrl: ''
 
-
     // 模型上传类型
     property int stlUploadType: 1
 
-
     // 定义信号：PatientIndex.qml 统一负责后端交互
     signal updateRequest(int stlType, string stlFileUrl)
+
+
+    function normalizeFilePath(path) {
+        if (path.startsWith("file:///")) {
+            return path
+        } else if (path.startsWith("file://")) {
+            return "file:///" + path.substring(7) // 修正双斜杠为三斜杠
+        } else if (path.startsWith("C:/") || path.startsWith("/")) {
+            return "file:///" + path
+        } else {
+            return ""
+        }
+    }
 
     ColumnLayout {
         anchors.fill: parent
@@ -66,7 +76,8 @@ Rectangle {
                         Layout.alignment: Qt.AlignVCenter | Qt.AlignLeft
                     }
                     WImageSvg {
-                        source:root.gender === 0 ? "qrc:/assets/icons/women.svg" : "qrc:/assets/icons/men.svg"
+                        source: root.gender
+                                === 0 ? "qrc:/assets/icons/women.svg" : "qrc:/assets/icons/men.svg"
                         width: 14
                         height: 14
                         color: root.gender === 0 ? "#F98981" : "#4080FF"
@@ -93,7 +104,7 @@ Rectangle {
                     Text {
                         // 病人信息_电话
                         id: patient_info_phone
-                        text: "电话: " +  root.phone || '未设定'
+                        text: "电话: " + root.phone || '未设定'
                         font.pixelSize: 14
                         color: "#9FA7BD"
                         Layout.alignment: Qt.AlignVCenter | Qt.AlignLeft
@@ -140,9 +151,14 @@ Rectangle {
                     uploadType: 1
                     previewUrl: root.maxillaStlThumbnailUrl
                     enabled: root.patientId > 0
-                    onClicked: (stlType, _previewUrl)=> {
-                        root.stlUploadType = stlType
-                    }
+                    onClicked: (stlType, _previewUrl) => {
+                                   root.stlUploadType = stlType
+                                   if (previewUrl.length > 5) {
+                                       previewer.source = normalizeFilePath(previewUrl)
+                                       previewer.title = qsTr("上颌模型-图片预览")
+                                       previewer.open()
+                                   }
+                               }
                 }
                 UploadButton {
                     icon: "qrc:/assets/icons/patient/mandible.svg"
@@ -150,21 +166,29 @@ Rectangle {
                     uploadType: 2
                     previewUrl: root.mandibleStlThumbnailUrl
                     enabled: root.patientId > 0
-                    onClicked: (stlType, _previewUrl)=> {
-                        root.stlUploadType = stlType
-
-                    }
+                    onClicked: (stlType, _previewUrl) => {
+                                   root.stlUploadType = stlType
+                                   if (previewUrl.length > 5) {
+                                       previewer.source = normalizeFilePath(previewUrl)
+                                       previewer.title = qsTr("下颌模型-图片预览")
+                                       previewer.open()
+                                   }
+                               }
                 }
                 UploadButton {
                     icon: "qrc:/assets/icons/patient/upper_jaw.svg"
                     toolTip: qsTr("上传上牙列模型")
                     uploadType: 3
-                    previewUrl:root.upperDentitionStlThumbnailUrl
+                    previewUrl: root.upperDentitionStlThumbnailUrl
                     enabled: root.patientId > 0
-                    onClicked: (stlType, _previewUrl)=> {
-                        root.stlUploadType = stlType
-
-                    }
+                    onClicked: (stlType, _previewUrl) => {
+                                   root.stlUploadType = stlType
+                                   if (previewUrl.length > 5) {
+                                       previewer.source =normalizeFilePath(previewUrl)
+                                       previewer.title = qsTr("上牙列模型-图片预览")
+                                       previewer.open()
+                                   }
+                               }
                 }
                 UploadButton {
                     icon: "qrc:/assets/icons/patient/jaw.svg"
@@ -173,14 +197,19 @@ Rectangle {
                     previewUrl: root.lowerDentitionStlThumbnailUrl
                     enabled: root.patientId > 0
                     onClicked: (stlType, _previewUrl) => {
-                        root.stlUploadType = stlType
-                    }
+                                   root.stlUploadType = stlType
+                                   if (previewUrl.length > 5) {
+                                       previewer.source =normalizeFilePath(previewUrl)
+                                       previewer.title = qsTr("下牙列模型-图片预览")
+                                       previewer.open()
+                                   }
+                               }
                 }
 
                 WButton {
                     text: qsTr("开始测量")
                     enabled: root.patientId > 0
-                    onClicked:  {
+                    onClicked: {
 
                     }
                 }
@@ -230,6 +259,18 @@ Rectangle {
                         text: "下牙列模型：" + root.lowerDentitionStlUrl
                     }
 
+                    Text {
+                        text: "上颌模型（预览图）：" + root.maxillaStlThumbnailUrl
+                    }
+                    Text {
+                        text: "下颌模型（预览图）：" + root.mandibleStlThumbnailUrl
+                    }
+                    Text {
+                        text: "上牙列模型（预览图）：" + root.upperDentitionStlThumbnailUrl
+                    }
+                    Text {
+                        text: "下牙列模型（预览图）：" + root.lowerDentitionStlThumbnailUrl
+                    }
                 }
             }
         }
@@ -255,7 +296,10 @@ Rectangle {
         }
     }
 
+    // 图片预览组件
+    WImagePreview {
+        id: previewer
+        parent: Overlay.overlay
+        source: "https://iknow-pic.cdn.bcebos.com/a71ea8d3fd1f4134679182fe371f95cad0c85e88"
+    }
 }
-
-
-

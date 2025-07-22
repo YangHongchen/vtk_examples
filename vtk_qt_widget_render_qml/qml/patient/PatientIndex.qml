@@ -20,8 +20,7 @@ Rectangle {
     Component.onCompleted: {
         if (!patientPage.loaded) {
             patientPage.loaded = true
-            PatientController.loadPatientsConditional(patientPage.keyword, 1,
-                                                      20)
+            PatientController.loadPatientsConditional(patientPage.keyword, 1,20)
         }
     }
 
