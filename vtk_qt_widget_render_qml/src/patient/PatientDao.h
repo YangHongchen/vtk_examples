@@ -47,6 +47,15 @@ class PatientDao : public BaseDao<Patient> {
      */
     PaginationResult<Patient> findPatientsCondition (const QString keyword = "", int page = 1, int pageSize = 10);
 
+    /**
+     * @brief updateStlPreview
+     * @param patientId
+     * @param previewUrl
+     * @param stlType
+     * @return
+     */
+    bool updateStlPreview (long patientId, const QString &previewUrl, int stlType);
+
     void test();
 
 

@@ -50,6 +50,11 @@ class PatientController : public QObject {
     // 基于stl文件生成缩略图
     void startStlThumbnailGeneration (const QString& stlPath, int stlType);
 
+
+  public slots:
+    // 更新数据库缩略图
+    void onThumbnailGenerated (const QString &previewUrl, int stlType);
+
   private:
     static PatientController *s_instance;
 

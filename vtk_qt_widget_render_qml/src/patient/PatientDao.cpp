@@ -71,6 +71,38 @@ PaginationResult<Patient> PatientDao::findPatientsCondition (const QString keywo
     return findAllPagination (query, page, pageSize);
 }
 
+bool PatientDao::updateStlPreview (long patientId, const QString &previewUrl, int stlType)
+{
+    // 更新现有记录
+    if (patientId < 1)
+    {
+        qDebug() << "patientId 为空";
+        return false;
+    }
+    if (stlType < 1 || stlType > 4)
+    {
+        qDebug() << "STL 类型错误";
+        return false;
+    }
+    auto patient = findOnePatientById (patientId);
+    if (patient == nullptr)
+    {
+        qDebug() << "未查询到对应的病例";
+        return false;
+    }
+    switch (stlType)
+    {
+    case 1: patient->maxillaStlThumbnailUrl = previewUrl; break;
+    case 2: patient->mandibleStlThumbnailUrl = previewUrl; break;
+    case 3: patient->upperDentitionStlThumbnailUrl = previewUrl; break;
+    case 4: patient->lowerDentitionStlThumbnailUrl = previewUrl; break;
+    default:
+        qWarning() << "不支持的 STL 类型:" << stlType;
+        return false;
+    }
+    return update (*patient);
+}
+
 void PatientDao::test()
 {
     qDebug() << "test";

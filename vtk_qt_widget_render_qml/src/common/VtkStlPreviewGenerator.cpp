@@ -129,25 +129,25 @@ bool VtkStlPreviewGenerator::generatePreview (const std::string &stlFilePath, co
     light->SetIntensity (0.8);
     renderer->AddLight (light);
 
-    // 背景网格 - 固定大小固定位置
-    auto plane = vtkSmartPointer<vtkPlaneSource>::New();
-    double gridHalfSize = 200.0;
-    double gridZ = -20.0;
+    // // 背景网格 - 固定大小固定位置
+    // auto plane = vtkSmartPointer<vtkPlaneSource>::New();
+    // double gridHalfSize = 200.0;
+    // double gridZ = -20.0;
 
-    plane->SetOrigin (-gridHalfSize, -gridHalfSize, gridZ);
-    plane->SetPoint1 (gridHalfSize, -gridHalfSize, gridZ);
-    plane->SetPoint2 (-gridHalfSize, gridHalfSize, gridZ);
-    plane->SetResolution (80, 80);
+    // plane->SetOrigin (-gridHalfSize, -gridHalfSize, gridZ);
+    // plane->SetPoint1 (gridHalfSize, -gridHalfSize, gridZ);
+    // plane->SetPoint2 (-gridHalfSize, gridHalfSize, gridZ);
+    // plane->SetResolution (80, 80);
 
-    auto gridMapper = vtkSmartPointer<vtkPolyDataMapper>::New();
-    gridMapper->SetInputConnection (plane->GetOutputPort());
+    // auto gridMapper = vtkSmartPointer<vtkPolyDataMapper>::New();
+    // gridMapper->SetInputConnection (plane->GetOutputPort());
 
-    auto gridActor = vtkSmartPointer<vtkActor>::New();
-    gridActor->SetMapper (gridMapper);
-    gridActor->GetProperty()->SetRepresentationToWireframe();
-    gridActor->GetProperty()->SetColor (0.3, 0.3, 0.35);
-    gridActor->GetProperty()->SetLineWidth (0.5);
-    gridActor->GetProperty()->LightingOff();
+    // auto gridActor = vtkSmartPointer<vtkActor>::New();
+    // gridActor->SetMapper (gridMapper);
+    // gridActor->GetProperty()->SetRepresentationToWireframe();
+    // gridActor->GetProperty()->SetColor (0.3, 0.3, 0.35);
+    // gridActor->GetProperty()->SetLineWidth (0.5);
+    // gridActor->GetProperty()->LightingOff();
 
     // 5. 渲染窗口
     auto renderWindow = vtkSmartPointer<vtkRenderWindow>::New();
@@ -156,7 +156,7 @@ bool VtkStlPreviewGenerator::generatePreview (const std::string &stlFilePath, co
     renderWindow->SetOffScreenRendering (1);
 
     renderer->AddActor (actor);
-    renderer->AddActor (gridActor);
+    // renderer->AddActor (gridActor);
     renderer->ResetCamera();
     renderWindow->Render();
 

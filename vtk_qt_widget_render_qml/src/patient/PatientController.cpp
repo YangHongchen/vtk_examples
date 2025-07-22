@@ -163,19 +163,33 @@ void PatientController::startStlThumbnailGeneration (const QString &stlPath, int
     QThread* workerThread = new QThread (this);
     VtkStlPreviewGenerator* generator = new VtkStlPreviewGenerator();
     generator->moveToThread (workerThread);
-    // 基于上传类型，当前病例生成缩略图存放路径
+
+    // 开启子线程，生成stl的缩略图
     connect (workerThread, &QThread::started, [generator, stlPath, stlType]()
     {
         generator->startGenerate (stlPath, 1024, stlType);
     });
-    connect (generator, &VtkStlPreviewGenerator::thumbnailReady, this, [workerThread,
-             generator ] (const QString & imagePath, int stlType)
-    {
-        qDebug() << "生成的缩略图路径：" << imagePath << ", 模型类型：stlType=" << stlType;
-        workerThread->quit();
-    });
+
+    // 缩略图生成完毕 → 主线程处理数据库更新
+    connect (generator, &VtkStlPreviewGenerator::thumbnailReady, this, &PatientController::onThumbnailGenerated);
+
+    // 清理线程资源
+    connect (generator, &VtkStlPreviewGenerator::thumbnailReady, workerThread, &QThread::quit);
     connect (workerThread, &QThread::finished, generator, &QObject::deleteLater);
     connect (workerThread, &QThread::finished, workerThread, &QObject::deleteLater);
+
     workerThread->start();
+}
+
+void PatientController::onThumbnailGenerated (const QString &previewUrl, int stlType)
+{
+    qDebug() << "主线程执行更新生成缩略图到数据库：previewUrl" << previewUrl << stlType;
+    PatientObject* patient = m_model->currentPatient();
+    bool updateRet = m_patientDao->updateStlPreview (patient->id(), previewUrl, stlType);
+    if (updateRet)
+    {
+        qDebug() << "更新缩略图成功，刷新当前病例！ oooooooooo";
+        selectPatient (m_model->currentPatient()->id(), true);
+    }
 }
 
