@@ -172,15 +172,6 @@ Rectangle {
                                          url, true, type)
                                  }
             }
-
-            WButton {
-                theme: WButton.Warning
-                text: qsTr("测试消息提醒")
-                onClicked: {
-                    console.log("测试消息提醒组件")
-                    notify.success("xxxxxxxx")
-                }
-            }
         }
     }
 

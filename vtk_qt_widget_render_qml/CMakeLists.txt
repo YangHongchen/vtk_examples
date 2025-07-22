@@ -52,7 +52,7 @@ link_directories(${QXORM_LIB_DIR})
 add_definitions(-D_BUILDING_USER)
 add_definitions(-D_BUILDING_DEVICE)
 add_definitions(-D_BUILDING_PATIENT)
-add_definitions(-D_BUILDING_MEDICAL_TESTING)
+add_definitions(-D_BUILDING_MESURE_RECORD)
 add_definitions(-D_BUILDING_MEDICAL_TESTING_STEP)
 add_definitions(-D_BUILDING_MEDICAL_TESTING_DATA)
 add_definitions(-D_BUILDING_HARDWARE)
@@ -130,6 +130,12 @@ add_executable(${PROJECT_NAME}
     src/user/User.cpp
     src/user/UserDao.h
     src/user/UserDao.cpp
+    # 测量记录
+    src/mesure/MesureRecord.h
+    src/mesure/MesureRecord.cpp
+    src/mesure/MesureRecordDao.h
+    src/mesure/MesureRecordDao.cpp
+    src/mesure/MesureRecordStatusEnum.h
 )
 
 #-----------------------------------------------------------------------------

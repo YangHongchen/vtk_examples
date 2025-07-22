@@ -246,7 +246,6 @@ Rectangle {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
                     spacing: 0
-
                     Text {
                         text: "上颌模型：" + root.maxillaStlUrl
                     }
