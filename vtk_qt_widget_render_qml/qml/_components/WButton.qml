@@ -10,6 +10,8 @@ Control {
     property int sizePreset: WButton.Medium
     property int customWidth: 0
     property int customHeight: 0
+    property int iconWidth: 16
+    property int iconHeight: 16
 
     implicitWidth: {
         switch(sizePreset) {
@@ -30,6 +32,7 @@ Control {
         default: return customHeight > 0 ? customHeight : 40
         }
     }
+
 
     // ====================== 主题样式 ======================
     enum Theme { Default, Primary, Success, Warning, Danger }
@@ -117,8 +120,8 @@ Control {
             // 图标
             Image {
                 id: icon
-                width: 16
-                height: 16
+                width: root.iconWidth
+                height: root.iconHeight
                 source: root.iconSource
                 visible: root.iconSource  !== "" && !root.loading
                 anchors.verticalCenter:  parent.verticalCenter

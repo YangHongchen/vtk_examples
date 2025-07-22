@@ -59,7 +59,7 @@ Rectangle {
                         id: patient_info_name
                         text: root.fullName || '未设定'
                         font.pixelSize: 20
-                        color: ThemeManager.textNormal
+                        color: "#1A2133"
                         Layout.alignment: Qt.AlignVCenter | Qt.AlignLeft
                     }
                     WImageSvg {
@@ -81,7 +81,7 @@ Rectangle {
                         id: patient_info_id
                         text: "ID: " + root.patientId
                         font.pixelSize: 14
-                        color: ThemeManager.textGray
+                        color: "#9FA7BD"
                         Layout.alignment: Qt.AlignVCenter | Qt.AlignLeft
                         onTextChanged: {
 
@@ -92,7 +92,7 @@ Rectangle {
                         id: patient_info_phone
                         text: "电话: " +  root.phone || '未设定'
                         font.pixelSize: 14
-                        color: ThemeManager.textGray
+                        color: "#9FA7BD"
                         Layout.alignment: Qt.AlignVCenter | Qt.AlignLeft
                     }
                     Text {
@@ -100,7 +100,7 @@ Rectangle {
                         id: patient_info_birth
                         text: "出生日期: " + root.birthDay || "0000-00-00"
                         font.pixelSize: 14
-                        color: ThemeManager.textGray
+                        color: "#9FA7BD"
                         Layout.alignment: Qt.AlignVCenter | Qt.AlignLeft
                     }
                     Text {
@@ -108,7 +108,7 @@ Rectangle {
                         id: patient_info_check_date
                         text: "最近检查日期: " + root.lastTestingTime || "0000-00-00"
                         font.pixelSize: 14
-                        color: ThemeManager.textGray
+                        color: "#9FA7BD"
                         Layout.alignment: Qt.AlignVCenter | Qt.AlignLeft
                     }
                 }
@@ -203,7 +203,7 @@ Rectangle {
                         text: qsTr("检测记录")
                         font.pixelSize: 16
                         font.weight: 500
-                        color: ThemeManager.textNormal
+                        color: "#1A2133"
                         anchors.verticalCenter: parent.verticalCenter
                     }
                 }

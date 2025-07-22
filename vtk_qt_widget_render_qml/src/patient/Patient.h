@@ -1,78 +1,12 @@
 #ifndef PATIENT_H
 #define PATIENT_H
 #include "src/database/export.h"
-// #include <QObject>
 
+/**
+ * @brief 病例数据库表模型类
+ * （QxORM写法，不建议集成QObject以及其他复杂的逻辑）
+ */
 class PATIENT_DLL_EXPORT Patient {
-    // Q_OBJECT
-
-    // // 使用 MEMBER 自动绑定属性
-    // Q_PROPERTY(long id MEMBER id NOTIFY idChanged)
-    // Q_PROPERTY(QString firstName MEMBER firstName NOTIFY firstNameChanged)
-    // Q_PROPERTY(QString lastName MEMBER lastName NOTIFY lastNameChanged)
-    // Q_PROPERTY(QString fullName MEMBER fullName NOTIFY fullNameChanged)
-    // Q_PROPERTY(int gender MEMBER gender NOTIFY genderChanged)
-    // Q_PROPERTY(QString code MEMBER code NOTIFY codeChanged)
-    // Q_PROPERTY(QDateTime birthday MEMBER birthday NOTIFY birthdayChanged)
-    // Q_PROPERTY(QString technician MEMBER technician NOTIFY technicianChanged)
-    // Q_PROPERTY(QString email MEMBER email NOTIFY emailChanged)
-    // Q_PROPERTY(QString phone MEMBER phone NOTIFY phoneChanged)
-    // Q_PROPERTY(QString country MEMBER country NOTIFY countryChanged)
-    // Q_PROPERTY(QString province MEMBER province NOTIFY provinceChanged)
-    // Q_PROPERTY(QString city MEMBER city NOTIFY cityChanged)
-    // Q_PROPERTY(QString street MEMBER street NOTIFY streetChanged)
-    // Q_PROPERTY(QString address MEMBER address NOTIFY addressChanged)
-    // Q_PROPERTY(QString labels MEMBER labels NOTIFY labelsChanged)
-    // Q_PROPERTY(QString comments MEMBER comments NOTIFY commentsChanged)
-    // Q_PROPERTY(QString avatar MEMBER avatar NOTIFY avatarChanged)
-    // Q_PROPERTY(QDateTime createTime MEMBER createTime NOTIFY createTimeChanged)
-    // Q_PROPERTY(QDateTime updateTime MEMBER updateTime NOTIFY updateTimeChanged)
-    // Q_PROPERTY(QDateTime lastTestingTime MEMBER lastTestingTime NOTIFY lastTestingTimeChanged)
-    // Q_PROPERTY(int deleted MEMBER deleted NOTIFY deletedChanged)
-    // Q_PROPERTY(int status MEMBER status NOTIFY statusChanged)
-    // Q_PROPERTY(QString maxillaStlUrl MEMBER maxillaStlUrl NOTIFY maxillaStlUrlChanged)
-    // Q_PROPERTY(QString maxillaStlThumbnailUrl MEMBER maxillaStlThumbnailUrl NOTIFY maxillaStlThumbnailUrlChanged)
-    // Q_PROPERTY(QString mandibleStlUrl MEMBER mandibleStlUrl NOTIFY mandibleStlUrlChanged)
-    // Q_PROPERTY(QString mandibleStlThumbnailUrl MEMBER mandibleStlThumbnailUrl NOTIFY mandibleStlThumbnailUrlChanged)
-    // Q_PROPERTY(QString upperDentitionStlUrl MEMBER upperDentitionStlUrl NOTIFY upperDentitionStlUrlChanged)
-    // Q_PROPERTY(QString upperDentitionStlThumbnailUrl MEMBER upperDentitionStlThumbnailUrl NOTIFY upperDentitionStlThumbnailUrlChanged)
-    // Q_PROPERTY(QString lowerDentitionStlUrl MEMBER lowerDentitionStlUrl NOTIFY lowerDentitionStlUrlChanged)
-    // Q_PROPERTY(QString lowerDentitionStlThumbnailUrl MEMBER lowerDentitionStlThumbnailUrl NOTIFY lowerDentitionStlThumbnailUrlChanged)
-
-  signals:
-    // 所有属性的变更信号
-    void idChanged();
-    void firstNameChanged();
-    void lastNameChanged();
-    void fullNameChanged();
-    void genderChanged();
-    void codeChanged();
-    void birthdayChanged();
-    void technicianChanged();
-    void emailChanged();
-    void phoneChanged();
-    void countryChanged();
-    void provinceChanged();
-    void cityChanged();
-    void streetChanged();
-    void addressChanged();
-    void labelsChanged();
-    void commentsChanged();
-    void avatarChanged();
-    void createTimeChanged();
-    void updateTimeChanged();
-    void lastTestingTimeChanged();
-    void deletedChanged();
-    void statusChanged();
-    void maxillaStlUrlChanged();
-    void maxillaStlThumbnailUrlChanged();
-    void mandibleStlUrlChanged();
-    void mandibleStlThumbnailUrlChanged();
-    void upperDentitionStlUrlChanged();
-    void upperDentitionStlThumbnailUrlChanged();
-    void lowerDentitionStlUrlChanged();
-    void lowerDentitionStlThumbnailUrlChanged();
-
   public:
     Patient() : id (0) { }
     virtual ~Patient() { }

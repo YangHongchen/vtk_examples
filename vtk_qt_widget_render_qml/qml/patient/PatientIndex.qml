@@ -115,7 +115,7 @@ Item {
 
                         Component.onCompleted: {
                             // 页面加载，自动更新数据
-                            PatientManager.getPatientList("",1, 20);
+                            // PatientManager.getPatientList("",1, 20);
                         }
                     }
                 }
@@ -148,7 +148,7 @@ Item {
                 patientId: patientPage.currentPatiant?patientPage.currentPatiant.id: "0"
                 fullName: patientPage.currentPatiant?patientPage.currentPatiant.fullName: "-"
                 gender: patientPage.currentPatiant?patientPage.currentPatiant.gender: 2
-                age: patientPage.currentPatiant?patientPage.currentPatiant.age: 0
+                // age: patientPage.currentPatiant?patientPage.currentPatiant.age: 0
                 birthDay: patientPage.currentPatiant?patientPage.currentPatiant.birthDay: "0000-00-00"
                 phone: patientPage.currentPatiant?patientPage.currentPatiant.phone: "-"
                 lastTestingTime: patientPage.currentPatiant?patientPage.currentPatiant.lastTestingTime:  "0000-00-00"

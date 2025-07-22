@@ -128,7 +128,7 @@ Item {
                     Layout.preferredWidth: 72
                     model: ListModel {
                         Component.onCompleted: {
-                            for (let i = datePicker.currentYear - 80; i <= datePicker.currentYear + 50; ++i)
+                            for (let i = datePicker.currentYear - 80; i <= datePicker.currentYear; ++i)
                                 append({ text: i })
                         }
                     }

@@ -4,6 +4,9 @@
 #include "src/patient/Patient.h"
 #include <QRegularExpression>
 
+/**
+ * @brief 病例数据库操作Dao
+ */
 class PatientDao : public BaseDao<Patient> {
   public:
     explicit PatientDao() = default;

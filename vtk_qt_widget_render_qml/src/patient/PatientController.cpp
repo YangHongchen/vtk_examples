@@ -24,16 +24,6 @@ PatientController::~PatientController()
 
 bool PatientController::validateForm (const QVariantMap &formData)
 {
-
-    // {"id":0,"firstName":"22","lastName":"22","gender":0,"phone":"13345453456","birthDay":"2025-07-09"}
-
-    qDebug() << "firstName" << formData["firstName"].toString();
-    qDebug() << "lastName" << formData["lastName"].toString();
-    qDebug() << "gender" << formData["gender"].toInt();
-    qDebug() << "birthDay" << formData["birthDay"].toString();
-    qDebug() << "phone" << formData["phone"].toString();
-
-
     return !formData["firstName"].toString().isEmpty()
            && !formData["lastName"].toString().isEmpty()
            && !formData["birthDay"].toString().isEmpty()
@@ -85,8 +75,6 @@ void PatientController::selectPatient (long patientId)
 
 bool PatientController::submitPatientFormData (const QVariantMap &formData)
 {
-    qDebug() << "提交病例表单数据";
-
     // 数据校验
     if (!validateForm (formData))
     {
@@ -94,7 +82,6 @@ bool PatientController::submitPatientFormData (const QVariantMap &formData)
         emit error (500, "表单数据校验失败");
         return false;
     }
-
     // 转换数据
     Patient patient;
     int id = (formData["id"].toInt());
@@ -128,7 +115,6 @@ bool PatientController::submitPatientFormData (const QVariantMap &formData)
         {
             qWarning() << "新增病例数据，失败";
         }
-        qWarning() << "chenggong2";
         emit success();
     }
 

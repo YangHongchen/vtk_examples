@@ -9,6 +9,9 @@
 #include "src/patient/Patient.h"
 #include "src/patient/PatientObject.h"
 
+/**
+ * @brief 病例管理数据展示类 PatientModel
+ */
 class PatientModel : public QAbstractListModel {
     Q_OBJECT
 

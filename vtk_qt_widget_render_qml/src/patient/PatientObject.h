@@ -6,6 +6,10 @@
 #include <QDateTime>
 #include "src/patient/Patient.h"
 
+/**
+ * @brief 病例数据模型封装类 PatientObject
+ * （主要用于映射表数据类，供QML访问属性）
+ */
 class PatientObject : public QObject {
     Q_OBJECT
 

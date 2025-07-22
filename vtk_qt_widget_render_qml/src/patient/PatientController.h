@@ -7,12 +7,14 @@
 #include "src/patient/PatientModel.h"
 #include "src/patient/PatientDao.h"
 
+/**
+ * @brief 病例管理操作类 PatientController
+ */
 class PatientController : public QObject {
     Q_OBJECT
     Q_PROPERTY (PatientModel* model READ model CONSTANT)
 
   public:
-
     // 病例列表(查询)
     Q_INVOKABLE void loadPatientsConditional (const QString keyword = "", int page = 1, int pageSize = 10);
     // 切换病例
@@ -21,8 +23,13 @@ class PatientController : public QObject {
     Q_INVOKABLE bool submitPatientFormData (const QVariantMap &formData);
 
   public:
+    // 析构函数
+    ~PatientController();
+
+    // 获取单例实例对象
     static PatientController *instance();
 
+    // 基于Controller访问model入口
     PatientModel *model() const
     {
         return m_model;
@@ -34,10 +41,10 @@ class PatientController : public QObject {
     void success();
 
   private:
+    // 构造函数私有化（单例）Cont
     explicit PatientController (QObject *parent = nullptr);
-    ~PatientController();
 
-    // 校验病例表单提交的数据
+    // 校验病例表单数据
     bool validateForm (const QVariantMap &formData);
 
   private:

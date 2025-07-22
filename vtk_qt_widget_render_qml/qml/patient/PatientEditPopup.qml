@@ -103,7 +103,6 @@ Popup {
                         }
                         WTextField {
                             id: txt_lastName
-
                             Layout.preferredWidth: 300 // 固定输入框宽度
                             placeholderText: language === "zh_CN" ? "请输入姓" : "Enter first name"
                             validator: "none"
@@ -143,24 +142,21 @@ Popup {
                         RowLayout {
                             spacing: 15
                             Layout.preferredWidth: 300
-
                             ButtonGroup {
                                 id: genderGroup
                                 onCheckedButtonChanged: {
-                                    // 更新绑定属性
-                                    if (checkedButton) {
-                                        selectedGender = checkedButton.text
-                                    }
+                                    // // 更新绑定属性
+                                    // if (checkedButton) {
+                                    //     selectedGender = checkedButton.text
+                                    // }
                                 }
                             }
-
                             RadioButton {
                                 id: maleRadio
                                 text: language === "zh_CN" ? "男" : "Male"
                                 property int value: 1
                                 checked: gender = value
-                                onCheckedChanged: if (checked)
-                                                      gender = value
+                                onCheckedChanged: if (checked) {gender = value }
                                 ButtonGroup.group: genderGroup
                             }
                             RadioButton {
@@ -168,17 +164,15 @@ Popup {
                                 text: language === "zh_CN" ? "女" : "Female"
                                 property int value: 0
                                 checked: gender = value
-                                onCheckedChanged: if (checked)
-                                                      gender = value
+                                onCheckedChanged: if (checked) { gender = value }
                                 ButtonGroup.group: genderGroup
                             }
                             RadioButton {
                                 id: otherRadio
-                                text: language === "zh_CN" ? "其他" : "Other"
+                                text: language === "zh_CN" ? "保密" : "Unknow"
                                 property int value: 2
                                 checked: gender = value
-                                onCheckedChanged: if (checked)
-                                                      gender = value
+                                onCheckedChanged: if (checked) {gender = value}
                                 ButtonGroup.group: genderGroup
                             }
                         }
@@ -200,19 +194,28 @@ Popup {
                                 id: txt_birthDay
                                 Layout.preferredWidth: 300 // 固定输入框宽度
                                 placeholderText: language === "zh_CN" ? "选择生日" : "Select date"
+                                Layout.alignment: Qt.AlignLeft | Qt.AlignTop
                             }
-                            Button {
+                            WButton {
                                 id: btnDateToggle
-                                width: 32
-                                height: 32
-                                text: "📅"
+                                implicitWidth: 40
+                                implicitHeight: 40
+                                borderRadius: 0
+                                iconSource: "qrc:/assets/icons/calendar-fill.svg"
+                                iconWidth: 32
+                                iconHeight: 32
+                                flat:true  // 禁用阴影效果
                                 onClicked: datePicker.visible = true
+                                Layout.alignment: Qt.AlignLeft | Qt.AlignTop
                             }
                             WDatePicker {
                                 id: datePicker
-                                anchorItem: birthDayField
+                                anchorItem: txt_birthDay
                                 onDateSelected: date => txt_birthDay.text = date
                                 visible: false
+                            }
+                            Item{
+                                Layout.fillWidth: true
                             }
                         }
                     }
