@@ -7,18 +7,26 @@
 #include "src/patient/PatientModel.h"
 #include "src/patient/PatientObject.h"
 
-
 class MesureRecordController : public QObject {
     Q_OBJECT
 
   public:
+    // 获取静态实例
     static MesureRecordController *instance();
+
     // 析构函数
     ~MesureRecordController();
+
+  public:
+
+    /**
+     * @brief loadMesureRecords
+     */
+    Q_INVOKABLE void loadMesureRecords (int page, int pageSize);
+
   private:
+    // 单例隐藏构造函数
     explicit MesureRecordController (QObject *parent = nullptr);
-
-
 
   signals:
 
@@ -38,7 +46,6 @@ class MesureRecordController : public QObject {
     PatientModel *m_patientModel = nullptr;
     PatientObject *m_currentPatient = nullptr;
     long m_currentPatientId = 0;
-
 };
 
 #endif // MESURE_RECORD_CONTROLLER_H

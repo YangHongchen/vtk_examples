@@ -135,7 +135,6 @@ Item {
                                     Layout.preferredWidth: modelData.width || 150
                                     Layout.fillWidth: index === columns.length - 1
                                     height: parent.height
-
                                     backgroundColor: "transparent"
                                     textColor: textColor
                                     // fontPixelSize: fontSize

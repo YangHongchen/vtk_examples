@@ -136,41 +136,50 @@ Rectangle {
         }
 
         // 右侧: 病人详情 ---------------
-        Rectangle {
+        Item {
             id: patient_right_rect
             Layout.fillWidth: true
             Layout.fillHeight: true
-            PatientDetail {
-                id: dt
-                patientId: patientPage.currentPatiant ? patientPage.currentPatiant.id : "0"
-                fullName: patientPage.currentPatiant ? patientPage.currentPatiant.fullName : "-"
-                gender: patientPage.currentPatiant ? patientPage.currentPatiant.gender : 2
-                birthDay: patientPage.currentPatiant ? patientPage.currentPatiant.birthDay : "0000-00-00"
-                phone: patientPage.currentPatiant ? patientPage.currentPatiant.phone : "-"
-                lastTestingTime: patientPage.currentPatiant ? patientPage.currentPatiant.lastTestingTime : "0000-00-00"
 
-                // 上传模型(模型URL)
-                maxillaStlUrl: patientPage.currentPatiant ? patientPage.currentPatiant.maxillaStlUrl : "00"
-                mandibleStlUrl: patientPage.currentPatiant ? patientPage.currentPatiant.mandibleStlUrl : "11"
-                upperDentitionStlUrl: patientPage.currentPatiant ? patientPage.currentPatiant.upperDentitionStlUrl : "22"
-                lowerDentitionStlUrl: patientPage.currentPatiant ? patientPage.currentPatiant.lowerDentitionStlUrl : "33"
+            ColumnLayout {
+                anchors.fill: parent
+                Layout.margins: 16
+                spacing: 1
 
-                // 上传模型(缩略图URL)
-                mandibleStlThumbnailUrl: patientPage.currentPatiant ? patientPage.currentPatiant.mandibleStlThumbnailUrl : ""
-                maxillaStlThumbnailUrl: patientPage.currentPatiant ? patientPage.currentPatiant.maxillaStlThumbnailUrl : ""
-                upperDentitionStlThumbnailUrl: patientPage.currentPatiant ? patientPage.currentPatiant.upperDentitionStlThumbnailUrl : ""
-                lowerDentitionStlThumbnailUrl: patientPage.currentPatiant ? patientPage.currentPatiant.lowerDentitionStlThumbnailUrl : ""
+                // 病例详情 =========
+                PatientDetail {
+                    id: dt
+                    patientId: patientPage.currentPatiant ? patientPage.currentPatiant.id : "0"
+                    fullName: patientPage.currentPatiant ? patientPage.currentPatiant.fullName : "-"
+                    gender: patientPage.currentPatiant ? patientPage.currentPatiant.gender : 2
+                    birthDay: patientPage.currentPatiant ? patientPage.currentPatiant.birthDay : "0000-00-00"
+                    phone: patientPage.currentPatiant ? patientPage.currentPatiant.phone : "-"
+                    lastTestingTime: patientPage.currentPatiant ? patientPage.currentPatiant.lastTestingTime : "0000-00-00"
+                    // 上传模型(模型URL)
+                    maxillaStlUrl: patientPage.currentPatiant ? patientPage.currentPatiant.maxillaStlUrl : "00"
+                    mandibleStlUrl: patientPage.currentPatiant ? patientPage.currentPatiant.mandibleStlUrl : "11"
+                    upperDentitionStlUrl: patientPage.currentPatiant ? patientPage.currentPatiant.upperDentitionStlUrl : "22"
+                    lowerDentitionStlUrl: patientPage.currentPatiant ? patientPage.currentPatiant.lowerDentitionStlUrl : "33"
+                    // 上传模型(缩略图URL)
+                    mandibleStlThumbnailUrl: patientPage.currentPatiant ? patientPage.currentPatiant.mandibleStlThumbnailUrl : ""
+                    maxillaStlThumbnailUrl: patientPage.currentPatiant ? patientPage.currentPatiant.maxillaStlThumbnailUrl : ""
+                    upperDentitionStlThumbnailUrl: patientPage.currentPatiant ? patientPage.currentPatiant.upperDentitionStlThumbnailUrl : ""
+                    lowerDentitionStlThumbnailUrl: patientPage.currentPatiant ? patientPage.currentPatiant.lowerDentitionStlThumbnailUrl : ""
+                    x: 16
+                    y: 16
+                    Layout.fillWidth: true
+                    height: 230
+                    // 发起上传请求
+                    onUpdateRequest: (type, url) => {
+                        PatientFileTransferManager.copyFileToUploadDirectory(url, true, type)
+                    }
+                }
 
-                x: 16
-                y: 16
-                width: parent.width - 16 * 2
-                height: parent.height - 16 * 2
-                // 发起上传请求
-                onUpdateRequest: (type, url) => {
-                                     console.log('文件上传请求：type, url:', type, url)
-                                     PatientFileTransferManager.copyFileToUploadDirectory(
-                                         url, true, type)
-                                 }
+                // 病例检测记录
+                PatientMesureRecords {
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                }
             }
         }
     }
@@ -195,6 +204,7 @@ Rectangle {
         function onCurrentPatientIdChanged(id) {
             console.log('病例的id变化：', id)
             currentPatientId = id
+
         }
         // 监听到病例变化
         function onCurrentPatientChanged(patientObj) {
@@ -208,14 +218,12 @@ Rectangle {
         target: PatientFileTransferManager
         // 文件上传完成
         function onFileUploadCompleted(filePath, stlType) {
-            // console.log('--> 文件上传完成:', filePath, stlType)
             PatientController.updatePatientStl(filePath, stlType)
             notify.success('文件上传完成')
         }
         // 文件上传失败
         function onFileUploadFailed(errorMessage) {
-            console.log('--> 文件上传失败:', errorMessage)
-            notify.error('文件上传失败')
+            notify.error('文件上传失败:' + errorMessage)
         }
         // 上传状态变更
         function onUploadingStateChanged(uploading) {

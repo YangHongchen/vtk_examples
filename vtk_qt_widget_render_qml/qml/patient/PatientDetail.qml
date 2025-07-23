@@ -8,10 +8,7 @@ import "../_components"
 
 Rectangle {
     id: root
-    implicitWidth: parent ? parent.width : 800
-    implicitHeight: parent ? parent.height : 600
     color: "#eaeef1"
-
     property int patientId: 0
     property string fullName: ""
     property int gender: 2
@@ -40,7 +37,7 @@ Rectangle {
     // 定义信号：PatientIndex.qml 统一负责后端交互
     signal updateRequest(int stlType, string stlFileUrl)
 
-
+    // 格式化图片路径：解决图片加载失败的问题
     function normalizeFilePath(path) {
         if (path.startsWith("file:///")) {
             return path
@@ -57,7 +54,7 @@ Rectangle {
         anchors.fill: parent
         spacing: 1
 
-        // 病人信息
+        // 病人信息 ===========
         Rectangle {
             id: patient_info
             Layout.fillWidth: true
@@ -133,12 +130,10 @@ Rectangle {
             }
         }
 
-        // 病人模型上传 =======================
+        // 病人模型上传 ===========
         Rectangle {
             Layout.fillWidth: true
             height: 128
-            border.width: 1
-            border.color: '#EBEEF5'
             radius: 0
             RowLayout {
                 anchors.fill: parent
@@ -220,63 +215,10 @@ Rectangle {
             }
         }
 
-        // 病人检测记录表格
-        Rectangle {
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            ColumnLayout {
-                anchors.fill: parent
-                spacing: 0
-                // 表头
-                Item {
-                    id: table_header
-                    Layout.fillWidth: true
-                    height: 56
-                    Text {
-                        text: qsTr("检测记录")
-                        font.pixelSize: 16
-                        font.weight: 500
-                        color: "#1A2133"
-                        anchors.verticalCenter: parent.verticalCenter
-                    }
-                }
-                // 表数据
-                ColumnLayout {
-                    id: table_content
-                    Layout.fillWidth: true
-                    Layout.fillHeight: true
-                    spacing: 0
-                    Text {
-                        text: "上颌模型：" + root.maxillaStlUrl
-                    }
-                    Text {
-                        text: "下颌模型：" + root.mandibleStlUrl
-                    }
-                    Text {
-                        text: "上牙列模型：" + root.upperDentitionStlUrl
-                    }
-                    Text {
-                        text: "下牙列模型：" + root.lowerDentitionStlUrl
-                    }
-
-                    Text {
-                        text: "上颌模型（预览图）：" + root.maxillaStlThumbnailUrl
-                    }
-                    Text {
-                        text: "下颌模型（预览图）：" + root.mandibleStlThumbnailUrl
-                    }
-                    Text {
-                        text: "上牙列模型（预览图）：" + root.upperDentitionStlThumbnailUrl
-                    }
-                    Text {
-                        text: "下牙列模型（预览图）：" + root.lowerDentitionStlThumbnailUrl
-                    }
-                }
-            }
-        }
         Item {
             Layout.fillHeight: true
         }
+
     }
 
     // 文件选择 ==========
