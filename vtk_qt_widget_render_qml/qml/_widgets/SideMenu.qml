@@ -7,7 +7,7 @@ import "../_components"
 // 左侧菜单
 Item {
     id: sideMenu
-    implicitWidth:240
+    implicitWidth: 240
     implicitHeight: 800
 
     // 定义页面切换信号
@@ -15,6 +15,20 @@ Item {
 
     // 当前菜单所在页面
     property string currentPage: "patient/PatientIndex.qml"
+
+    // 正确的订阅
+    Component.onCompleted: {
+        EventBus.subscribeJS("userLoggedIn", function(eventName, payload) {
+                  console.log("收到登录事件:", eventName)
+                  console.log("数据:", payload)
+              })
+    }
+
+
+
+    Component.onDestruction: {
+        EventBus.eventEmitted.disconnect(handleEvent)
+    }
 
     // 数据模型
     ListModel {
@@ -143,7 +157,8 @@ Item {
                     hoverEnabled: true // 启用悬停检测
                     onClicked: {
                         if (model.isParent && model.hasChild) {
-                            activeMenuAndParent(index + 1, model.page) // 默认选中第一个子菜单
+                            activeMenuAndParent(index + 1,
+                                                model.page) // 默认选中第一个子菜单
                             return
                         } else {
                             // 默认选中子菜单或无子菜单的一级菜单

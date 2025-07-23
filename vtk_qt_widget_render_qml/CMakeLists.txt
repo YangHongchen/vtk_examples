@@ -64,6 +64,7 @@ find_package(Qt6 6.5 REQUIRED COMPONENTS
     Core
     Quick
     QuickWidgets
+    Qml
     Widgets
     Network
     Sql
@@ -106,6 +107,10 @@ add_executable(${PROJECT_NAME}
     src/common/FileUtils.cpp
     src/common/VtkStlPreviewGenerator.h
     src/common/VtkStlPreviewGenerator.cpp
+    # 事件总线
+    src/common/EventBus.h
+    src/common/EventBus.cpp
+
     # 自定义组件（目前是vtk效果测试组件）
     CustomWidget.h
     CustomWidget.cpp
@@ -176,6 +181,7 @@ target_link_libraries(${PROJECT_NAME}
         Qt6::Pdf
         Qt6::Network
         Qt6::Positioning
+        Qt6::Qml
 )
 
 # ✅ 链接 QxOrm 库

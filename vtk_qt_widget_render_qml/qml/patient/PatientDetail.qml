@@ -37,6 +37,9 @@ Rectangle {
     // 定义信号：PatientIndex.qml 统一负责后端交互
     signal updateRequest(int stlType, string stlFileUrl)
 
+    // 跳转到检测页面
+    signal jumpToMesure();
+
     // 格式化图片路径：解决图片加载失败的问题
     function normalizeFilePath(path) {
         if (path.startsWith("file:///")) {
@@ -151,13 +154,13 @@ Rectangle {
                     previewUrl: root.maxillaStlThumbnailUrl
                     enabled: root.patientId > 0
                     onClicked: (stlType, _previewUrl) => {
-                                   root.stlUploadType = stlType
-                                   if (previewUrl.length > 5) {
-                                       previewer.source = normalizeFilePath(previewUrl)
-                                       previewer.title = qsTr("上颌模型-图片预览")
-                                       previewer.open()
-                                   }
-                               }
+                        root.stlUploadType = stlType
+                        if (previewUrl.length > 5) {
+                            previewer.source = normalizeFilePath(previewUrl)
+                            previewer.title = qsTr("上颌模型-图片预览")
+                            previewer.open()
+                        }
+                   }
                 }
                 UploadButton {
                     icon: "qrc:/assets/icons/patient/mandible.svg"
@@ -166,13 +169,13 @@ Rectangle {
                     previewUrl: root.mandibleStlThumbnailUrl
                     enabled: root.patientId > 0
                     onClicked: (stlType, _previewUrl) => {
-                                   root.stlUploadType = stlType
-                                   if (previewUrl.length > 5) {
-                                       previewer.source = normalizeFilePath(previewUrl)
-                                       previewer.title = qsTr("下颌模型-图片预览")
-                                       previewer.open()
-                                   }
-                               }
+                        root.stlUploadType = stlType
+                        if (previewUrl.length > 5) {
+                            previewer.source = normalizeFilePath(previewUrl)
+                            previewer.title = qsTr("下颌模型-图片预览")
+                            previewer.open()
+                        }
+                    }
                 }
                 UploadButton {
                     icon: "qrc:/assets/icons/patient/upper_jaw.svg"
@@ -181,13 +184,13 @@ Rectangle {
                     previewUrl: root.upperDentitionStlThumbnailUrl
                     enabled: root.patientId > 0
                     onClicked: (stlType, _previewUrl) => {
-                                   root.stlUploadType = stlType
-                                   if (previewUrl.length > 5) {
-                                       previewer.source =normalizeFilePath(previewUrl)
-                                       previewer.title = qsTr("上牙列模型-图片预览")
-                                       previewer.open()
-                                   }
-                               }
+                        root.stlUploadType = stlType
+                        if (previewUrl.length > 5) {
+                           previewer.source =normalizeFilePath(previewUrl)
+                           previewer.title = qsTr("上牙列模型-图片预览")
+                           previewer.open()
+                        }
+                    }
                 }
                 UploadButton {
                     icon: "qrc:/assets/icons/patient/jaw.svg"
@@ -196,13 +199,13 @@ Rectangle {
                     previewUrl: root.lowerDentitionStlThumbnailUrl
                     enabled: root.patientId > 0
                     onClicked: (stlType, _previewUrl) => {
-                                   root.stlUploadType = stlType
-                                   if (previewUrl.length > 5) {
-                                       previewer.source =normalizeFilePath(previewUrl)
-                                       previewer.title = qsTr("下牙列模型-图片预览")
-                                       previewer.open()
-                                   }
-                               }
+                        root.stlUploadType = stlType
+                        if (previewUrl.length > 5) {
+                            previewer.source =normalizeFilePath(previewUrl)
+                            previewer.title = qsTr("下牙列模型-图片预览")
+                            previewer.open()
+                        }
+                    }
                 }
 
                 WButton {
@@ -212,6 +215,19 @@ Rectangle {
                     iconSource: "qrc:/assets/icons/play_circle.svg"
                     onClicked: {
                         console.log("TODO: 开始检测");
+                        let stlUploadComplete = root.maxillaStlUrl.length > 0
+                            && root.mandibleStlUrl.length > 0
+                            && root.upperDentitionStlUrl.length > 0
+                            && root.lowerDentitionStlUrl.length > 0
+                        if(stlUploadComplete) {
+                            // 切换界面
+                            // sideMenu.test()
+                            console.log('切换页面。。。')
+                            root.jumpToMesure()
+                        } else {
+                            // 打开确认弹窗
+                            warnDialog.open()
+                        }
                     }
                 }
                 Item {
@@ -223,7 +239,6 @@ Rectangle {
         Item {
             Layout.fillHeight: true
         }
-
     }
 
     // 文件选择 ==========
@@ -251,5 +266,20 @@ Rectangle {
         anchors.centerIn: parent
         width: 1000
         height: 700
+    }
+
+
+    MessageDialog {
+        id: warnDialog
+        title: "确认"
+        text: "暂未上传模型文件，是否继续检测?"
+        buttons: MessageDialog.Ok | MessageDialog.Cancel
+        onButtonClicked: function(button) {
+            if (button === MessageDialog.Ok) {
+                sideMenu.jumpTo('detection/Index.qml')
+            } else {
+                console.log('取消检测。')
+            }
+        }
     }
 }

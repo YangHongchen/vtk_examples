@@ -176,6 +176,14 @@ Rectangle {
                     onUpdateRequest: (type, url) => {
                         PatientFileTransferManager.copyFileToUploadDirectory(url, true, type)
                     }
+                    // 开始检测：跳转到检测页面
+                    onJumpToMesure:  {
+                        EventBus.publish("userLoggedIn", JSON.stringify({
+                                                                            userId: 42,
+                                                                            username: "泓晨",
+                                                                            role: "admin"
+                                                                        }))
+                    }
                 }
 
                 // 检测记录 ==========

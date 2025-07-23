@@ -11,6 +11,8 @@
 #include "src/mesure/MesureRecordController.h"
 #include "src/mesure/MesureRecordModel.h"
 
+#include "src/common/EventBus.h"
+
 class VtkRenderWidget;  // 前置声明自定义Widget
 
 class MainWindow : public QMainWindow {
@@ -39,6 +41,7 @@ class MainWindow : public QMainWindow {
     PatientFileTransferManager *m_patientFileTransferManager = nullptr;
     MesureRecordController *m_mesureRecordController = nullptr;
     MesureRecordModel *m_mesureRecordModel = nullptr;
+
 
 };
 

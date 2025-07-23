@@ -5,6 +5,9 @@
 #include <QLabel>
 #include <QQmlContext>
 
+// 引入事件总线
+#include "src/common/EventBus.h"
+
 // MainWindow.cpp
 MainWindow::MainWindow (QWidget *parent) : QMainWindow (parent)
 {
@@ -36,6 +39,9 @@ void MainWindow::addQmlPage (const QString &qmlPath)
 
     // 设置上下文属性（必须在 setSource 之前）
     auto *viewContext = view->rootContext();
+
+    // 事件总线 -----
+    viewContext->setContextProperty ("EventBus", &EventBus::instance());
 
     if (m_patientFileTransferManager)
         viewContext->setContextProperty ("PatientFileTransferManager", m_patientFileTransferManager);
@@ -73,6 +79,9 @@ void MainWindow::setupUI()
 
     // 1. 左侧导航 (QML实现)
     m_navWidget = new QQuickWidget (this);
+    // 事件总线注入到导航页面
+    m_navWidget->rootContext()->setContextProperty ("EventBus", &EventBus::instance());
+
     m_navWidget->setSource (QUrl ("qrc:/qml/_widgets/SideMenu.qml"));
     m_navWidget->setResizeMode (QQuickWidget::SizeRootObjectToView);
     QObject *navQmlRoot = m_navWidget->rootObject();

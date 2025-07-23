@@ -3,7 +3,6 @@
         <file>qml/Analysis.qml</file>
         <file>qml/Dashboard.qml</file>
         <file>qml/Settings.qml</file>
-        <file>qml/NavigationMenu.qml</file>
         <file>qml/LoginPage.qml</file>
         <file>assets/icons/dashboard.svg</file>
         <file>assets/menu/bingli.svg</file>
