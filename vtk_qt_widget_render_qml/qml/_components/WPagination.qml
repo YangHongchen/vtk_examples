@@ -25,7 +25,7 @@ Item {
             // 显示总记录数
             Text {
                 text: "共 " + root.totalCount + " 条数据"
-                color:ThemeManager.textNormal
+                color:"#1A2133"
                 font.pixelSize: 14
                 Layout.alignment: Qt.AlignHCenter
             }
@@ -36,7 +36,7 @@ Item {
                 height: 40
                 Button {
                     text: "<"
-                    palette.buttonText: ThemeManager.textNormal
+                    palette.buttonText: "#1A2133"
                     anchors.fill: parent
                     enabled: root.currentPage > 1
                     font.pixelSize: 14

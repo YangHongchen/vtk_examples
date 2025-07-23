@@ -19,7 +19,7 @@ Rectangle {
 
     // 检测记录 =========
     property int page:1
-    property int pageSize: 15
+    property int pageSize: 12
 
     Component.onCompleted: {
         if (!patientPage.loaded) {
@@ -196,16 +196,19 @@ Rectangle {
                                     anchors.fill: parent
                                     model: MesureRecordModel
                                     columns: [
+                                        { title: "编号", prop: "id", width: 100 },
                                         { title: "医生", prop: "doctor", width: 100 },
                                         { title: "状态", prop: "status" },
-                                        { title: "备注", prop: "comments" }
+                                        { title: "备注", prop: "comments" },
+                                        { title: "检测时间", prop: "createTime" },
+                                        { title: "报告", prop: "reportUrl", width: 100 }
                                     ]
                                 }
                             }
                             // 分页组件 ========
                             Rectangle {
                                 Layout.fillWidth: true
-                                height: 80
+                                height: 68
                                 WPagination {
                                     pageCount: MesureRecordModel.pageCount
                                     totalCount: MesureRecordModel.totalCount

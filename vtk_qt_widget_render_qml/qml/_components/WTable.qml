@@ -6,8 +6,8 @@ import "./table"
 
 Item {
     id: root
-    width: 800
-    height: 600
+    // width: 800
+    // height: 600
 
     // === 公共属性 ===
     property alias model: tableRepeater.model
@@ -38,8 +38,8 @@ Item {
     Rectangle {
         anchors.fill: parent
         color: "white"
-        border.color: borderColor
-        border.width: 1
+        // border.color: borderColor
+        // border.width: 1
         clip: true
 
         ColumnLayout {
