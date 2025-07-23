@@ -7,6 +7,7 @@
 #include "src/user/UserDao.h"
 #include "src/patient/Patient.h"
 #include "src/mesure/MesureRecord.h"
+#include "src/mesure_step/MesureStep.h"
 
 void Database::init()
 {
@@ -50,6 +51,14 @@ void Database::init()
             qCritical() << "创建 MesureRecord 表失败:" << daoError.text();
         else
             qDebug() << "MesureRecord 表创建成功";
+
+        // 初始化 MesureStep 表  ==========
+        daoError = qx::dao::create_table<MesureStep> (&db);
+        if (daoError.type() != QSqlError::NoError)
+            qCritical() << "创建 MesureStep 表失败:" << daoError.text();
+        else
+            qDebug() << "MesureStep 表创建成功";
+
 
     }
     catch (const std::exception& e)

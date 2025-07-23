@@ -53,7 +53,7 @@ add_definitions(-D_BUILDING_USER)
 add_definitions(-D_BUILDING_DEVICE)
 add_definitions(-D_BUILDING_PATIENT)
 add_definitions(-D_BUILDING_MESURE_RECORD)
-add_definitions(-D_BUILDING_MEDICAL_TESTING_STEP)
+add_definitions(-D_BUILDING_MESURE_STEP)
 add_definitions(-D_BUILDING_MEDICAL_TESTING_DATA)
 add_definitions(-D_BUILDING_HARDWARE)
 
@@ -149,6 +149,10 @@ add_executable(${PROJECT_NAME}
     src/mesure/MesureRecordObject.cpp
     src/mesure/MesureWidget.h
     src/mesure/MesureWidget.cpp
+
+    # 测量步骤
+    src/mesure_step/MesureStep.h
+    src/mesure_step/MesureStep.cpp
 
     # 通用上下颌骨渲染组件
     src/model/VtkJawRendererWidget.h
