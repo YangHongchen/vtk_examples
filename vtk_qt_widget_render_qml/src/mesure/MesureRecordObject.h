@@ -17,7 +17,9 @@ class MesureRecordObject : public QObject {
     Q_PROPERTY (QDateTime createTime READ createTime WRITE setCreateTime NOTIFY createTimeChanged)
     Q_PROPERTY (QDateTime updateTime READ updateTime WRITE setUpdateTime NOTIFY updateTimeChanged)
     Q_PROPERTY (int deleted READ deleted WRITE setDeleted NOTIFY deletedChanged)
-
+    // 格式化后的时间字符串（可供 QML Text 等控件绑定）
+    Q_PROPERTY (QString formattedCreateTime READ formattedCreateTime NOTIFY createTimeChanged)
+    Q_PROPERTY (QString formattedUpdateTime READ formattedUpdateTime NOTIFY updateTimeChanged)
   public:
     explicit MesureRecordObject (QObject *parent = nullptr);
     explicit MesureRecordObject (const MesureRecord &record, QObject *parent = nullptr);
@@ -46,6 +48,17 @@ class MesureRecordObject : public QObject {
 
     Q_INVOKABLE void from (const MesureRecord &record);
     Q_INVOKABLE MesureRecord toRecord() const;
+
+    // 格式化时间输出
+    QString formattedCreateTime() const
+    {
+        return m_createTime.toLocalTime().toString ("yyyy-MM-dd HH:mm:ss");
+    }
+
+    QString formattedUpdateTime() const
+    {
+        return m_updateTime.toLocalTime().toString ("yyyy-MM-dd HH:mm:ss");
+    }
 
   signals:
     void idChanged();

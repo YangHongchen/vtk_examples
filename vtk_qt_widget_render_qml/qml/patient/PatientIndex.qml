@@ -204,7 +204,7 @@ Rectangle {
                                         { title: "医生", prop: "doctor", width: 100 },
                                         { title: "状态", prop: "status" },
                                         { title: "备注", prop: "comments" },
-                                        { title: "检测时间", prop: "createTime" },
+                                        { title: "检测时间", prop: "formattedCreateTime" },
                                         { title: "报告", prop: "reportUrl", width: 100 }
                                     ]
                                 }
