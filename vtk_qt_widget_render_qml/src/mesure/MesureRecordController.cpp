@@ -62,5 +62,15 @@ void MesureRecordController::loadMesureRecords (long patientId, int page, int pa
     qDebug() << "分页结果，TOTAL:" << total;
     qDebug() << "分页结果，PAGE_COUNT:" << pageCount;
     qDebug() << "分页结果，PAGE_ROWS：" << dataList.size();
+    m_model->clear();
+    m_model->setPage (page);
+    m_model->setPageSize (pageSize);
+    m_model->setTotal (total);
+    // QList指针 转 Vector
+    auto vector = m_mesureRecordDao->sharedPtrListToVector (dataList);
+
+    qDebug() << "分页结果，vector.size：" << vector.size();
+
+    m_model->setRecords (vector);
 }
 

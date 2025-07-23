@@ -68,5 +68,7 @@
         <file>qml/_components/WMessageBox.qml</file>
         <file>qml/_components/WImagePreview.qml</file>
         <file>qml/patient/PatientMesureRecords.qml</file>
+        <file>qml/_components/WTable2.qml</file>
+        <file>qml/_components/WPagination.qml</file>
     </qresource>
 </RCC>

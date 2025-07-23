@@ -3,59 +3,31 @@ import QtQuick 2.15
 import "../_components"
 
 Rectangle {
-
+    id:root
     color: "#eaeef1"
-    // 表格数据模型
-    ListModel {
-        id: employeeModel
-        ListElement {
-            name: "张三"
-            age: 28
-            department: "研发部"
-            salary: 15000
-        }
-        ListElement {
-            name: "李四"
-            age: 32
-            department: "市场部"
-            salary: 12000
-        }
-        ListElement {
-            name: "王五"
-            age: 25
-            department: "设计部"
-            salary: 10000
-        }
-    }
+    property var tableModel         // ✅ 可传入任意模型对象（如 QAbstractListModel 实例）
 
     // 表格列定义
     property var tableColumns: [
           {
-            "title": "姓名",
-            "prop": "name",
+            "title": "编号",
+            "prop": "id",
             "width": 120
         }, {
-            "title": "年龄",
-            "prop": "age",
+            "title": "医生",
+            "prop": "doctor",
             "width": 80
         }, {
-            "title": "部门",
-            "prop": "department",
+            "title": "备注",
+            "prop": "comments",
             "width": 150
-        }, {
-            "title": "薪资",
-            "width": 150,
-            "render": function (row) {
-                return "¥" + row.salary.toFixed(2)
-            }
-        }
+        },
     ]
     WTable {
         anchors.fill: parent
-        model: employeeModel
-        columns: tableColumns
-        stripe: true
-
+        model:  root.tableModel
+        columns: root.tableColumns
+        stripe: false
         onRowClicked: function (index, row) {
             console.log(" 点击了第", index + 1, "行，姓名:", row.name)
         }

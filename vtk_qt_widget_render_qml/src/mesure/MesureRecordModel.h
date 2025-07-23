@@ -35,7 +35,6 @@ class MesureRecordModel: public QAbstractListModel {
     QVariant data (const QModelIndex &index, int role) const override;
     QHash<int, QByteArray> roleNames() const override;
 
-
     void addRecord (const MesureRecord &record);
     void setRecords (const QVector<MesureRecord> &records);
     void clear();
@@ -43,7 +42,7 @@ class MesureRecordModel: public QAbstractListModel {
     MesureRecordObject *currentRecord() const;
     void setCurrentRecord (const MesureRecord &record);
 
-    Q_INVOKABLE MesureRecord get (int index) const;
+    Q_INVOKABLE QVariant  get (int index) const;
 
     // 分页
     Q_INVOKABLE int totalCount() const;
@@ -54,6 +53,13 @@ class MesureRecordModel: public QAbstractListModel {
     Q_INVOKABLE void previousPage();
     Q_INVOKABLE void setPage (int page);
     Q_INVOKABLE void setPageSize (int size);
+
+  public:
+
+    void setTotal (int total)
+    {
+        m_totalCount = total;
+    }
 
   signals:
     void dataUpdated();
@@ -71,6 +77,7 @@ class MesureRecordModel: public QAbstractListModel {
 
     int m_pageSize = 20;
     int m_currentPage = 0;
+    int m_totalCount = 0;
 
     MesureRecordObject *m_currentRecord = nullptr;
 

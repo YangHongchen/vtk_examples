@@ -181,12 +181,54 @@ Rectangle {
                 Rectangle {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
-                    // 病例检测记录
-                    PatientMesureRecords {
-                        x:16
-                        width: parent.width - 16*2
-                        height: parent.height
-                    }
+                    // // 病例检测记录
+                    // PatientMesureRecords {
+                    //     x:16
+                    //     width: parent.width - 16 * 2
+                    //     height: parent.height
+                    //     tableModel: MesureRecordModel
+                    // }
+
+                    // Column {
+                    //     Text {
+                    //       text: "分页Page" + MesureRecordModel.currentPage
+                    //     }
+                    //     Text {
+                    //       text: "分页pageSize：" + MesureRecordModel.pageSize
+                    //     }
+                    //     Text {
+                    //       text: "分页totalCount：" + MesureRecordModel.totalCount
+                    //     }
+                    //     Text {
+                    //       text: "分页pageCount：" + MesureRecordModel.pageCount
+                    //     }
+                    // }
+
+                    WTable {
+                            anchors.fill: parent
+                            // model: ListModel {
+                            //     ListElement {
+                            //        doctor:"zhangsan"
+                            //        status:1
+                            //        comments:"222"
+                            //     }
+                            //     ListElement {
+                            //        doctor:"zhangsan2"
+                            //        status:1
+                            //        comments:"222"
+                            //     }
+                            // }
+
+                            model: MesureRecordModel
+
+                            columns: [
+                                { title: "医生", prop: "doctor", width: 100 },
+                                { title: "状态", prop: "status" },
+                                { title: "备注", prop: "comments" }
+                            ]
+
+
+                        }
                 }
             }
         }
@@ -213,6 +255,12 @@ Rectangle {
             console.log('$$$$ 病例的id变化：', id)
             currentPatientId = id
             MesureRecordController.loadMesureRecords(id, patientPage.page, patientPage.pageSize)
+
+            console.log("###  model.count =", MesureRecordModel.totalCount)
+            if (MesureRecordModel.get && MesureRecordModel.totalCount > 0) {
+                const row = MesureRecordModel.get(0)
+                console.log("### First row doctor:", row.doctor)
+            }
 
         }
         // 监听到病例变化

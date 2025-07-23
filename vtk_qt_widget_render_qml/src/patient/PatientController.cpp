@@ -51,12 +51,12 @@ void PatientController::loadPatientsConditional (const QString keyword, int page
     if (page < 1) page = 1;
     if (pageSize < 1) pageSize = 20;
     QString _keyword = keyword.trimmed();
+    m_model->clear();
     auto patientPaginationResult =  m_patientDao->findPatientsCondition (_keyword, page, pageSize);
     if (patientPaginationResult.total() > 0)
     {
         auto patientList = patientPaginationResult.data();
         auto patientVector = m_patientDao->sharedPtrListToVector (patientList);
-        m_model->clear();
         m_model->addPatients (patientVector);
     }
     else

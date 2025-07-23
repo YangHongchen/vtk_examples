@@ -35,22 +35,22 @@ void MainWindow::addQmlPage (const QString &qmlPath)
     QQuickView *view = new QQuickView();
 
     // 设置上下文属性（必须在 setSource 之前）
-    QQmlContext *context = view->rootContext();
+    auto *viewContext = view->rootContext();
 
     if (m_patientFileTransferManager)
-        context->setContextProperty ("PatientFileTransferManager", m_patientFileTransferManager);
+        viewContext->setContextProperty ("PatientFileTransferManager", m_patientFileTransferManager);
 
     // 病例管理 -----
     if (m_patientController)
-        context->setContextProperty ("PatientController", m_patientController);
+        viewContext->setContextProperty ("PatientController", m_patientController);
     if (m_patientModel)
-        context->setContextProperty ("PatientModel", m_patientModel);
+        viewContext->setContextProperty ("PatientModel", m_patientModel);
 
     // 检测记录 -----
     if (m_mesureRecordController)
-        context->setContextProperty ("MesureRecordController", m_mesureRecordController);
+        viewContext->setContextProperty ("MesureRecordController", m_mesureRecordController);
     if (m_mesureRecordModel)
-        context->setContextProperty ("MesureRecordModel", m_mesureRecordModel);
+        viewContext->setContextProperty ("MesureRecordModel", m_mesureRecordModel);
 
     // 加载 QML 页面
     view->setSource (QUrl (qmlPath));

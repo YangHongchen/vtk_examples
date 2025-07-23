@@ -1,4 +1,5 @@
 #include "src/mesure/MesureRecordModel.h"
+#include "src/mesure/MesureRecordObject.h"
 
 MesureRecordModel *MesureRecordModel::s_instance = nullptr;
 
@@ -66,7 +67,6 @@ void MesureRecordModel::addRecord (const MesureRecord &record)
     emit dataUpdated();
 }
 
-
 void MesureRecordModel::setRecords (const QVector<MesureRecord> &records)
 {
     beginResetModel();
@@ -74,6 +74,8 @@ void MesureRecordModel::setRecords (const QVector<MesureRecord> &records)
     updateVisible();
     endResetModel();
     emit dataUpdated();
+    emit paginationChanged();
+
 }
 
 
@@ -100,19 +102,17 @@ void MesureRecordModel::setCurrentRecord (const MesureRecord &record)
     }
 }
 
-
-MesureRecord MesureRecordModel::get (int index) const
+QVariant MesureRecordModel::get (int index) const
 {
-    if (index >= 0 && index < m_visibleRecords.size())
-        return m_visibleRecords[index];
-    return MesureRecord{};
+    if (index < 0 || index >= m_visibleRecords.size())
+        return QVariant();
+    return QVariant::fromValue (new MesureRecordObject (m_visibleRecords.at (index)));
 }
-
 
 // 分页实现 =====================
 int MesureRecordModel::totalCount() const
 {
-    return m_allRecords.size();
+    return m_totalCount;
 }
 
 int MesureRecordModel::pageSize() const
