@@ -8,7 +8,7 @@ class MESURE_STEP_DLL_EXPORT MesureStep {
   public:
     long id;
     long patientId;         // 病例Id
-    long mesuireId;   // 检测记录id
+    long mesureId;   // 检测记录id
 
     QString stepName;       // 测量步骤名称
     QString schematicUrl;   // 示意图

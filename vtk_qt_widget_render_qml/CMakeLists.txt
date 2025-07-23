@@ -153,6 +153,10 @@ add_executable(${PROJECT_NAME}
     # 测量步骤
     src/mesure_step/MesureStep.h
     src/mesure_step/MesureStep.cpp
+    src/mesure_step/MesureStepDao.h
+    src/mesure_step/MesureStepDao.cpp
+    src/mesure_step/MesureStepStatusEnum.h
+
 
     # 通用上下颌骨渲染组件
     src/model/VtkJawRendererWidget.h
@@ -168,6 +172,7 @@ qt_add_qml_module(${PROJECT_NAME}
     VERSION 1.0
     RESOURCE_PREFIX "/qml"  # 显式指定资源前缀
 )
+
 
 #-----------------------------------------------------------------------------
 # 资源文件处理（替代qt_add_resources）
