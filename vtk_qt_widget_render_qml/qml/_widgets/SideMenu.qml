@@ -18,16 +18,10 @@ Item {
 
     // 正确的订阅
     Component.onCompleted: {
-        EventBus.subscribeJS("userLoggedIn", function(eventName, payload) {
-                  console.log("收到登录事件:", eventName)
-                  console.log("数据:", payload)
-              })
-    }
-
-
-
-    Component.onDestruction: {
-        EventBus.eventEmitted.disconnect(handleEvent)
+        EventBus.subscribeJS("jumpTo", function(eventName, payload) {
+            console.log("收到登录事件:", eventName)
+            console.log("数据:", payload)
+        })
     }
 
     // 数据模型
@@ -46,7 +40,7 @@ Item {
         // 检测
         ListElement {
             name: "检测"
-            page: "detection/DetectionIndex.qml"
+            page: "mesure/MesureIndex.qml"
             pageIndex: 1
             isParent: true
             expanded: false

@@ -178,11 +178,7 @@ Rectangle {
                     }
                     // 开始检测：跳转到检测页面
                     onJumpToMesure:  {
-                        EventBus.publish("userLoggedIn", JSON.stringify({
-                                                                            userId: 42,
-                                                                            username: "泓晨",
-                                                                            role: "admin"
-                                                                        }))
+                        EventBus.publish("jumpTo", "p")
                     }
                 }
 

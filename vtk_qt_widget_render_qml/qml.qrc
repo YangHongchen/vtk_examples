@@ -12,7 +12,7 @@
         <file>qml/patient/PatientIndex.qml</file>
         <file>qml/analysis/AnalysisModel.qml</file>
         <file>qml/_components/ThemeManager.qml</file>
-        <file>qml/detection/DetectionIndex.qml</file>
+        <file>qml/mesure/MesureIndex.qml</file>
         <file>qml/report/ReportIndex.qml</file>
         <file>qml/analysis/AnalysisTracks.qml</file>
         <file>qml/analysis/AnalysisAnalyze.qml</file>
