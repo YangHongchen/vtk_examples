@@ -19,8 +19,9 @@ Item {
     // 正确的订阅
     Component.onCompleted: {
         EventBus.subscribeJS("jumpTo", function(eventName, payload) {
-            console.log("收到登录事件:", eventName)
-            console.log("数据:", payload)
+            console.log("eventName:", eventName)
+            console.log("payload:", payload)
+            jumpTo(payload)
         })
     }
 
@@ -151,8 +152,7 @@ Item {
                     hoverEnabled: true // 启用悬停检测
                     onClicked: {
                         if (model.isParent && model.hasChild) {
-                            activeMenuAndParent(index + 1,
-                                                model.page) // 默认选中第一个子菜单
+                            activeMenuAndParent(index + 1, model.page) // 默认选中第一个子菜单
                             return
                         } else {
                             // 默认选中子菜单或无子菜单的一级菜单
@@ -196,7 +196,6 @@ Item {
 
     // 跳转到页面
     function jumpTo(pagePath) {
-        console.log('跳转到页面：', pagePath)
         let activeIndex = 0
         // 取消所有激活状态
         for (var i = 0; i < menuModel.count; i++) {

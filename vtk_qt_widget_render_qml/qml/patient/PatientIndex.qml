@@ -178,7 +178,7 @@ Rectangle {
                     }
                     // 开始检测：跳转到检测页面
                     onJumpToMesure:  {
-                        EventBus.publish("jumpTo", "p")
+                        EventBus.publish("jumpTo", "mesure/MesureIndex.qml")
                     }
                 }
 

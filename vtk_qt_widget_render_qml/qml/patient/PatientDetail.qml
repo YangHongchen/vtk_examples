@@ -276,7 +276,7 @@ Rectangle {
         buttons: MessageDialog.Ok | MessageDialog.Cancel
         onButtonClicked: function(button) {
             if (button === MessageDialog.Ok) {
-                sideMenu.jumpTo('detection/Index.qml')
+                root.jumpToMesure()
             } else {
                 console.log('取消检测。')
             }

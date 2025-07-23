@@ -95,7 +95,7 @@ void MainWindow::setupUI()
     // 2. 右侧内容区 (Widget实现： 这里的加载顺序，要和导航qml组件定义的pageIndex的顺序一致）
     m_contentStack = new QStackedWidget();
     addQmlPage ("qrc:/qml/patient/PatientIndex.qml");
-    addQmlPage ("qrc:/qml/detection/DetectionIndex.qml");
+    addQmlPage ("qrc:/qml/mesure/MesureIndex.qml");
     addQmlPage ("qrc:/qml/analysis/AnalysisModel.qml");
     addQmlPage ("qrc:/qml/analysis/AnalysisTracks.qml");
     addQmlPage ("qrc:/qml/analysis/AnalysisAnalyze.qml");
