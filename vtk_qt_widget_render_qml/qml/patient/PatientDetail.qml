@@ -54,81 +54,90 @@ Rectangle {
         anchors.fill: parent
         spacing: 1
 
-        // 病人信息 ===========
         Rectangle {
-            id: patient_info
             Layout.fillWidth: true
             height: 104
-            ColumnLayout {
-                anchors.fill: parent
-                spacing: 15
-                RowLayout {
-                    Layout.fillWidth: true
-                    height: 28
-                    Text {
-                        // 病人信息
-                        id: patient_info_name
-                        text: root.fullName || '未设定'
-                        font.pixelSize: 20
-                        color: "#1A2133"
-                        Layout.alignment: Qt.AlignVCenter | Qt.AlignLeft
-                    }
-                    WImageSvg {
-                        source: root.gender
-                                === 0 ? "qrc:/assets/icons/women.svg" : "qrc:/assets/icons/men.svg"
-                        width: 14
-                        height: 14
-                        color: root.gender === 0 ? "#F98981" : "#4080FF"
-                        Layout.alignment: Qt.AlignVCenter | Qt.AlignLeft
-                    }
-                }
 
-                // 病人信息 =======================
-                RowLayout {
-                    Layout.fillWidth: true
-                    height: 20
-                    spacing: 24
-                    Text {
-                        // 病人信息_ID
-                        id: patient_info_id
-                        text: "ID: " + root.patientId
-                        font.pixelSize: 14
-                        color: "#9FA7BD"
-                        Layout.alignment: Qt.AlignVCenter | Qt.AlignLeft
-                        onTextChanged: {
+              // 病人信息 ===========
+              Rectangle {
+                  id: patient_info
+                  width: parent.width - 16*2
+                  height: parent.height- 16 * 2
+                  x:16
+                  y:16
+                  ColumnLayout {
+                      anchors.fill: parent
+                      spacing: 15
+                      RowLayout {
+                          Layout.fillWidth: true
+                          height: 28
+                          Text {
+                              // 病人信息
+                              id: patient_info_name
+                              text: root.fullName || '未设定'
+                              font.pixelSize: 20
+                              color: "#1A2133"
+                              Layout.alignment: Qt.AlignVCenter | Qt.AlignLeft
+                          }
+                          WImageSvg {
+                              source: root.gender
+                                      === 0 ? "qrc:/assets/icons/women.svg" : "qrc:/assets/icons/men.svg"
+                              width: 14
+                              height: 14
+                              color: root.gender === 0 ? "#F98981" : "#4080FF"
+                              Layout.alignment: Qt.AlignVCenter | Qt.AlignLeft
+                          }
+                      }
 
-                        }
-                    }
-                    Text {
-                        // 病人信息_电话
-                        id: patient_info_phone
-                        text: "电话: " + root.phone || '未设定'
-                        font.pixelSize: 14
-                        color: "#9FA7BD"
-                        Layout.alignment: Qt.AlignVCenter | Qt.AlignLeft
-                    }
-                    Text {
-                        // 病人信息_出生日期
-                        id: patient_info_birth
-                        text: "出生日期: " + root.birthDay || "0000-00-00"
-                        font.pixelSize: 14
-                        color: "#9FA7BD"
-                        Layout.alignment: Qt.AlignVCenter | Qt.AlignLeft
-                    }
-                    Text {
-                        // 病人信息_最近检查日期
-                        id: patient_info_check_date
-                        text: "最近检查日期: " + root.lastTestingTime || "0000-00-00"
-                        font.pixelSize: 14
-                        color: "#9FA7BD"
-                        Layout.alignment: Qt.AlignVCenter | Qt.AlignLeft
-                    }
-                }
-                Item {
-                    Layout.fillHeight: true
-                }
-            }
+                      // 病人信息 =======================
+                      RowLayout {
+                          Layout.fillWidth: true
+                          height: 20
+                          spacing: 24
+                          Text {
+                              // 病人信息_ID
+                              id: patient_info_id
+                              text: "ID: " + root.patientId
+                              font.pixelSize: 14
+                              color: "#9FA7BD"
+                              Layout.alignment: Qt.AlignVCenter | Qt.AlignLeft
+                              onTextChanged: {
+
+                              }
+                          }
+                          Text {
+                              // 病人信息_电话
+                              id: patient_info_phone
+                              text: "电话: " + root.phone || '未设定'
+                              font.pixelSize: 14
+                              color: "#9FA7BD"
+                              Layout.alignment: Qt.AlignVCenter | Qt.AlignLeft
+                          }
+                          Text {
+                              // 病人信息_出生日期
+                              id: patient_info_birth
+                              text: "出生日期: " + root.birthDay || "0000-00-00"
+                              font.pixelSize: 14
+                              color: "#9FA7BD"
+                              Layout.alignment: Qt.AlignVCenter | Qt.AlignLeft
+                          }
+                          Text {
+                              // 病人信息_最近检查日期
+                              id: patient_info_check_date
+                              text: "最近检查日期: " + root.lastTestingTime || "0000-00-00"
+                              font.pixelSize: 14
+                              color: "#9FA7BD"
+                              Layout.alignment: Qt.AlignVCenter | Qt.AlignLeft
+                          }
+                      }
+                      Item {
+                          Layout.fillHeight: true
+                      }
+                  }
+              }
         }
+
+
 
         // 病人模型上传 ===========
         Rectangle {
