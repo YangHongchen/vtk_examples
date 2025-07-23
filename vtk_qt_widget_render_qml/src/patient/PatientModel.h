@@ -128,6 +128,9 @@ class PatientModel : public QAbstractListModel {
     PatientObject *m_currentPatientObject = nullptr ;
     long m_currentPatientId = 0;
 
+
+
+
 };
 
 #endif // PATIENTMODEL_H

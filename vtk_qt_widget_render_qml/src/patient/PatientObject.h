@@ -21,6 +21,7 @@ class PatientObject : public QObject {
     Q_PROPERTY (int gender READ gender WRITE setGender NOTIFY genderChanged)
     Q_PROPERTY (QString code READ code WRITE setCode NOTIFY codeChanged)
     Q_PROPERTY (QString birthDay READ birthDay WRITE setBirthDay NOTIFY birthDayChanged)
+    Q_PROPERTY (int age READ age  NOTIFY ageChanged)
     Q_PROPERTY (QString technician READ technician WRITE setTechnician NOTIFY technicianChanged)
     Q_PROPERTY (QString email READ email WRITE setEmail NOTIFY emailChanged)
     Q_PROPERTY (QString phone READ phone WRITE setPhone NOTIFY phoneChanged)
@@ -41,7 +42,7 @@ class PatientObject : public QObject {
     Q_PROPERTY (QString lastTestingTime READ lastTestingTime WRITE setLastTestingTime NOTIFY lastTestingTimeChanged)
     Q_PROPERTY (int deleted READ deleted WRITE setDeleted NOTIFY deletedChanged)
     Q_PROPERTY (int status READ status WRITE setStatus NOTIFY statusChanged)
-
+    Q_PROPERTY (QString statusCN READ statusCN NOTIFY statusChanged)
     // STL文件信息
     Q_PROPERTY (QString maxillaStlUrl READ maxillaStlUrl WRITE setMaxillaStlUrl NOTIFY maxillaStlUrlChanged)
     Q_PROPERTY (QString maxillaStlThumbnailUrl READ maxillaStlThumbnailUrl WRITE setMaxillaStlThumbnailUrl NOTIFY
@@ -110,6 +111,30 @@ class PatientObject : public QObject {
     {
         if (m_birthDay == v) return;
         m_birthDay = v; emit birthDayChanged();
+    }
+
+    int age()
+    {
+        int age = 0;
+        // 1. 转换字符串为QDate
+        QDate birthDate = QDate::fromString (m_birthDay, "yyyy-MM-dd"); // 根据实际格式调整
+        // 验证日期有效性
+        if (!birthDate.isValid())
+        {
+            qWarning() << "Invalid birth date:" << m_birthDay;
+            return age; // 返回错误码
+        }
+        // 2. 获取当前日期
+        QDate currentDate = QDate::currentDate();
+        // 3. 计算基础年龄
+        age = currentDate.year()  - birthDate.year();
+        // 4. 精确调整
+        if (currentDate.month()  < birthDate.month()  || (currentDate.month()  == birthDate.month()  &&
+                currentDate.day()  < birthDate.day()))
+        {
+            age--; // 未过生日减1岁
+        }
+        return age;
     }
 
     QString technician() const { return m_technician; }
@@ -224,6 +249,19 @@ class PatientObject : public QObject {
         m_status = v; emit statusChanged();
     }
 
+    QString statusCN()
+    {
+        QString _status = "未知";
+        switch (m_status)
+        {
+        case 1: _status = "指导治疗前"; break;
+        case 2: _status = "治疗中"; break;
+        case 3: _status = "治疗完成"; break;
+
+        }
+        return _status;
+    }
+
     QString maxillaStlUrl() const { return m_maxillaStlUrl; }
     void setMaxillaStlUrl (const QString &v)
     {
@@ -289,6 +327,7 @@ class PatientObject : public QObject {
     void genderChanged();
     void codeChanged();
     void birthDayChanged();
+    void ageChanged();
     void technicianChanged();
     void emailChanged();
     void phoneChanged();

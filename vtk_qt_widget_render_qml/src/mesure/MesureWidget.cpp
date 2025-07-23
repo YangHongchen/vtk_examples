@@ -138,7 +138,8 @@ void MesureWidget::updateQmlPatientData()
         root->setProperty ("name", m_patient->fullName());
         root->setProperty ("birthDay", m_patient->birthDay());
         root->setProperty ("gender", m_patient->gender());
-        root->setProperty ("status", m_patient->status());
+        root->setProperty ("status", m_patient->statusCN());
+        root->setProperty ("age", m_patient->age());
     }
 }
 
