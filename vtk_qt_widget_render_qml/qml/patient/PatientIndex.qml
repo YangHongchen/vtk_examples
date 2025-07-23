@@ -178,57 +178,41 @@ Rectangle {
                     }
                 }
 
+                // 检测记录 ==========
                 Rectangle {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
-                    // // 病例检测记录
-                    // PatientMesureRecords {
-                    //     x:16
-                    //     width: parent.width - 16 * 2
-                    //     height: parent.height
-                    //     tableModel: MesureRecordModel
-                    // }
-
-                    // Column {
-                    //     Text {
-                    //       text: "分页Page" + MesureRecordModel.currentPage
-                    //     }
-                    //     Text {
-                    //       text: "分页pageSize：" + MesureRecordModel.pageSize
-                    //     }
-                    //     Text {
-                    //       text: "分页totalCount：" + MesureRecordModel.totalCount
-                    //     }
-                    //     Text {
-                    //       text: "分页pageCount：" + MesureRecordModel.pageCount
-                    //     }
-                    // }
-
-                    WTable {
+                    Rectangle {
+                        width:parent.width - 16 * 2
+                        height:parent.height - 16*2
+                        x:16
+                        ColumnLayout {
                             anchors.fill: parent
-                            // model: ListModel {
-                            //     ListElement {
-                            //        doctor:"zhangsan"
-                            //        status:1
-                            //        comments:"222"
-                            //     }
-                            //     ListElement {
-                            //        doctor:"zhangsan2"
-                            //        status:1
-                            //        comments:"222"
-                            //     }
-                            // }
-
-                            model: MesureRecordModel
-
-                            columns: [
-                                { title: "医生", prop: "doctor", width: 100 },
-                                { title: "状态", prop: "status" },
-                                { title: "备注", prop: "comments" }
-                            ]
-
-
+                            // 表格组件 ========
+                            Item  {
+                                Layout.fillWidth: true
+                                Layout.fillHeight:true
+                                WTable {
+                                    anchors.fill: parent
+                                    model: MesureRecordModel
+                                    columns: [
+                                        { title: "医生", prop: "doctor", width: 100 },
+                                        { title: "状态", prop: "status" },
+                                        { title: "备注", prop: "comments" }
+                                    ]
+                                }
+                            }
+                            // 分页组件 ========
+                            Rectangle {
+                                Layout.fillWidth: true
+                                height: 80
+                                WPagination {
+                                    pageCount: MesureRecordModel.pageCount
+                                    totalCount: MesureRecordModel.totalCount
+                                }
+                            }
                         }
+                    }
                 }
             }
         }

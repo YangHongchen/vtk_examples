@@ -102,16 +102,12 @@ Rectangle {
         Text {
             id: textItem
             anchors.verticalCenter: parent.verticalCenter
-
             // 水平对齐处理
             anchors.left: horizontalAlignment === Text.AlignLeft ? parent.left : undefined
             anchors.leftMargin: horizontalAlignment === Text.AlignLeft ? 8 : 0
-
             anchors.right: horizontalAlignment === Text.AlignRight ? parent.right : undefined
             anchors.rightMargin: horizontalAlignment === Text.AlignRight ? 8 : 0
-
             anchors.horizontalCenter: horizontalAlignment === Text.AlignHCenter ? parent.horizontalCenter : undefined
-
             text: ""
             color: textColor
             font.pixelSize: fontSize

@@ -46,7 +46,7 @@ Item {
             anchors.fill: parent
             spacing: 0
 
-            // 表头
+            // 表头 ==========
             RowLayout {
                 id: headerRow
                 height: headerHeight
@@ -71,12 +71,22 @@ Item {
                 }
             }
 
-            // 表体
+            // 表体 ==========
             ScrollView {
                 id: scrollView
                 Layout.fillWidth: true
                 Layout.fillHeight: true
                 ScrollBar.vertical.policy: ScrollBar.AsNeeded
+                spacing: 0
+
+                Label {
+                    id: emptyHint
+                    anchors.centerIn:  parent
+                    text: "暂无数据"
+                    color: "#909399"
+                    font.pixelSize:  16
+                    visible: tableRepeater.count === 0
+                }
 
                 Column {
                     id: tableContent
@@ -86,11 +96,11 @@ Item {
                     Repeater {
                         id: tableRepeater
                         model: []
-                        delegate: Item {
+                        delegate: Item {  // 绘制行
                             id: rowDelegate
                             width: parent.width
                             height: rowHeight
-
+                            visible: model !== undefined  // 确保有数据时才显示
                             Rectangle {
                                 anchors.fill: parent
                                 color: {
@@ -100,13 +110,12 @@ Item {
                                     return "white"
                                 }
                                 border.color: borderColor
-                                border.width: 1
+                                border.width: 0
                             }
-
                             RowLayout {
                                 anchors.fill: parent
                                 spacing: 0
-                                Repeater {
+                                Repeater {   // 绘制列
                                     model: columns
                                     delegate: TableCell {
                                         Layout.preferredWidth: modelData.width || 150
@@ -147,6 +156,7 @@ Item {
                     }
                 }
             }
+
         }
     }
 }

@@ -80,8 +80,7 @@ Rectangle {
                               Layout.alignment: Qt.AlignVCenter | Qt.AlignLeft
                           }
                           WImageSvg {
-                              source: root.gender
-                                      === 0 ? "qrc:/assets/icons/women.svg" : "qrc:/assets/icons/men.svg"
+                              source: root.gender === 0 ? "qrc:/assets/icons/women.svg" : "qrc:/assets/icons/men.svg"
                               width: 14
                               height: 14
                               color: root.gender === 0 ? "#F98981" : "#4080FF"
@@ -101,9 +100,6 @@ Rectangle {
                               font.pixelSize: 14
                               color: "#9FA7BD"
                               Layout.alignment: Qt.AlignVCenter | Qt.AlignLeft
-                              onTextChanged: {
-
-                              }
                           }
                           Text {
                               // 病人信息_电话
@@ -136,8 +132,6 @@ Rectangle {
                   }
               }
         }
-
-
 
         // 病人模型上传 ===========
         Rectangle {
@@ -214,8 +208,10 @@ Rectangle {
                 WButton {
                     text: qsTr("开始测量")
                     enabled: root.patientId > 0
+                    theme: WButton.Primary
+                    iconSource: "qrc:/assets/icons/play_circle.svg"
                     onClicked: {
-
+                        console.log("TODO: 开始检测");
                     }
                 }
                 Item {
