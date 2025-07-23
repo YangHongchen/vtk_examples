@@ -52,15 +52,9 @@ MesureRecordController::~MesureRecordController()
     }
 }
 
-void MesureRecordController::loadMesureRecords (int page, int pageSize)
+void MesureRecordController::loadMesureRecords (long patientId, int page, int pageSize)
 {
-    qDebug() << "获取病例列表";
-    if (m_currentPatientId < 1)
-    {
-        qDebug() << "未选中病例，无法查询检测记录";
-        return;
-    }
-    auto paginationResult = m_mesureRecordDao->findPatientsCondition (m_currentPatientId, page, pageSize);
+    auto paginationResult = m_mesureRecordDao->findPatientsCondition (patientId, page, pageSize);
     int total = paginationResult.total();
     int pageCount = paginationResult.pageCount();
     QList<std::shared_ptr<MesureRecord>> dataList = paginationResult.data();
@@ -68,7 +62,5 @@ void MesureRecordController::loadMesureRecords (int page, int pageSize)
     qDebug() << "分页结果，TOTAL:" << total;
     qDebug() << "分页结果，PAGE_COUNT:" << pageCount;
     qDebug() << "分页结果，PAGE_ROWS：" << dataList.size();
-
-
 }
 

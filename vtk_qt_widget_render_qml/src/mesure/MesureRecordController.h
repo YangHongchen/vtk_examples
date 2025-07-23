@@ -22,7 +22,7 @@ class MesureRecordController : public QObject {
     /**
      * @brief loadMesureRecords
      */
-    Q_INVOKABLE void loadMesureRecords (int page, int pageSize);
+    Q_INVOKABLE void loadMesureRecords (long patientId, int page, int pageSize);
 
   private:
     // 单例隐藏构造函数

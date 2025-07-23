@@ -17,6 +17,10 @@ Rectangle {
     property var currentPatiant
     property real currentPatientId
 
+    // 检测记录 =========
+    property int page:1
+    property int pageSize: 15
+
     Component.onCompleted: {
         if (!patientPage.loaded) {
             patientPage.loaded = true
@@ -89,8 +93,7 @@ Rectangle {
                         y: (parent.height - height) / 2
                         placeholderText: qsTr("输入姓名或电话筛选")
                         onTextChanged: {
-                            PatientController.loadPatientsConditional(
-                                        patientPage.keyword, 1, 20)
+                            PatientController.loadPatientsConditional(patientPage.keyword, 1, 20)
                         }
                     }
                 }
@@ -175,16 +178,21 @@ Rectangle {
                     }
                 }
 
-                // 病例检测记录
-                PatientMesureRecords {
+                Rectangle {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
+                    // 病例检测记录
+                    PatientMesureRecords {
+                        x:16
+                        width: parent.width - 16*2
+                        height: parent.height
+                    }
                 }
             }
         }
     }
 
-    // 编辑病例
+    // 编辑病例 ==========
     PatientEditPopup {
         id: patientEditPopup
         anchors.centerIn: parent
@@ -197,13 +205,14 @@ Rectangle {
         }
     }
 
-    // 病例数据模型 ==========
+    // 病例模型 ==========
     Connections {
         target: PatientModel
         // 监听到病例id变化
         function onCurrentPatientIdChanged(id) {
-            console.log('病例的id变化：', id)
+            console.log('$$$$ 病例的id变化：', id)
             currentPatientId = id
+            MesureRecordController.loadMesureRecords(id, patientPage.page, patientPage.pageSize)
 
         }
         // 监听到病例变化
