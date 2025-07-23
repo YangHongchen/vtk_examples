@@ -4,6 +4,10 @@
 #include <QObject>
 #include <QDateTime>
 #include "src/mesure/MesureRecord.h"
+#include "src/mesure/MesureRecordStatusEnum.h"
+#include <QMap>
+
+
 
 class MesureRecordObject : public QObject {
     Q_OBJECT
@@ -20,6 +24,9 @@ class MesureRecordObject : public QObject {
     // 格式化后的时间字符串（可供 QML Text 等控件绑定）
     Q_PROPERTY (QString formattedCreateTime READ formattedCreateTime NOTIFY createTimeChanged)
     Q_PROPERTY (QString formattedUpdateTime READ formattedUpdateTime NOTIFY updateTimeChanged)
+
+    // 状态：中文
+    Q_PROPERTY (QString statusCN READ statusCN  NOTIFY statusChanged)
   public:
     explicit MesureRecordObject (QObject *parent = nullptr);
     explicit MesureRecordObject (const MesureRecord &record, QObject *parent = nullptr);
@@ -58,6 +65,42 @@ class MesureRecordObject : public QObject {
     QString formattedUpdateTime() const
     {
         return m_updateTime.toLocalTime().toString ("yyyy-MM-dd HH:mm:ss");
+    }
+
+    QString statusCN()
+    {
+
+        // 创建枚举值到中文描述的映射
+        QMap<MesureRecordStatusEnum, QString> statusToChineseMap =
+        {
+            {MesureRecordStatusEnum::Pending, "待处理"},
+            {MesureRecordStatusEnum::Testing, "检测中"},
+            {MesureRecordStatusEnum::Completed, "已完成"},
+            {MesureRecordStatusEnum::Cancelled, "已取消"}
+        };
+
+        MesureRecordStatusEnum enumStatus;
+
+        // 将status转换为中文
+        switch (m_status)
+        {
+        case 0:
+            enumStatus = MesureRecordStatusEnum::Pending;
+            break;
+        case 1:
+            enumStatus = MesureRecordStatusEnum::Testing;
+            break;
+        case 2:
+            enumStatus = MesureRecordStatusEnum::Completed;
+            break;
+        case 3:
+            enumStatus = MesureRecordStatusEnum::Cancelled;
+            break;
+        default:
+            enumStatus = MesureRecordStatusEnum::Pending;
+            break;
+        }
+        return statusToChineseMap[enumStatus];
     }
 
   signals:
