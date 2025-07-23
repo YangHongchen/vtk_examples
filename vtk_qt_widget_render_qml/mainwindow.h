@@ -11,9 +11,8 @@
 #include "src/mesure/MesureRecordController.h"
 #include "src/mesure/MesureRecordModel.h"
 
-#include "src/common/EventBus.h"
-
 class VtkRenderWidget;  // 前置声明自定义Widget
+class MesureWidget;
 
 class MainWindow : public QMainWindow {
     Q_OBJECT
@@ -34,6 +33,7 @@ class MainWindow : public QMainWindow {
     QQuickWidget *m_navWidget;
     QStackedWidget *m_contentStack;
     VtkRenderWidget *m_vtkWidget = nullptr;
+    MesureWidget *m_mesureWidget = nullptr;
 
     // 资源类
     PatientController *m_patientController = nullptr;

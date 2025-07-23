@@ -147,6 +147,12 @@ add_executable(${PROJECT_NAME}
     src/mesure/MesureRecordModel.cpp
     src/mesure/MesureRecordObject.h
     src/mesure/MesureRecordObject.cpp
+    src/mesure/MesureWidget.h
+    src/mesure/MesureWidget.cpp
+
+    # 通用上下颌骨渲染组件
+    src/model/VtkJawRendererWidget.h
+    src/model/VtkJawRendererWidget.cpp
 )
 
 #-----------------------------------------------------------------------------

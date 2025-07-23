@@ -5,6 +5,8 @@
 #include <QLabel>
 #include <QQmlContext>
 
+#include "src/mesure/MesureWidget.h"
+
 // 引入事件总线
 #include "src/common/EventBus.h"
 
@@ -16,6 +18,10 @@ MainWindow::MainWindow (QWidget *parent) : QMainWindow (parent)
     m_patientFileTransferManager = PatientFileTransferManager::instance();
     m_mesureRecordController = MesureRecordController::instance();
     m_mesureRecordModel = MesureRecordModel::instance();
+
+    // 检测界面（Widget）
+    m_mesureWidget = new MesureWidget (this);
+
     setupUI();
 }
 
@@ -95,7 +101,10 @@ void MainWindow::setupUI()
     // 2. 右侧内容区 (Widget实现： 这里的加载顺序，要和导航qml组件定义的pageIndex的顺序一致）
     m_contentStack = new QStackedWidget();
     addQmlPage ("qrc:/qml/patient/PatientIndex.qml");
-    addQmlPage ("qrc:/qml/mesure/MesureIndex.qml");
+    // addQmlPage ("qrc:/qml/mesure/MesureIndex.qml");
+
+    m_contentStack->addWidget (m_mesureWidget);
+
     addQmlPage ("qrc:/qml/analysis/AnalysisModel.qml");
     addQmlPage ("qrc:/qml/analysis/AnalysisTracks.qml");
     addQmlPage ("qrc:/qml/analysis/AnalysisAnalyze.qml");

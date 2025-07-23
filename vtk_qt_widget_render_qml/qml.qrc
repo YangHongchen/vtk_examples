@@ -12,7 +12,7 @@
         <file>qml/patient/PatientIndex.qml</file>
         <file>qml/analysis/AnalysisModel.qml</file>
         <file>qml/_components/ThemeManager.qml</file>
-        <file>qml/mesure/MesureIndex.qml</file>
+        <file>qml/mesure/MesureControl.qml</file>
         <file>qml/report/ReportIndex.qml</file>
         <file>qml/analysis/AnalysisTracks.qml</file>
         <file>qml/analysis/AnalysisAnalyze.qml</file>
@@ -68,5 +68,9 @@
         <file>qml/_components/WImagePreview.qml</file>
         <file>qml/patient/PatientMesureRecords.qml</file>
         <file>qml/_components/WPagination.qml</file>
+        <file>qml/mesure/MesureSteps.qml</file>
+        <file>assets/stl/lower_jaw.stl</file>
+        <file>assets/stl/upper_jaw.stl</file>
+        <file>qml/_widgets/PatientCurrent.qml</file>
     </qresource>
 </RCC>
