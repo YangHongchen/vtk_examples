@@ -14,6 +14,7 @@
 #include <QVTKOpenGLNativeWidget.h>
 #include <vtkTransform.h>
 #include <vtkCollisionDetectionFilter.h>
+#include <vtkTransformPolyDataFilter.h>
 
 
 class VTKOcclusionSimulation : public QVTKOpenGLNativeWidget {
@@ -27,6 +28,8 @@ class VTKOcclusionSimulation : public QVTKOpenGLNativeWidget {
 
     // 标记：左髁突
     void markPoints();
+
+    void animateLowerJaw();
 
 
   private:
@@ -48,6 +51,9 @@ class VTKOcclusionSimulation : public QVTKOpenGLNativeWidget {
     vtkSmartPointer<vtkActor> createMarkerSphere (const double pos[3], double radius = 0.3,
             const double color[3] = nullptr);
 
+
+
+
   private:
     // reader
     vtkSmartPointer<vtkSTLReader> m_upperReader;
@@ -57,12 +63,25 @@ class VTKOcclusionSimulation : public QVTKOpenGLNativeWidget {
     vtkSmartPointer<vtkActor> m_upperActor;
     vtkSmartPointer<vtkActor> m_lowerActor;
 
+    vtkSmartPointer<vtkPolyDataMapper> m_lowerMapper;
+
     // 变换控制下颌运动
     vtkSmartPointer<vtkTransform> m_lowerTransform;
     vtkSmartPointer<vtkTransform> m_upperTransform;
 
+    vtkSmartPointer<vtkTransformPolyDataFilter> m_lowerTransformFilter;
+
+    // 记录左髁突，右髁突，牙尖额坐标
+    double tip[3], leftCondyle[3], rightCondyle[3], m_jointCenter[3], m_axis[3];
+
     // 碰撞检测过滤器
     vtkSmartPointer<vtkCollisionDetectionFilter> m_collisionFilter;
+
+    // 4. 初始化旋转角度，正向闭合，负向张开
+    double angle        = 0.0;
+    bool closing        = true;
+    double axisLength   = 0.0;
+
 
 
 };

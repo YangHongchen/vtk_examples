@@ -13,6 +13,7 @@
 #include <vtkCollisionDetectionFilter.h>
 #include <vtkTransformPolyDataFilter.h>
 #include <vtkSphereSource.h>
+#include <QTimer>
 
 
 VTKOcclusionSimulation::VTKOcclusionSimulation (QWidget *parent) : QVTKOpenGLNativeWidget{parent}
@@ -50,6 +51,27 @@ VTKOcclusionSimulation::VTKOcclusionSimulation (QWidget *parent) : QVTKOpenGLNat
     interactor->SetInteractorStyle (style);
 
     setCameraView ("front");
+
+    // 自动定位左髁突，右髁突，牙尖位坐标
+    detectKeyPoints (m_lowerReader, tip, leftCondyle, rightCondyle);
+
+
+    m_lowerTransform = vtkSmartPointer<vtkTransform>::New();
+    m_lowerTransformFilter = vtkSmartPointer<vtkTransformPolyDataFilter>::New();
+    m_lowerTransformFilter->SetInputData (m_lowerReader->GetOutput());
+    m_lowerTransformFilter->SetTransform (m_lowerTransform);
+    m_lowerTransformFilter->Update();
+
+    // Mapper 和 Actor
+    m_lowerMapper = vtkSmartPointer<vtkPolyDataMapper>::New();
+    m_lowerMapper->SetInputConnection (m_lowerTransformFilter->GetOutputPort());
+    m_lowerActor->SetMapper (m_lowerMapper);
+
+
+    QTimer* timer = new QTimer (this);
+    connect (timer, &QTimer::timeout, this, &VTKOcclusionSimulation::animateLowerJaw);
+    timer->start (30);
+
 }
 
 void VTKOcclusionSimulation::setCameraView (const QString &direction)
@@ -121,8 +143,8 @@ void VTKOcclusionSimulation::markPoints()
 {
     qDebug() << "标记左髁突";
     // 定位牙尖和髁突（未平移前）
-    double tip[3], left[3], right[3];
-    detectKeyPoints (m_lowerReader, tip, left, right);
+    // double tip[3], left[3], right[3];
+
 
     // std::cout << "牙尖坐标: " << tip[0] << ", " << tip[1] << ", " << tip[2] << std::endl;
     // std::cout << "左髁突坐标: " << left[0] << ", " << left[1] << ", " << left[2] << std::endl;
@@ -134,8 +156,8 @@ void VTKOcclusionSimulation::markPoints()
     // 平移关键点坐标，使标记球位置正确
     for (int i = 0; i < 3; ++i)
     {
-        left[i] -= tip[i];
-        right[i] -= tip[i];
+        leftCondyle[i] -= tip[i];
+        rightCondyle[i] -= tip[i];
         tip[i] = 0.0; // 牙尖现在为原点
     }
 
@@ -145,8 +167,8 @@ void VTKOcclusionSimulation::markPoints()
     const double blue[3] = {0, 0.7, 1};
 
     auto toothMarker = createMarkerSphere (tip, 0.3, red);
-    auto condyleLMarker = createMarkerSphere (left, 0.3, green);
-    auto condyleRMarker = createMarkerSphere (right, 0.3, blue);
+    auto condyleLMarker = createMarkerSphere (leftCondyle, 0.3, green);
+    auto condyleRMarker = createMarkerSphere (rightCondyle, 0.3, blue);
 
     // 渲染设置
     auto renderer = this->renderWindow()->GetRenderers()->GetFirstRenderer();
@@ -154,10 +176,34 @@ void VTKOcclusionSimulation::markPoints()
     renderer->AddActor (condyleLMarker);
     renderer->AddActor (condyleRMarker);
 
+    detectKeyPoints (m_lowerReader, leftCondyle, rightCondyle, tip);
+
     // 刷新
     // this->renderWindow()->Render();
 
     setCameraView ("front");
+}
+
+void VTKOcclusionSimulation::animateLowerJaw()
+{
+    // 先重置变换
+    m_lowerTransform->Identity();
+    // 移动旋转中心到原点（平移负的关节中心）
+    m_lowerTransform->Translate (-m_jointCenter[0], -m_jointCenter[1], -m_jointCenter[2]);
+    // 绕关节轴旋转 angle 度
+    m_lowerTransform->RotateWXYZ (angle, m_axis[0], m_axis[1], m_axis[2]);
+    // 再平移回来
+    m_lowerTransform->Translate (m_jointCenter[0], m_jointCenter[1], m_jointCenter[2]);
+    m_lowerTransformFilter->Update();
+    // 控制咬合角度增减
+    if (closing)
+        angle +=  0.1; // 每帧增加1度
+    else
+        angle -=  0.1;
+    if (angle >= 5.0) closing = false;
+    else if (angle <= 0.0) closing = true;
+
+    this->renderWindow()->Render();
 }
 
 vtkSmartPointer<vtkActor> VTKOcclusionSimulation::createSmoothedActor (const std::string &filePath)
@@ -280,6 +326,19 @@ void VTKOcclusionSimulation::detectKeyPoints (vtkSmartPointer<vtkSTLReader> read
             std::copy (p, p + 3, condyleRight);
         }
     }
+
+    m_jointCenter[0] = (leftCondyle[0] + rightCondyle[0]) / 2.0;
+    m_jointCenter[1] = (leftCondyle[1] + rightCondyle[1]) / 2.0;
+    m_jointCenter[2] = (leftCondyle[2] + rightCondyle[2]) / 2.0;
+
+    double axis[3] = { rightCondyle[0] - leftCondyle[0],
+                       rightCondyle[1] - leftCondyle[1],
+                       rightCondyle[2] - leftCondyle[2]
+                     };
+    double len = std::sqrt (axis[0] * axis[0] + axis[1] * axis[1] + axis[2] * axis[2]);
+    m_axis[0] = axis[0] / len;
+    m_axis[1] = axis[1] / len;
+    m_axis[2] = axis[2] / len;
 }
 
 vtkSmartPointer<vtkActor> VTKOcclusionSimulation::createMarkerSphere (const double pos[], double radius,
