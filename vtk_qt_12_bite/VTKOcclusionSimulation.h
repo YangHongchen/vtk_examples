@@ -12,6 +12,7 @@
 #include <vtkPolyDataNormals.h>        // 用于生成平滑法线
 #include <vtkProperty.h>               // 控制模型属性（颜色、透明度等）
 #include <QVTKOpenGLNativeWidget.h>
+#include <vtkTransform.h>
 
 
 class VTKOcclusionSimulation : public QVTKOpenGLNativeWidget {
@@ -20,13 +21,17 @@ class VTKOcclusionSimulation : public QVTKOpenGLNativeWidget {
   public:
     explicit VTKOcclusionSimulation (QWidget *parent = nullptr);
 
-    /**
-     * 切换相机视角
-    * @brief setCameraView
-    * @param direction
-    */
+    // 切换相机视角
     void setCameraView (const QString &direction);
 
+    // 标记：左髁突
+    void markLeftCondyle();
+
+    // 标记：右髁突
+    void markRightCondyle();
+
+    // 标记：牙尖交错位
+    void markIntercusp();
 
   private:
 
@@ -40,12 +45,18 @@ class VTKOcclusionSimulation : public QVTKOpenGLNativeWidget {
 
     // 从资源文件路径，加载stl模型
     vtkSmartPointer<vtkSTLReader> loadStlFromQrc (const QString &qrcPath);
-
     // 创建平滑效果
     vtkSmartPointer<vtkPolyDataNormals> smoothNormals (vtkSmartPointer<vtkSTLReader> reader);
-
     //创建actor
     vtkSmartPointer<vtkActor> createActor (vtkSmartPointer<vtkPolyDataNormals> normals, const std::array<double, 3> &color);
+
+  private:
+    // 绑定的上下颌actor，方便动画变换
+    vtkSmartPointer<vtkActor> m_upperActor;
+    vtkSmartPointer<vtkActor> m_lowerActor;
+
+    // 变换控制下颌运动
+    vtkSmartPointer<vtkTransform> m_lowerTransform;
 
 };
 

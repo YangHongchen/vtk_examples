@@ -19,16 +19,16 @@ VTKOcclusionSimulation::VTKOcclusionSimulation (QWidget *parent) : QVTKOpenGLNat
     auto lowerNormals = smoothNormals (lowerReader);
 
     // 3. Mapper 和 Actor
-    auto upperActor = createActor (upperNormals, {1.0, 1.0, 1.0}); // 淡粉
-    auto lowerActor = createActor (lowerNormals, {1.0, 1.0, 1.0}); // 浅蓝
+    m_upperActor = createActor (upperNormals, {1.0, 1.0, 1.0}); // 淡粉
+    m_lowerActor = createActor (lowerNormals, {1.0, 1.0, 1.0}); // 浅蓝
 
     // 4. 居中（牙尖）
-    centerByLowestPoint (upperActor, lowerActor, lowerReader);
+    centerByLowestPoint (m_upperActor, m_lowerActor, lowerReader);
 
     // 5. 渲染器设置
     auto renderer = vtkSmartPointer<vtkRenderer>::New();
-    renderer->AddActor (upperActor);
-    renderer->AddActor (lowerActor);
+    renderer->AddActor (m_upperActor);
+    renderer->AddActor (m_lowerActor);
     // VTK渲染背景色：#F0F0F0
     renderer->SetBackground (0xF0 / 255.0, 0xF0 / 255.0, 0xF0 / 255.0); // ≈ (0.941, 0.941, 0.941)
 
@@ -41,10 +41,7 @@ VTKOcclusionSimulation::VTKOcclusionSimulation (QWidget *parent) : QVTKOpenGLNat
     auto style = vtkSmartPointer<CustomInteractorStyle>::New();
     style->SetCurrentRenderer (renderer);
     interactor->SetInteractorStyle (style);
-    // connect (this, &QVTKOpenGLNativeWidget::windowChanged, this, [ = ]
-    // {
-    //     renderWindow->Render();
-    // });
+
 }
 
 void VTKOcclusionSimulation::setCameraView (const QString &direction)
@@ -112,6 +109,20 @@ void VTKOcclusionSimulation::setCameraView (const QString &direction)
     this->renderWindow()->Render();
 }
 
+void VTKOcclusionSimulation::markLeftCondyle()
+{
+    qDebug() << "标记左髁突";
+}
+
+void VTKOcclusionSimulation::markRightCondyle()
+{
+    qDebug() << "标记右髁突";
+}
+
+void VTKOcclusionSimulation::markIntercusp()
+{
+    qDebug() << "标记尖角交错";
+}
 
 vtkSmartPointer<vtkActor> VTKOcclusionSimulation::createSmoothedActor (const std::string &filePath)
 {
