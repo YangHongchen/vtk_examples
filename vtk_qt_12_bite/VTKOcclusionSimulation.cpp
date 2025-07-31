@@ -124,9 +124,9 @@ void VTKOcclusionSimulation::markLeftCondyle()
     double tip[3], left[3], right[3];
     detectKeyPoints (m_lowerReader, tip, left, right);
 
-    std::cout << "牙尖坐标: " << tip[0] << ", " << tip[1] << ", " << tip[2] << std::endl;
-    std::cout << "左髁突坐标: " << left[0] << ", " << left[1] << ", " << left[2] << std::endl;
-    std::cout << "右髁突坐标: " << right[0] << ", " << right[1] << ", " << right[2] << std::endl;
+    // std::cout << "牙尖坐标: " << tip[0] << ", " << tip[1] << ", " << tip[2] << std::endl;
+    // std::cout << "左髁突坐标: " << left[0] << ", " << left[1] << ", " << left[2] << std::endl;
+    // std::cout << "右髁突坐标: " << right[0] << ", " << right[1] << ", " << right[2] << std::endl;
 
     // 平移上下颌使牙尖居中
     m_upperActor->SetPosition (-tip[0], -tip[1], -tip[2]);
@@ -153,6 +153,11 @@ void VTKOcclusionSimulation::markLeftCondyle()
     renderer->AddActor (toothMarker);
     renderer->AddActor (condyleLMarker);
     renderer->AddActor (condyleRMarker);
+
+    // 刷新
+    // this->renderWindow()->Render();
+
+    setCameraView ("front");
 }
 
 void VTKOcclusionSimulation::markRightCondyle()
@@ -227,7 +232,6 @@ vtkSmartPointer<vtkSTLReader> VTKOcclusionSimulation::loadStlFromQrc (const QStr
         qWarning() << "Failed to open STL resource:" << qrcPath;
         return nullptr;
     }
-
     QString tempPath = QStandardPaths::writableLocation (QStandardPaths::TempLocation) + "/" + QFileInfo (
                            qrcPath).fileName();
     QFile tempFile (tempPath);
@@ -236,10 +240,8 @@ vtkSmartPointer<vtkSTLReader> VTKOcclusionSimulation::loadStlFromQrc (const QStr
         qWarning() << "Failed to write temp file:" << tempPath;
         return nullptr;
     }
-
     tempFile.write (qrcFile.readAll());
     tempFile.close();
-
     auto reader = vtkSmartPointer<vtkSTLReader>::New();
     reader->SetFileName (tempPath.toUtf8().constData());
     reader->Update();
@@ -296,8 +298,8 @@ vtkSmartPointer<vtkActor> VTKOcclusionSimulation::createMarkerSphere (const doub
     auto sphere = vtkSmartPointer<vtkSphereSource>::New();
     sphere->SetCenter (pos);
     sphere->SetRadius (radius);
-    sphere->SetPhiResolution (20);
-    sphere->SetThetaResolution (20);
+    sphere->SetPhiResolution (15);
+    sphere->SetThetaResolution (15);
 
     auto mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
     mapper->SetInputConnection (sphere->GetOutputPort());

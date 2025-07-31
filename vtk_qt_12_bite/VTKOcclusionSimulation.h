@@ -35,26 +35,20 @@ class VTKOcclusionSimulation : public QVTKOpenGLNativeWidget {
     void markIntercusp();
 
   private:
-
     // 工具函数：根据 STL 文件创建带平滑法线的 Actor
     vtkSmartPointer<vtkActor> createSmoothedActor (const std::string& filePath);
-
     // 工具函数：根据下颌最低点（牙尖）将上下颌整体平移，使牙尖居中
-    void centerByLowestPoint (vtkSmartPointer<vtkActor> upperActor,
-                              vtkSmartPointer<vtkActor> lowerActor,
+    void centerByLowestPoint (vtkSmartPointer<vtkActor> upperActor, vtkSmartPointer<vtkActor> lowerActor,
                               vtkSmartPointer<vtkSTLReader> lowerReader);
-
     // 从资源文件路径，加载stl模型
     vtkSmartPointer<vtkSTLReader> loadStlFromQrc (const QString &qrcPath);
     // 创建平滑效果
     vtkSmartPointer<vtkPolyDataNormals> smoothNormals (vtkSmartPointer<vtkSTLReader> reader);
-    //创建actor
+    // 创建actor
     vtkSmartPointer<vtkActor> createActor (vtkSmartPointer<vtkPolyDataNormals> normals, const std::array<double, 3> &color);
-
-    // 检测左髁突，右髁突，牙尖位
+    // 检测左髁突，右髁突，牙尖位坐标
     void detectKeyPoints (vtkSmartPointer<vtkSTLReader> reader, double toothTip[3], double condyleLeft[3],
                           double condyleRight[3]);
-
     // 创建指定位置的小球标记
     vtkSmartPointer<vtkActor> createMarkerSphere (const double pos[3], double radius = 0.3,
             const double color[3] = nullptr);
