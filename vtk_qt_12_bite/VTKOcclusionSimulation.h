@@ -13,6 +13,7 @@
 #include <vtkProperty.h>               // 控制模型属性（颜色、透明度等）
 #include <QVTKOpenGLNativeWidget.h>
 #include <vtkTransform.h>
+#include <vtkCollisionDetectionFilter.h>
 
 
 class VTKOcclusionSimulation : public QVTKOpenGLNativeWidget {
@@ -50,13 +51,30 @@ class VTKOcclusionSimulation : public QVTKOpenGLNativeWidget {
     //创建actor
     vtkSmartPointer<vtkActor> createActor (vtkSmartPointer<vtkPolyDataNormals> normals, const std::array<double, 3> &color);
 
+    // 检测左髁突，右髁突，牙尖位
+    void detectKeyPoints (vtkSmartPointer<vtkSTLReader> reader, double toothTip[3], double condyleLeft[3],
+                          double condyleRight[3]);
+
+    // 创建指定位置的小球标记
+    vtkSmartPointer<vtkActor> createMarkerSphere (const double pos[3], double radius = 0.3,
+            const double color[3] = nullptr);
+
   private:
+    // reader
+    vtkSmartPointer<vtkSTLReader> m_upperReader;
+    vtkSmartPointer<vtkSTLReader> m_lowerReader;
+
     // 绑定的上下颌actor，方便动画变换
     vtkSmartPointer<vtkActor> m_upperActor;
     vtkSmartPointer<vtkActor> m_lowerActor;
 
     // 变换控制下颌运动
     vtkSmartPointer<vtkTransform> m_lowerTransform;
+    vtkSmartPointer<vtkTransform> m_upperTransform;
+
+    // 碰撞检测过滤器
+    vtkSmartPointer<vtkCollisionDetectionFilter> m_collisionFilter;
+
 
 };
 

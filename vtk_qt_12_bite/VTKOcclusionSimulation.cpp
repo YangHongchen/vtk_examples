@@ -7,23 +7,30 @@
 #include <vtkInteractorStyleTrackballCamera.h>
 #include <vtkRendererCollection.h>
 #include <vtkCamera.h>
+#include <vtkPolyData.h>
+#include <vtkDataSet.h>
+#include <vtkTransform.h>
+#include <vtkCollisionDetectionFilter.h>
+#include <vtkTransformPolyDataFilter.h>
+#include <vtkSphereSource.h>
+
 
 VTKOcclusionSimulation::VTKOcclusionSimulation (QWidget *parent) : QVTKOpenGLNativeWidget{parent}
 {
     // 1. 加载 STL 模型（通过 QRC 转临时文件）
-    auto upperReader = loadStlFromQrc (":/assets/stl/upper_jaw.stl");
-    auto lowerReader = loadStlFromQrc (":/assets/stl/lower_jaw.stl");
+    m_upperReader = loadStlFromQrc (":/assets/stl/upper_jaw.stl");
+    m_lowerReader = loadStlFromQrc (":/assets/stl/lower_jaw.stl");
 
     // 2. 法线平滑
-    auto upperNormals = smoothNormals (upperReader);
-    auto lowerNormals = smoothNormals (lowerReader);
+    auto upperNormals = smoothNormals (m_upperReader);
+    auto lowerNormals = smoothNormals (m_lowerReader);
 
     // 3. Mapper 和 Actor
-    m_upperActor = createActor (upperNormals, {1.0, 1.0, 1.0}); // 淡粉
+    m_upperActor = createActor (upperNormals, {1.0, 0.7, 0.6}); // 淡粉
     m_lowerActor = createActor (lowerNormals, {1.0, 1.0, 1.0}); // 浅蓝
 
     // 4. 居中（牙尖）
-    centerByLowestPoint (m_upperActor, m_lowerActor, lowerReader);
+    centerByLowestPoint (m_upperActor, m_lowerActor, m_lowerReader);
 
     // 5. 渲染器设置
     auto renderer = vtkSmartPointer<vtkRenderer>::New();
@@ -42,6 +49,7 @@ VTKOcclusionSimulation::VTKOcclusionSimulation (QWidget *parent) : QVTKOpenGLNat
     style->SetCurrentRenderer (renderer);
     interactor->SetInteractorStyle (style);
 
+    // markLeftCondyle();
 }
 
 void VTKOcclusionSimulation::setCameraView (const QString &direction)
@@ -112,6 +120,39 @@ void VTKOcclusionSimulation::setCameraView (const QString &direction)
 void VTKOcclusionSimulation::markLeftCondyle()
 {
     qDebug() << "标记左髁突";
+    // 定位牙尖和髁突（未平移前）
+    double tip[3], left[3], right[3];
+    detectKeyPoints (m_lowerReader, tip, left, right);
+
+    std::cout << "牙尖坐标: " << tip[0] << ", " << tip[1] << ", " << tip[2] << std::endl;
+    std::cout << "左髁突坐标: " << left[0] << ", " << left[1] << ", " << left[2] << std::endl;
+    std::cout << "右髁突坐标: " << right[0] << ", " << right[1] << ", " << right[2] << std::endl;
+
+    // 平移上下颌使牙尖居中
+    m_upperActor->SetPosition (-tip[0], -tip[1], -tip[2]);
+    m_lowerActor->SetPosition (-tip[0], -tip[1], -tip[2]);
+    // 平移关键点坐标，使标记球位置正确
+    for (int i = 0; i < 3; ++i)
+    {
+        left[i] -= tip[i];
+        right[i] -= tip[i];
+        tip[i] = 0.0; // 牙尖现在为原点
+    }
+
+    // 创建标记球（小一点）
+    const double red[3] = {1, 0, 0};
+    const double green[3] = {0, 1, 0};
+    const double blue[3] = {0, 0.7, 1};
+
+    auto toothMarker = createMarkerSphere (tip, 0.3, red);
+    auto condyleLMarker = createMarkerSphere (left, 0.3, green);
+    auto condyleRMarker = createMarkerSphere (right, 0.3, blue);
+
+    // 渲染设置
+    auto renderer = this->renderWindow()->GetRenderers()->GetFirstRenderer();
+    renderer->AddActor (toothMarker);
+    renderer->AddActor (condyleLMarker);
+    renderer->AddActor (condyleRMarker);
 }
 
 void VTKOcclusionSimulation::markRightCondyle()
@@ -149,7 +190,6 @@ vtkSmartPointer<vtkActor> VTKOcclusionSimulation::createSmoothedActor (const std
 
     // 设置为 Phong 插值（更平滑的光照效果）
     actor->GetProperty()->SetInterpolationToPhong();
-
     return actor;
 }
 
@@ -215,6 +255,62 @@ vtkSmartPointer<vtkPolyDataNormals> VTKOcclusionSimulation::smoothNormals (vtkSm
     normals->ConsistencyOn();
     normals->Update();
     return normals;
+}
+
+void VTKOcclusionSimulation::detectKeyPoints (vtkSmartPointer<vtkSTLReader> reader, double toothTip[],
+        double condyleLeft[], double condyleRight[])
+{
+    auto polyData = reader->GetOutput();
+    vtkIdType numPoints = polyData->GetNumberOfPoints();
+    double maxZ = std::numeric_limits<double>::lowest();
+    double minX = std::numeric_limits<double>::max();
+    double maxX = std::numeric_limits<double>::lowest();
+    for (vtkIdType i = 0; i < numPoints; ++i)
+    {
+        double p[3];
+        polyData->GetPoint (i, p);
+        // 牙尖：Z 最大（最前端）
+        if (p[2] > maxZ)
+        {
+            maxZ  = p[2];
+            std::copy (p, p + 3, toothTip);
+        }
+        // 左髁突：X 最小
+        if (p[0] < minX)
+        {
+            minX = p[0];
+            std::copy (p, p + 3, condyleLeft);
+        }
+        // 右髁突：X 最大
+        if (p[0] > maxX)
+        {
+            maxX = p[0];
+            std::copy (p, p + 3, condyleRight);
+        }
+    }
+}
+
+vtkSmartPointer<vtkActor> VTKOcclusionSimulation::createMarkerSphere (const double pos[], double radius,
+        const double color[])
+{
+    auto sphere = vtkSmartPointer<vtkSphereSource>::New();
+    sphere->SetCenter (pos);
+    sphere->SetRadius (radius);
+    sphere->SetPhiResolution (20);
+    sphere->SetThetaResolution (20);
+
+    auto mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
+    mapper->SetInputConnection (sphere->GetOutputPort());
+
+    auto actor = vtkSmartPointer<vtkActor>::New();
+    actor->SetMapper (mapper);
+    if (color)
+        actor->GetProperty()->SetColor (color[0], color[1], color[2]);
+    else
+        actor->GetProperty()->SetColor (1.0, 0.0, 0.0); // 默认红色
+    actor->GetProperty()->SetOpacity (1.0);
+
+    return actor;
 }
 
 vtkSmartPointer<vtkActor> VTKOcclusionSimulation::createActor (vtkSmartPointer<vtkPolyDataNormals> normals,
