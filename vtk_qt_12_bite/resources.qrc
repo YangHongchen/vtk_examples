@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>assets/stl/lower_jaw.stl</file>
+        <file>assets/stl/upper_jaw.stl</file>
+    </qresource>
+</RCC>

@@ -1,4 +1,4 @@
-#include <vtkActor.h>                   // 渲染图元的实体（Actor）
+#include <vtkActor.h>                  // 渲染图元的实体（Actor）
 #include <vtkPolyDataMapper.h>         // 将数据转换为图形几何结构
 #include <vtkSTLReader.h>              // STL 文件读取器
 #include <vtkSmartPointer.h>           // 智能指针（用于自动释放）
@@ -69,7 +69,7 @@ void centerByLowestPoint (vtkSmartPointer<vtkActor> upperActor,
     lowerActor->SetPosition (-lowestPoint[0], -lowestPoint[1], -lowestPoint[2]);
 }
 
-int main_multi_stl (int argc, char* argv[])
+int main (int argc, char* argv[])
 {
     // 1. 创建 STL 读取器（上颌和下颌）
     auto upperReader = vtkSmartPointer<vtkSTLReader>::New();

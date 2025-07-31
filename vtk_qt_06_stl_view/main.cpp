@@ -9,7 +9,7 @@
 #include <vtkPolyDataNormals.h>
 #include <vtkProperty.h>
 
-int main_basic (int argc, char* argv[])
+int main333 (int argc, char* argv[])
 {
     auto stlReader = vtkSmartPointer<vtkSTLReader>::New();
     stlReader->SetFileName ("c:/stl/1.stl");
