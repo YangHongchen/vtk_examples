@@ -3,7 +3,7 @@
 
 #include <QHBoxLayout>
 #include <QMainWindow>
-#include "VTKOcclusionSimulation.h"
+#include "Mesure3DWidget.h"
 
 class MainWindow : public QMainWindow {
     Q_OBJECT
@@ -13,7 +13,7 @@ class MainWindow : public QMainWindow {
   signals:
   private:
 
-    VTKOcclusionSimulation *m_vtkWidget = nullptr;;
+    Mesure3DWidget *m_vtkWidget = nullptr;;
 
 
 };

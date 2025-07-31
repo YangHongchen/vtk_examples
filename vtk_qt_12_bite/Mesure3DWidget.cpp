@@ -1,5 +1,6 @@
+#include "Mesure3DWidget.h"
 #include "CustomInteractorStyle.h"
-#include "VTKOcclusionSimulation.h"
+
 #include <QFile>
 #include <QIODevice>
 #include <QStandardPaths>
@@ -15,66 +16,50 @@
 #include <vtkSphereSource.h>
 #include <QTimer>
 
-
-VTKOcclusionSimulation::VTKOcclusionSimulation (QWidget *parent) : QVTKOpenGLNativeWidget{parent}
+Mesure3DWidget::Mesure3DWidget (QWidget *parent) : QVTKOpenGLNativeWidget{parent}
 {
-    // 1. 加载 STL 模型（通过 QRC 转临时文件）
+    // 1. 初始化场景
+    initScene();
+    // 2. 自动检测关键点
+    detectKeyPoints (m_lowerReader, tip, leftCondyle, rightCondyle);
+    // 3. 配置下颌变换流程
+    setupTransformPipeline();
+    // 4.启动动画
+    // startAnimation();
+}
+
+void Mesure3DWidget::initScene()
+{
+    // 加载 STL
     m_upperReader = loadStlFromQrc (":/assets/stl/upper_jaw.stl");
     m_lowerReader = loadStlFromQrc (":/assets/stl/lower_jaw.stl");
 
-    // 2. 法线平滑
     auto upperNormals = smoothNormals (m_upperReader);
     auto lowerNormals = smoothNormals (m_lowerReader);
 
-    // 3. Mapper 和 Actor
-    m_upperActor = createActor (upperNormals, {1.0, 0.7, 0.6}); // 淡粉
-    m_lowerActor = createActor (lowerNormals, {1.0, 1.0, 1.0}); // 浅蓝
+    m_upperActor = createActor (upperNormals, {1.0, 1.0, 1.0});
+    m_lowerActor = createActor (lowerNormals, {1.0, 1.0, 1.0});
 
-    // 4. 居中（牙尖）
     centerByLowestPoint (m_upperActor, m_lowerActor, m_lowerReader);
 
-    // 5. 渲染器设置
     auto renderer = vtkSmartPointer<vtkRenderer>::New();
     renderer->AddActor (m_upperActor);
     renderer->AddActor (m_lowerActor);
-    // VTK渲染背景色：#F0F0F0
-    renderer->SetBackground (0xF0 / 255.0, 0xF0 / 255.0, 0xF0 / 255.0); // ≈ (0.941, 0.941, 0.941)
+    renderer->SetBackground (0.941, 0.941, 0.941); // #F0F0F0
 
-    // 6. 绑定渲染窗口
     auto renderWindow = this->renderWindow();
     renderWindow->AddRenderer (renderer);
 
-    // 7. 禁用缩放交互器（可选）
     auto interactor = this->interactor();
     auto style = vtkSmartPointer<CustomInteractorStyle>::New();
     style->SetCurrentRenderer (renderer);
     interactor->SetInteractorStyle (style);
 
     setCameraView ("front");
-
-    // 自动定位左髁突，右髁突，牙尖位坐标
-    detectKeyPoints (m_lowerReader, tip, leftCondyle, rightCondyle);
-
-
-    m_lowerTransform = vtkSmartPointer<vtkTransform>::New();
-    m_lowerTransformFilter = vtkSmartPointer<vtkTransformPolyDataFilter>::New();
-    m_lowerTransformFilter->SetInputData (m_lowerReader->GetOutput());
-    m_lowerTransformFilter->SetTransform (m_lowerTransform);
-    m_lowerTransformFilter->Update();
-
-    // Mapper 和 Actor
-    m_lowerMapper = vtkSmartPointer<vtkPolyDataMapper>::New();
-    m_lowerMapper->SetInputConnection (m_lowerTransformFilter->GetOutputPort());
-    m_lowerActor->SetMapper (m_lowerMapper);
-
-
-    QTimer* timer = new QTimer (this);
-    connect (timer, &QTimer::timeout, this, &VTKOcclusionSimulation::animateLowerJaw);
-    timer->start (30);
-
 }
 
-void VTKOcclusionSimulation::setCameraView (const QString &direction)
+
+void Mesure3DWidget::setCameraView (const QString &direction)
 {
     auto renderer = this->renderWindow()->GetRenderers()->GetFirstRenderer();
     if (!renderer) return;
@@ -139,17 +124,9 @@ void VTKOcclusionSimulation::setCameraView (const QString &direction)
     this->renderWindow()->Render();
 }
 
-void VTKOcclusionSimulation::markPoints()
+void Mesure3DWidget::markPoints()
 {
-    qDebug() << "标记左髁突";
-    // 定位牙尖和髁突（未平移前）
-    // double tip[3], left[3], right[3];
-
-
-    // std::cout << "牙尖坐标: " << tip[0] << ", " << tip[1] << ", " << tip[2] << std::endl;
-    // std::cout << "左髁突坐标: " << left[0] << ", " << left[1] << ", " << left[2] << std::endl;
-    // std::cout << "右髁突坐标: " << right[0] << ", " << right[1] << ", " << right[2] << std::endl;
-
+    qDebug() << "标记左髁突，右髁突，牙尖位";
     // 平移上下颌使牙尖居中
     m_upperActor->SetPosition (-tip[0], -tip[1], -tip[2]);
     m_lowerActor->SetPosition (-tip[0], -tip[1], -tip[2]);
@@ -184,7 +161,47 @@ void VTKOcclusionSimulation::markPoints()
     setCameraView ("front");
 }
 
-void VTKOcclusionSimulation::animateLowerJaw()
+void Mesure3DWidget::setupTransformPipeline()
+{
+    // Step 1: Transform
+    m_lowerTransform = vtkSmartPointer<vtkTransform>::New();
+    m_lowerTransformFilter = vtkSmartPointer<vtkTransformPolyDataFilter>::New();
+    m_lowerTransformFilter->SetInputData (m_lowerReader->GetOutput());
+    m_lowerTransformFilter->SetTransform (m_lowerTransform);
+    m_lowerTransformFilter->Update();
+
+    // Step 2: Apply Normals (平滑法线)
+    auto smoothedNormals = vtkSmartPointer<vtkPolyDataNormals>::New();
+    smoothedNormals->SetInputConnection (m_lowerTransformFilter->GetOutputPort());
+    smoothedNormals->SetFeatureAngle (60.0);
+    smoothedNormals->SplittingOff();
+    smoothedNormals->ConsistencyOn();
+    smoothedNormals->Update();
+
+    // Step 3: Mapper & Actor
+    m_lowerMapper = vtkSmartPointer<vtkPolyDataMapper>::New();
+    m_lowerMapper->SetInputConnection (smoothedNormals->GetOutputPort());
+
+    m_lowerActor->SetMapper (m_lowerMapper);
+    m_lowerActor->GetProperty()->SetInterpolationToPhong();  // 可选：更柔和光照
+}
+
+void Mesure3DWidget::startAnimation()
+{
+    timer = new QTimer (this);
+    connect (timer, &QTimer::timeout, this, &Mesure3DWidget::animateLowerJaw);
+    timer->start (30);
+}
+
+void Mesure3DWidget::stopAnimation()
+{
+    if (timer->isActive())
+    {
+        timer->stop();
+    }
+}
+
+void Mesure3DWidget::animateLowerJaw()
 {
     // 先重置变换
     m_lowerTransform->Identity();
@@ -206,7 +223,7 @@ void VTKOcclusionSimulation::animateLowerJaw()
     this->renderWindow()->Render();
 }
 
-vtkSmartPointer<vtkActor> VTKOcclusionSimulation::createSmoothedActor (const std::string &filePath)
+vtkSmartPointer<vtkActor> Mesure3DWidget::createSmoothedActor (const std::string &filePath)
 {
     // 读取 STL 文件
     auto reader = vtkSmartPointer<vtkSTLReader>::New();
@@ -234,7 +251,7 @@ vtkSmartPointer<vtkActor> VTKOcclusionSimulation::createSmoothedActor (const std
     return actor;
 }
 
-void VTKOcclusionSimulation::centerByLowestPoint (vtkSmartPointer<vtkActor> upperActor,
+void Mesure3DWidget::centerByLowestPoint (vtkSmartPointer<vtkActor> upperActor,
         vtkSmartPointer<vtkActor> lowerActor,
         vtkSmartPointer<vtkSTLReader> lowerReader)
 {
@@ -260,7 +277,7 @@ void VTKOcclusionSimulation::centerByLowestPoint (vtkSmartPointer<vtkActor> uppe
     lowerActor->SetPosition (-lowestPoint[0], -lowestPoint[1], -lowestPoint[2]);
 }
 
-vtkSmartPointer<vtkSTLReader> VTKOcclusionSimulation::loadStlFromQrc (const QString &qrcPath)
+vtkSmartPointer<vtkSTLReader> Mesure3DWidget::loadStlFromQrc (const QString &qrcPath)
 {
     QFile qrcFile (qrcPath);
     if (!qrcFile.open (QIODevice::ReadOnly))
@@ -284,7 +301,7 @@ vtkSmartPointer<vtkSTLReader> VTKOcclusionSimulation::loadStlFromQrc (const QStr
     return reader;
 }
 
-vtkSmartPointer<vtkPolyDataNormals> VTKOcclusionSimulation::smoothNormals (vtkSmartPointer<vtkSTLReader> reader)
+vtkSmartPointer<vtkPolyDataNormals> Mesure3DWidget::smoothNormals (vtkSmartPointer<vtkSTLReader> reader)
 {
     auto normals = vtkSmartPointer<vtkPolyDataNormals>::New();
     normals->SetInputConnection (reader->GetOutputPort());
@@ -295,8 +312,8 @@ vtkSmartPointer<vtkPolyDataNormals> VTKOcclusionSimulation::smoothNormals (vtkSm
     return normals;
 }
 
-void VTKOcclusionSimulation::detectKeyPoints (vtkSmartPointer<vtkSTLReader> reader, double toothTip[],
-        double condyleLeft[], double condyleRight[])
+void Mesure3DWidget::detectKeyPoints (vtkSmartPointer<vtkSTLReader> reader, double toothTip[],
+                                      double condyleLeft[], double condyleRight[])
 {
     auto polyData = reader->GetOutput();
     vtkIdType numPoints = polyData->GetNumberOfPoints();
@@ -341,7 +358,7 @@ void VTKOcclusionSimulation::detectKeyPoints (vtkSmartPointer<vtkSTLReader> read
     m_axis[2] = axis[2] / len;
 }
 
-vtkSmartPointer<vtkActor> VTKOcclusionSimulation::createMarkerSphere (const double pos[], double radius,
+vtkSmartPointer<vtkActor> Mesure3DWidget::createMarkerSphere (const double pos[], double radius,
         const double color[])
 {
     auto sphere = vtkSmartPointer<vtkSphereSource>::New();
@@ -364,7 +381,7 @@ vtkSmartPointer<vtkActor> VTKOcclusionSimulation::createMarkerSphere (const doub
     return actor;
 }
 
-vtkSmartPointer<vtkActor> VTKOcclusionSimulation::createActor (vtkSmartPointer<vtkPolyDataNormals> normals,
+vtkSmartPointer<vtkActor> Mesure3DWidget::createActor (vtkSmartPointer<vtkPolyDataNormals> normals,
         const std::array<double, 3> &color)
 {
     auto mapper = vtkSmartPointer<vtkPolyDataMapper>::New();

@@ -1,5 +1,5 @@
-#ifndef VTKOCCLUSIONSIMULATION_H
-#define VTKOCCLUSIONSIMULATION_H
+#ifndef MESURE3DWIDGET_H
+#define MESURE3DWIDGET_H
 
 #include <QVTKOpenGLNativeWidget.h>
 #include <vtkActor.h>                  // 渲染图元的实体（Actor）
@@ -17,17 +17,30 @@
 #include <vtkTransformPolyDataFilter.h>
 
 
-class VTKOcclusionSimulation : public QVTKOpenGLNativeWidget {
+class Mesure3DWidget : public QVTKOpenGLNativeWidget {
 
     Q_OBJECT
   public:
-    explicit VTKOcclusionSimulation (QWidget *parent = nullptr);
+    explicit Mesure3DWidget (QWidget *parent = nullptr);
+
+    // 1. 初始化场景
+    void initScene();
+
 
     // 切换相机视角
     void setCameraView (const QString &direction);
 
     // 标记：左髁突
     void markPoints();
+
+    // 3. 配置下颌变换流程
+    void setupTransformPipeline();
+
+    //4 开启动画
+    void startAnimation();
+
+    // 5，停止动画
+    void stopAnimation();
 
     void animateLowerJaw();
 
@@ -50,9 +63,6 @@ class VTKOcclusionSimulation : public QVTKOpenGLNativeWidget {
     // 创建指定位置的小球标记
     vtkSmartPointer<vtkActor> createMarkerSphere (const double pos[3], double radius = 0.3,
             const double color[3] = nullptr);
-
-
-
 
   private:
     // reader
@@ -82,8 +92,8 @@ class VTKOcclusionSimulation : public QVTKOpenGLNativeWidget {
     bool closing        = true;
     double axisLength   = 0.0;
 
-
+    QTimer *timer;
 
 };
 
-#endif // VTKOCCLUSIONSIMULATION_H
+#endif // MESURE3DWIDGET_H

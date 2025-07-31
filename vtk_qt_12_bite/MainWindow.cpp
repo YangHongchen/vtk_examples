@@ -32,7 +32,7 @@ MainWindow::MainWindow (QWidget *parent): QMainWindow{parent}
 
     mainLayout->addLayout (buttonLayout);
 
-    m_vtkWidget = new VTKOcclusionSimulation (this);
+    m_vtkWidget = new Mesure3DWidget (this);
     mainLayout->addWidget (m_vtkWidget);
 
     // 信号连接
