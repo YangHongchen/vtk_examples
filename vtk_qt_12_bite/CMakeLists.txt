@@ -27,7 +27,10 @@ qt_add_executable(demo_qt_widget
 
     resources.qrc
     MainWindow.h MainWindow.cpp
-    VTKOcclusionSimulation.h VTKOcclusionSimulation.cpp
+    VTKOcclusionSimulation.h
+    VTKOcclusionSimulation.cpp
+    CustomInteractorStyle.h
+
 
 )
 

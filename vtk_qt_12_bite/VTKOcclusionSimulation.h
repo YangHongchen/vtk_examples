@@ -20,6 +20,14 @@ class VTKOcclusionSimulation : public QVTKOpenGLNativeWidget {
   public:
     explicit VTKOcclusionSimulation (QWidget *parent = nullptr);
 
+    /**
+     * 切换相机视角
+    * @brief setCameraView
+    * @param direction
+    */
+    void setCameraView (const QString &direction);
+
+
   private:
 
     // 工具函数：根据 STL 文件创建带平滑法线的 Actor

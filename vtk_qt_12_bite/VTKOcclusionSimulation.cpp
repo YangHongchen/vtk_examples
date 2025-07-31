@@ -1,9 +1,12 @@
+#include "CustomInteractorStyle.h"
 #include "VTKOcclusionSimulation.h"
 #include <QFile>
 #include <QIODevice>
 #include <QStandardPaths>
 #include <QFileInfo>
 #include <vtkInteractorStyleTrackballCamera.h>
+#include <vtkRendererCollection.h>
+#include <vtkCamera.h>
 
 VTKOcclusionSimulation::VTKOcclusionSimulation (QWidget *parent) : QVTKOpenGLNativeWidget{parent}
 {
@@ -35,7 +38,7 @@ VTKOcclusionSimulation::VTKOcclusionSimulation (QWidget *parent) : QVTKOpenGLNat
 
     // 7. 禁用缩放交互器（可选）
     auto interactor = this->interactor();
-    auto style = vtkSmartPointer<vtkInteractorStyleTrackballCamera>::New();
+    auto style = vtkSmartPointer<CustomInteractorStyle>::New();
     style->SetCurrentRenderer (renderer);
     interactor->SetInteractorStyle (style);
     // connect (this, &QVTKOpenGLNativeWidget::windowChanged, this, [ = ]
@@ -44,6 +47,70 @@ VTKOcclusionSimulation::VTKOcclusionSimulation (QWidget *parent) : QVTKOpenGLNat
     // });
 }
 
+void VTKOcclusionSimulation::setCameraView (const QString &direction)
+{
+    auto renderer = this->renderWindow()->GetRenderers()->GetFirstRenderer();
+    if (!renderer) return;
+
+    auto camera = renderer->GetActiveCamera();
+    if (!camera) return;
+
+    double bounds[6];
+    renderer->ComputeVisiblePropBounds (bounds);
+    double center[3] =
+    {
+        (bounds[0] + bounds[1]) / 2.0,
+        (bounds[2] + bounds[3]) / 2.0,
+        (bounds[4] + bounds[5]) / 2.0
+    };
+
+    double xSize = bounds[1] - bounds[0];
+    double ySize = bounds[3] - bounds[2];
+    double zSize = bounds[5] - bounds[4];
+    double distance = std::max ({xSize, ySize, zSize}) * 2.5;
+
+    if (direction == "front")
+    {
+        // 模型的脸在 +Z
+        camera->SetPosition (center[0], center[1], center[2] + distance); // 正脸
+        camera->SetViewUp (0, 1, 0); // Y向上
+    }
+    else if (direction == "back")
+    {
+        // 模型后脑勺是 -Z
+        camera->SetPosition (center[0], center[1], center[2] - distance); // 后脑勺
+        camera->SetViewUp (0, 1, 0);
+    }
+    else if (direction == "left")
+    {
+        // 模型左脸是 -X
+        camera->SetPosition (center[0] - distance, center[1], center[2]); // 左脸
+        camera->SetViewUp (0, 1, 0);
+    }
+    else if (direction == "right")
+    {
+        // 模型右脸是 +X
+        camera->SetPosition (center[0] + distance, center[1], center[2]); // 右脸
+        camera->SetViewUp (0, 1, 0);
+    }
+    else if (direction == "top")
+    {
+        // 模型下巴朝 +Y
+        camera->SetPosition (center[0], center[1] + distance, center[2]); // 下巴
+        camera->SetViewUp (0, 0, 1);
+
+    }
+    else if (direction == "bottom")
+    {
+        // 模型头顶朝 -Y
+        camera->SetPosition (center[0], center[1] - distance, center[2]); // 头顶
+        camera->SetViewUp (0, 0, 1); // Z向上
+    }
+
+    camera->SetFocalPoint (center);
+    renderer->ResetCameraClippingRange();
+    this->renderWindow()->Render();
+}
 
 
 vtkSmartPointer<vtkActor> VTKOcclusionSimulation::createSmoothedActor (const std::string &filePath)
