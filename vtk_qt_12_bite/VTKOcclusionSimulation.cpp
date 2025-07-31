@@ -49,7 +49,7 @@ VTKOcclusionSimulation::VTKOcclusionSimulation (QWidget *parent) : QVTKOpenGLNat
     style->SetCurrentRenderer (renderer);
     interactor->SetInteractorStyle (style);
 
-    // markLeftCondyle();
+    setCameraView ("front");
 }
 
 void VTKOcclusionSimulation::setCameraView (const QString &direction)
@@ -117,7 +117,7 @@ void VTKOcclusionSimulation::setCameraView (const QString &direction)
     this->renderWindow()->Render();
 }
 
-void VTKOcclusionSimulation::markLeftCondyle()
+void VTKOcclusionSimulation::markPoints()
 {
     qDebug() << "标记左髁突";
     // 定位牙尖和髁突（未平移前）
@@ -158,16 +158,6 @@ void VTKOcclusionSimulation::markLeftCondyle()
     // this->renderWindow()->Render();
 
     setCameraView ("front");
-}
-
-void VTKOcclusionSimulation::markRightCondyle()
-{
-    qDebug() << "标记右髁突";
-}
-
-void VTKOcclusionSimulation::markIntercusp()
-{
-    qDebug() << "标记尖角交错";
 }
 
 vtkSmartPointer<vtkActor> VTKOcclusionSimulation::createSmoothedActor (const std::string &filePath)

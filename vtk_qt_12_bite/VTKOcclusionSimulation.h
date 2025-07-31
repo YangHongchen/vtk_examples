@@ -26,13 +26,8 @@ class VTKOcclusionSimulation : public QVTKOpenGLNativeWidget {
     void setCameraView (const QString &direction);
 
     // 标记：左髁突
-    void markLeftCondyle();
+    void markPoints();
 
-    // 标记：右髁突
-    void markRightCondyle();
-
-    // 标记：牙尖交错位
-    void markIntercusp();
 
   private:
     // 工具函数：根据 STL 文件创建带平滑法线的 Actor

@@ -42,5 +42,5 @@ MainWindow::MainWindow (QWidget *parent): QMainWindow{parent}
     connect (btnRight, &QPushButton::clicked, this, [ = ]() { m_vtkWidget->setCameraView ("right"); });
     connect (btnTop, &QPushButton::clicked, this, [ = ]() { m_vtkWidget->setCameraView ("top"); });
     connect (btnBottom, &QPushButton::clicked, this, [ = ]() { m_vtkWidget->setCameraView ("bottom"); });
-    connect (btnMarkPointers, &QPushButton::clicked, this, [ = ]() { m_vtkWidget->markLeftCondyle(); });
+    connect (btnMarkPointers, &QPushButton::clicked, this, [ = ]() { m_vtkWidget->markPoints(); });
 }
