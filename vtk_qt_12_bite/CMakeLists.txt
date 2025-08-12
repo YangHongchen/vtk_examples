@@ -30,6 +30,7 @@ qt_add_executable(demo_qt_widget
     Mesure3DWidget.h
     Mesure3DWidget.cpp
     CustomInteractorStyle.h
+    main_copy.cpp
 
 )
 

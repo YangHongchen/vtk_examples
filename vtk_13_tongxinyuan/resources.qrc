@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/">
+        <file>assets/qml/Message.qml</file>
+        <file>assets/qml/Main.qml</file>
+        <file>assets/icon/websocket.svg</file>
+        <file>assets/head.jpg</file>
+    </qresource>
+</RCC>
