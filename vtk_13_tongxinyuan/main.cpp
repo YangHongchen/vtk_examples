@@ -34,10 +34,7 @@
 #include <qDebug>
 
 /**
- * @brief generateLeftCondyleImage
- */
-/**
-* @brief generateLeftCondyleImage
+* @brief generateRightCondyleImage
 */
 void generateRightCondyleImage()
 {
@@ -180,15 +177,14 @@ void generateRightCondyleImage()
 }
 
 
+/**
+* @brief generateRightCondyleImage
+*/
 void generateLeftCondyleImage()
 {
-    const int winW = 800, winH = 400;   // 窗口尺寸
-    const int logoW = 48, logoH = 48;   // 图标尺寸
-    const int margin = 20;              // 边距
+    int winW = 800, winH = 400; // 你的窗口尺寸
 
-    // =============================
-    // 1) 原始轨迹点 (Y, Z)，单位:mm
-    // =============================
+    // 轨迹点 (Y, Z)，单位:mm，起点0,0，向下和向前类直线延伸
     std::vector<std::pair<double, double>> trajectory_adjusted =
     {
         {0.0, 0.0},
@@ -202,20 +198,18 @@ void generateLeftCondyleImage()
         {-4.5, 5.0},
     };
 
-    // =============================
-    // 2) 转为 PolyData（X <- Z，Y <- Y）
-    // =============================
-    auto points   = vtkSmartPointer<vtkPoints>::New();
-    auto lines    = vtkSmartPointer<vtkCellArray>::New();
+    // 1. 转成 PolyData，X轴用Z，Y轴用Y
+    auto points = vtkSmartPointer<vtkPoints>::New();
+    auto lines = vtkSmartPointer<vtkCellArray>::New();
     auto polyLine = vtkSmartPointer<vtkPolyLine>::New();
 
     polyLine->GetPointIds()->SetNumberOfIds (static_cast<vtkIdType> (trajectory_adjusted.size()));
     for (vtkIdType i = 0; i < static_cast<vtkIdType> (trajectory_adjusted.size()); ++i)
     {
-        const double Y = trajectory_adjusted[i].first;
-        const double Z = trajectory_adjusted[i].second;
-        points->InsertNextPoint (Z, Y, 0.0); // 注意这里 X 用 Z 值，方便在 X 轴显示
-        polyLine->GetPointIds()->SetId (i, i);
+        const double Y = trajectory_adjusted[static_cast<size_t> (i)].first;
+        const double Z = trajectory_adjusted[static_cast<size_t> (i)].second;
+        points->InsertNextPoint (Z, Y, 0.0); // 将 Z 映射到 X
+        polyLine->GetPointIds()->SetId (i, i); // 索引连续依次连接成折线
     }
     lines->InsertNextCell (polyLine);
 
@@ -223,115 +217,97 @@ void generateLeftCondyleImage()
     polyData->SetPoints (points);
     polyData->SetLines (lines);
 
-    // =============================
-    // 3) Spline 平滑曲线
-    // =============================
+    // 2. spline 插值平滑（指定细分数量来提高曲线平滑度）
     auto spline = vtkSmartPointer<vtkSplineFilter>::New();
     spline->SetInputData (polyData);
     spline->SetSubdivideToSpecified();
     spline->SetNumberOfSubdivisions (200);
     spline->Update();
 
-    // =============================
-    // 4) 转为 vtkTable（X: Z, Y: Y）
-    // =============================
+    // 3. 转成 vtkTable (X:Z, Y:Y)
     auto table = vtkSmartPointer<vtkTable>::New();
-    auto arrX  = vtkSmartPointer<vtkFloatArray>::New();
-    auto arrY  = vtkSmartPointer<vtkFloatArray>::New();
-    arrX->SetName ("(mm)");
-    arrY->SetName ("(mm)");
-    table->AddColumn (arrX);
+    auto arrZ = vtkSmartPointer<vtkFloatArray>::New();
+    auto arrY = vtkSmartPointer<vtkFloatArray>::New();
+    arrZ->SetName ("Z (mm)");
+    arrY->SetName ("Y (mm)");
+    table->AddColumn (arrZ);
     table->AddColumn (arrY);
 
-    auto pts  = spline->GetOutput()->GetPoints();
+    auto pts = spline->GetOutput()->GetPoints();
     const vtkIdType npts = pts->GetNumberOfPoints();
     table->SetNumberOfRows (npts);
     for (vtkIdType i = 0; i < npts; ++i)
     {
         double p[3];
         pts->GetPoint (i, p); // p[0]=Z, p[1]=Y
-        table->SetValue (i, 0, p[0]);
-        table->SetValue (i, 1, p[1]);
+        table->SetValue (i, 0, p[0]); // X <- Z
+        table->SetValue (i, 1, p[1]); // Y <- Y
     }
 
-    // =============================
-    // 5) 创建视图与图表
-    // =============================
+    // 4. 绘制
     auto view = vtkSmartPointer<vtkContextView>::New();
-    view->GetRenderer()->SetBackground (1.0, 1.0, 1.0); // 白色背景
+    view->GetRenderer()->SetBackground (1.0, 1.0, 1.0);
     view->GetRenderWindow()->SetSize (winW, winH);
     view->GetRenderWindow()->SetOffScreenRendering (1);
 
     auto chart = vtkSmartPointer<vtkChartXY>::New();
     view->GetScene()->AddItem (chart);
-    chart->SetBorders (70, 60, 50, 90); // left, bottom, right, top
+    // 曲线
+    auto plotLine = chart->AddPlot (vtkChart::LINE);
+    plotLine->SetInputData (table, 0, 1);
+    plotLine->SetColor (255, 0, 0, 255);
+    plotLine->SetWidth (2.0);
 
-    // =============================
-    // 6) 设置标题
-    // =============================
-    chart->SetTitle ("左髁突运动轨迹（矢状面）");
-    auto titleProp = chart->GetTitleProperties();
-    titleProp->SetFontSize (20);
-    titleProp->SetColor (0.2, 0.2, 0.2);
-    titleProp->SetJustificationToCentered();
+    // 坐标轴与网格（缓存指针，避免重复 GetAxis 调用）
+    auto axisZ = chart->GetAxis (vtkAxis::BOTTOM);
+    auto axisY = chart->GetAxis (vtkAxis::LEFT);
 
-    // =============================
-    // 7) 添加曲线
-    // =============================
-    auto line = chart->AddPlot (vtkChart::LINE);
-    line->SetInputData (table, 0, 1);
-    line->SetColor (50, 120, 200, 255);
-    line->SetWidth (2.5);
+    // 轴标题按需为空；只保留网格与范围
+    axisZ->SetTitle ("");
+    axisY->SetTitle ("");
 
-    // =============================
-    // 8) 坐标轴设置
-    // =============================
-    auto axisZ = chart->GetAxis (vtkAxis::BOTTOM); // X 轴
-    auto axisY = chart->GetAxis (vtkAxis::LEFT);  // Y 轴（保留在左侧）
-
-    axisZ->SetTitle ("(mm)");
-    axisY->SetTitle ("(mm)");
-
+    // 网格（统一配色，避免视觉噪声）
     axisZ->SetGridVisible (true);
     axisY->SetGridVisible (true);
-    axisZ->GetGridPen()->SetColor (220, 220, 220);
-    axisY->GetGridPen()->SetColor (220, 220, 220);
+    axisZ->GetGridPen()->SetColor (180, 180, 180);
+    axisY->GetGridPen()->SetColor (180, 180, 180);
 
+    // 坐标轴固定范围（不受数据影响）
     axisZ->SetBehavior (vtkAxis::FIXED);
-    axisZ->SetRange (16, -4);    // X 轴反向：左侧大、右侧小
-    axisZ->SetNumberOfTicks (11); // 约 2 mm 步长
+    axisZ->SetRange (-4, 16);
+    axisZ->SetNumberOfTicks (11); // 步长约 2 mm
 
     axisY->SetBehavior (vtkAxis::FIXED);
     axisY->SetRange (-8, 2);
-    axisY->SetNumberOfTicks (6); // 约 2 mm 步长
+    axisY->SetNumberOfTicks (6); // 步长约 2 mm
 
-    // =============================
-    // 9) 添加左上角 Logo
-    // =============================
+    // ================== 加入图例 ================
+    // 读取图像
     auto reader = vtkSmartPointer<vtkPNGReader>::New();
-    reader->SetFileName ("skull_left.png"); // 你的路径
+    reader->SetFileName ("skull_right.png");
     reader->Update();
-
+    // 调整到 48x48（保持 1 像素 = 1 显示像素的直觉）
     auto resize = vtkSmartPointer<vtkImageResize>::New();
     resize->SetInputConnection (reader->GetOutputPort());
-    resize->SetOutputDimensions (logoW, logoH, 1);
+    resize->SetOutputDimensions (48, 48, 1); // 宽 高 深
     resize->Update();
-
+    // 2D 显示用的图像 mapper（按像素渲染）
     auto imgMapper = vtkSmartPointer<vtkImageMapper>::New();
     imgMapper->SetInputConnection (resize->GetOutputPort());
+    // 对于 8-bit 图像，设置窗宽/窗位以避免变灰（RGB/RGBA通常也能直接显示）
     imgMapper->SetColorWindow (255);
     imgMapper->SetColorLevel (127.5);
-
+    // 2D actor：用“显示坐标系”（像素）定位到右上角
     auto logo2D = vtkSmartPointer<vtkActor2D>::New();
     logo2D->SetMapper (imgMapper);
     logo2D->GetPositionCoordinate()->SetCoordinateSystemToDisplay();
-    logo2D->SetPosition (2 * margin, winH - logoH - margin); // 左上角位置
-
+    int margin = 20;
+    int logoW = 48, logoH = 48;
+    logo2D->SetPosition (winW - logoW - margin, winH - logoH - margin);
+    // 添加为 2D 覆盖层
     view->GetRenderer()->AddActor2D (logo2D);
 
-    // =============================
-    // 10) 渲染并保存
-    // =============================
+    // 渲染并保存图片
     view->GetRenderWindow()->Render();
 
     auto w2i = vtkSmartPointer<vtkWindowToImageFilter>::New();
@@ -344,9 +320,12 @@ void generateLeftCondyleImage()
     writer->Write();
 }
 
+
+
+
 int main()
 {
     generateRightCondyleImage();
-    // generateLeftCondyleImage();
+    generateLeftCondyleImage();
     return 0;
 }
