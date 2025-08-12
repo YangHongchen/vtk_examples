@@ -255,7 +255,7 @@ void generateLeftCondyleImage()
     // 曲线
     auto plotLine = chart->AddPlot (vtkChart::LINE);
     plotLine->SetInputData (table, 0, 1);
-    plotLine->SetColor (255, 0, 0, 255);
+    plotLine->SetColor (0, 0, 255, 255);
     plotLine->SetWidth (2.0);
 
     // 坐标轴与网格（缓存指针，避免重复 GetAxis 调用）
@@ -274,7 +274,7 @@ void generateLeftCondyleImage()
 
     // 坐标轴固定范围（不受数据影响）
     axisZ->SetBehavior (vtkAxis::FIXED);
-    axisZ->SetRange (-4, 16);
+    axisZ->SetRange (16, -4);
     axisZ->SetNumberOfTicks (11); // 步长约 2 mm
 
     axisY->SetBehavior (vtkAxis::FIXED);
@@ -282,32 +282,31 @@ void generateLeftCondyleImage()
     axisY->SetNumberOfTicks (6); // 步长约 2 mm
 
     // ================== 加入图例 ================
-    // 读取图像
     auto reader = vtkSmartPointer<vtkPNGReader>::New();
-    reader->SetFileName ("skull_right.png");
+    reader->SetFileName ("skull_left.png");
     reader->Update();
-    // 调整到 48x48（保持 1 像素 = 1 显示像素的直觉）
+
     auto resize = vtkSmartPointer<vtkImageResize>::New();
     resize->SetInputConnection (reader->GetOutputPort());
     resize->SetOutputDimensions (48, 48, 1); // 宽 高 深
     resize->Update();
-    // 2D 显示用的图像 mapper（按像素渲染）
+
     auto imgMapper = vtkSmartPointer<vtkImageMapper>::New();
     imgMapper->SetInputConnection (resize->GetOutputPort());
-    // 对于 8-bit 图像，设置窗宽/窗位以避免变灰（RGB/RGBA通常也能直接显示）
     imgMapper->SetColorWindow (255);
     imgMapper->SetColorLevel (127.5);
-    // 2D actor：用“显示坐标系”（像素）定位到右上角
+
     auto logo2D = vtkSmartPointer<vtkActor2D>::New();
     logo2D->SetMapper (imgMapper);
     logo2D->GetPositionCoordinate()->SetCoordinateSystemToDisplay();
     int margin = 20;
     int logoW = 48, logoH = 48;
-    logo2D->SetPosition (winW - logoW - margin, winH - logoH - margin);
+    logo2D->SetPosition (margin * 2, winH - logoH - margin);
+
     // 添加为 2D 覆盖层
     view->GetRenderer()->AddActor2D (logo2D);
 
-    // 渲染并保存图片
+    // ================ 渲染并保存图片 ================
     view->GetRenderWindow()->Render();
 
     auto w2i = vtkSmartPointer<vtkWindowToImageFilter>::New();
@@ -319,8 +318,6 @@ void generateLeftCondyleImage()
     writer->SetInputConnection (w2i->GetOutputPort());
     writer->Write();
 }
-
-
 
 
 int main()
