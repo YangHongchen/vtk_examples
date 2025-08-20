@@ -58,10 +58,10 @@ class ConcentricCirclesWidget : public QVTKOpenGLNativeWidget {
         // 初始化Logo
         initLogo ("logo.png");
 
-        // 初始化定时器
-        timer = new QTimer (this);
-        connect (timer, &QTimer::timeout, this, &ConcentricCirclesWidget::updateCircles);
-        timer->start (50); // 20 FPS更新
+        // // 初始化定时器
+        // timer = new QTimer (this);
+        // connect (timer, &QTimer::timeout, this, &ConcentricCirclesWidget::updateCircles);
+        // timer->start (50); // 20 FPS更新
     }
 
     // 外部接口：设置中心点
@@ -79,6 +79,7 @@ class ConcentricCirclesWidget : public QVTKOpenGLNativeWidget {
     }
 
   private slots:
+
     // 更新圆圈和轨迹
     void updateCircles()
     {
@@ -173,9 +174,59 @@ class ConcentricCirclesWidget : public QVTKOpenGLNativeWidget {
         actor->GetProperty()->SetLineWidth (2.0); // 2像素线宽
 
         renderer->AddActor (actor);
+
+        // 添加轨迹的绘制
+        if (!offsets.empty())
+        {
+            vtkNew<vtkPolyData> trajectoryPolyData;
+            vtkNew<vtkPoints> trajectoryPoints;
+            vtkNew<vtkCellArray> trajectoryLines;
+
+            vtkIdType prevOffsetPointId = -1;
+
+            // 遍历偏移数据并绘制轨迹
+            for (const auto& offset : offsets)
+            {
+                double offsetX = std::get<0> (offset);
+                double offsetY = std::get<1> (offset);
+                double offsetZ = std::get<2> (offset);
+
+                double x = center[0] + offsetX;
+                double y = center[1] + offsetY;
+                double z = center[2] + offsetZ;
+
+                vtkIdType currentPointId = trajectoryPoints->InsertNextPoint (x, y, z);
+
+                if (prevOffsetPointId != -1)
+                {
+                    vtkNew<vtkPolyLine> line;
+                    line->GetPointIds()->SetNumberOfIds (2);
+                    line->GetPointIds()->SetId (0, prevOffsetPointId);
+                    line->GetPointIds()->SetId (1, currentPointId);
+                    trajectoryLines->InsertNextCell (line);
+                }
+
+                prevOffsetPointId = currentPointId;
+            }
+
+            trajectoryPolyData->SetPoints (trajectoryPoints);
+            trajectoryPolyData->SetLines (trajectoryLines);
+
+            vtkNew<vtkPolyDataMapper> trajectoryMapper;
+            trajectoryMapper->SetInputData (trajectoryPolyData);
+
+            vtkNew<vtkActor> trajectoryActor;
+            trajectoryActor->SetMapper (trajectoryMapper);
+            trajectoryActor->GetProperty()->SetColor (1.0, 0.0, 0.0); // 红色轨迹
+            trajectoryActor->GetProperty()->SetLineWidth (2.0);
+
+            renderer->AddActor (trajectoryActor);
+        }
+
         renderer->ResetCamera();
         this->renderWindow()->Render();
     }
+
 
     // 初始化文本：标题和单位
     void initTextActors()
@@ -183,7 +234,7 @@ class ConcentricCirclesWidget : public QVTKOpenGLNativeWidget {
         // 标题
         vtkSmartPointer<vtkTextActor> titleActor = vtkSmartPointer<vtkTextActor>::New();
         titleActor->GetPositionCoordinate()->SetCoordinateSystemToNormalizedDisplay();
-        titleActor->SetPosition (0.05, 0.95); // 设置文本位置为左上角
+        titleActor->SetPosition (center[0] + 0.1, center[1] + 0.85); // 调整位置相对圆心
         titleActor->GetTextProperty()->SetFontSize (20); // 设置字体大小
         titleActor->GetTextProperty()->SetColor (0.0, 0.0, 0.0); // 设置字体颜色为黑色
         titleActor->SetInput ("Left Condyle"); // 设置标题文本
@@ -192,7 +243,7 @@ class ConcentricCirclesWidget : public QVTKOpenGLNativeWidget {
         // 单位
         vtkSmartPointer<vtkTextActor> unitActor = vtkSmartPointer<vtkTextActor>::New();
         unitActor->GetPositionCoordinate()->SetCoordinateSystemToNormalizedDisplay();
-        unitActor->SetPosition (0.95, 0.05); // 设置文本位置为右下角
+        unitActor->SetPosition (center[0] + 0.85, center[1]  + 0.15); // 调整位置相对圆心
         unitActor->GetTextProperty()->SetFontSize (14); // 设置字体大小
         unitActor->GetTextProperty()->SetColor (0.0, 0.0, 0.0); // 设置字体颜色为黑色
         unitActor->SetInput ("1mm"); // 设置单位
@@ -201,7 +252,6 @@ class ConcentricCirclesWidget : public QVTKOpenGLNativeWidget {
         renderer->Modified();
         this->renderWindow()->Render();  // 立即刷新窗口
     }
-
 
     // 绘制基于中心点的横线和竖线
     void drawCenterLines()
@@ -231,10 +281,11 @@ class ConcentricCirclesWidget : public QVTKOpenGLNativeWidget {
 
         vtkSmartPointer<vtkActor> verticalActor = vtkSmartPointer<vtkActor>::New();
         verticalActor->SetMapper (verticalMapper);
-        verticalActor->GetProperty()->SetColor (1.0, 0.0, 0.0); // 黑色
+        verticalActor->GetProperty()->SetColor (0.0, 0.0, 0.0); // 黑色
         renderer->AddActor (verticalActor);
     }
 
+    // 初始化Logo
     // 初始化Logo
     void initLogo (QString logoFile)
     {
@@ -245,27 +296,42 @@ class ConcentricCirclesWidget : public QVTKOpenGLNativeWidget {
             return;
         }
 
-        qimg = qimg.mirrored (false, true); // 镜像翻转
+        // qimg = qimg.mirrored (false, true); // 镜像翻转
         auto vtkImg = qimageToVtk (qimg);
 
         auto resize = vtkSmartPointer<vtkImageResize>::New();
         resize->SetInputData (vtkImg);
-        resize->SetOutputDimensions (96, 96, 1);
+        resize->SetOutputDimensions (96, 96, 1); // 设置Logo大小
         resize->Update();
 
-        vtkSmartPointer<vtkActor2D> m_logoActor;
+        vtkSmartPointer<vtkActor2D> logoActor;
         auto imgMapper = vtkSmartPointer<vtkImageMapper>::New();
         imgMapper->SetInputConnection (resize->GetOutputPort());
         imgMapper->SetColorWindow (255);
         imgMapper->SetColorLevel (127.5);
 
-        m_logoActor = vtkSmartPointer<vtkActor2D>::New();
-        m_logoActor->SetMapper (imgMapper);
-        m_logoActor->GetPositionCoordinate()->SetCoordinateSystemToDisplay();
-        m_logoActor->SetPosition (100, 100);
+        logoActor = vtkSmartPointer<vtkActor2D>::New();
+        logoActor->SetMapper (imgMapper);
 
-        renderer->AddActor2D (m_logoActor);
+        // 设置Logo位置为相对圆心位置，使用[0, 1]标准化坐标
+        double logoOffsetX = 0.1;  // 相对于圆心的X偏移量
+        double logoOffsetY = 0.15;  // 相对于圆心的Y偏移量
+
+        logoActor->GetPositionCoordinate()->SetCoordinateSystemToNormalizedDisplay();
+
+        // 计算位置：相对于圆心偏移
+        double posX = center[0] + logoOffsetX;  // X坐标偏移
+        double posY = center[1] + logoOffsetY;  // Y坐标偏移
+
+        // 确保位置在[0, 1]范围内
+        posX = std::min (std::max (posX, 0.0), 1.0);
+        posY = std::min (std::max (posY, 0.0), 1.0);
+
+        logoActor->SetPosition (posX, posY); // 设置标准化坐标
+
+        renderer->AddActor2D (logoActor);
     }
+
 
     // QImage 转换为 VTK ImageData
     vtkSmartPointer<vtkImageData> qimageToVtk (const QImage& qimg)
