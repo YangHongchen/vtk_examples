@@ -44,21 +44,10 @@ find_package(Qt6 REQUIRED COMPONENTS Core Widgets Quick QuickWidgets WebSockets)
 find_package(Qt6 REQUIRED COMPONENTS Widgets)
 
 add_executable(${PROJECT_NAME}
-    main_report_generator.cpp
-
-    MainWindow.h MainWindow.cpp
-
-
-    resources.qrc
-
-
-
-    socket/TcpClient.h socket/TcpClient.cpp
-    vtk/OcclusionWidget.h vtk/OcclusionWidget.cpp
-    chart/CondyleTrackWidget.h chart/CondyleTrackWidget.cpp
-    chart/TrackPlotter.h chart/TrackPlotter.cpp
-    main_copy.cpp
     main.cpp
+    resources.qrc
+    CircularTrajectoryWidget.h CircularTrajectoryWidget.cpp
+
     # 可添加其他源文件...
 )
 
