@@ -4,7 +4,7 @@ cmake_minimum_required(VERSION 3.16)
 #-----------------------------------------------------------------------------
 # 项目名称和基础配置
 #-----------------------------------------------------------------------------
-project(VTKQtTongxinyuan
+project(VTKQtQiemian
     VERSION 1.0.0
     LANGUAGES CXX
     DESCRIPTION "VTK三维场景纹理"
@@ -40,32 +40,17 @@ find_package(VTK REQUIRED)
 #-----------------------------------------------------------------------------
 # 可执行目标配置
 #-----------------------------------------------------------------------------
-find_package(Qt6 REQUIRED COMPONENTS Core Widgets Quick QuickWidgets WebSockets)
-find_package(Qt6 REQUIRED COMPONENTS Widgets)
+find_package(Qt6 REQUIRED COMPONENTS Core)
 
 add_executable(${PROJECT_NAME}
     main.cpp
-    resources.qrc
-    CircularTrajectoryWidget.h
-    CircularTrajectoryWidget.cpp
-
+    main_grid.cpp
+    main_cutter_basic_01.cpp
+    src/vtk/style/DisabledInteractorStyle.h
     # 可添加其他源文件...
 )
 
-target_link_libraries(VTKQtTongxinyuan PRIVATE
-    Qt6::Widgets
-    Qt6::Network
-)
-target_link_libraries(VTKQtTongxinyuan PRIVATE
-    Qt6::Core
-    Qt6::Widgets
-    Qt6::Quick
-    Qt6::QuickWidgets
-    Qt6::WebSockets
-)
-target_link_libraries(VTKQtTongxinyuan PRIVATE Qt6::Core)
-target_link_libraries(VTKQtTongxinyuan PRIVATE Qt6::Widgets)
-
+target_link_libraries(VTKQtQiemian PRIVATE Qt6::Core)
 
 #-----------------------------------------------------------------------------
 # 链接库配置（注意顺序依赖）

@@ -4,5 +4,9 @@
         <file>assets/qml/Main.qml</file>
         <file>assets/icon/websocket.svg</file>
         <file>assets/head.jpg</file>
+        <file>assets/skull_left.png</file>
+        <file>assets/skull_right.png</file>
+        <file>assets/skull_top.png</file>
+        <file>assets/qml/OverlayPanel.qml</file>
     </qresource>
 </RCC>
