@@ -47,6 +47,9 @@ add_executable(${PROJECT_NAME}
     main_grid.cpp
     main_cutter_basic_01.cpp
     src/vtk/style/DisabledInteractorStyle.h
+    main_cutte_split_and_2d_paint.cpp
+    main_cutter_plane_move_able.cpp
+    main_cutter_plane_upper_and_lowe.cpp
     # 可添加其他源文件...
 )
 
