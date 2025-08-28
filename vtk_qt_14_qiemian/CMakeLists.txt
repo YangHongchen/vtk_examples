@@ -32,6 +32,10 @@ set(CMAKE_PREFIX_PATH
     "C:/vtk_930/lib/cmake/vtk-9.3"      # VTK安装路径
 )
 
+# 引入eigen3.4.0
+set(EIGEN_INCLUDE_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/3rd/eigen-3.4.0")
+include_directories(${EIGEN_INCLUDE_DIRS})
+
 #-----------------------------------------------------------------------------
 # VTK模块查找（关键组件说明）
 #-----------------------------------------------------------------------------

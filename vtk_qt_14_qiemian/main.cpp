@@ -168,7 +168,7 @@ int main (int argc, char* argv[])
     auto upperCutActor = vtkSmartPointer<vtkActor>::New();
     upperCutActor->SetMapper (upperCutMapper);
     upperCutActor->GetProperty()->SetColor (1, 0, 0);
-    upperCutActor->GetProperty()->SetLineWidth (3);
+    upperCutActor->GetProperty()->SetLineWidth (2);
 
     // 切线 - 下颌
     auto lowerCutMapper = vtkSmartPointer<vtkPolyDataMapper>::New();
@@ -176,7 +176,7 @@ int main (int argc, char* argv[])
     auto lowerCutActor = vtkSmartPointer<vtkActor>::New();
     lowerCutActor->SetMapper (lowerCutMapper);
     lowerCutActor->GetProperty()->SetColor (0, 0.6, 0);
-    lowerCutActor->GetProperty()->SetLineWidth (3);
+    lowerCutActor->GetProperty()->SetLineWidth (2);
 
     // 左侧渲染 (3D)
     auto renLeft = vtkSmartPointer<vtkRenderer>::New();
