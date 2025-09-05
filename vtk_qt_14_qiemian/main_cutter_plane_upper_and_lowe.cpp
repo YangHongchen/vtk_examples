@@ -13,10 +13,10 @@
 // #include <vtkProperty.h>
 // #include <vtkObjectFactory.h>
 // #include <vtkMath.h>
+// #include <vtkSmoothPolyDataFilter.h>
 
 // #include <cmath>
 // #include <algorithm>
-// #include <iostream>
 
 // // ========== 自定义交互：旋转切面 ==========
 // class PlaneRotateInteractorStyle : public vtkInteractorStyleUser {
@@ -82,7 +82,7 @@
 //         cam->SetFocalPoint (this->Center);
 //         cam->SetPosition (this->Center[0] + nx * 200, this->Center[1] + ny * 200, this->Center[2] + nz * 200);
 //         cam->ParallelProjectionOn();
-//         cam->SetParallelScale (50);
+//         cam->SetParallelScale (30);
 //         cam->SetViewUp (0.0, 1.0, 0.0);
 //         this->RenRight->ResetCameraClippingRange();
 
@@ -123,6 +123,24 @@
 //     lowerReader->SetFileName (lowerFile.c_str());
 //     lowerReader->Update();
 
+//     // 上颌平滑
+//     auto upperSmooth = vtkSmartPointer<vtkSmoothPolyDataFilter>::New();
+//     upperSmooth->SetInputConnection (upperReader->GetOutputPort());
+//     upperSmooth->SetNumberOfIterations (60);  // 迭代次数，越大越光滑
+//     upperSmooth->SetRelaxationFactor (0.1);   // 松弛因子
+//     upperSmooth->FeatureEdgeSmoothingOff();   // 保留特征边
+//     upperSmooth->BoundarySmoothingOn();
+//     upperSmooth->Update();
+
+//     // 下颌平滑
+//     auto lowerSmooth = vtkSmartPointer<vtkSmoothPolyDataFilter>::New();
+//     lowerSmooth->SetInputConnection (lowerReader->GetOutputPort());
+//     lowerSmooth->SetNumberOfIterations (30);
+//     lowerSmooth->SetRelaxationFactor (0.1);
+//     lowerSmooth->FeatureEdgeSmoothingOff();
+//     lowerSmooth->BoundarySmoothingOn();
+//     lowerSmooth->Update();
+
 //     // 计算整体中心
 //     double b1[6], b2[6];
 //     upperReader->GetOutput()->GetBounds (b1);
@@ -148,18 +166,18 @@
 
 //     // 上颌模型
 //     auto upperMapper = vtkSmartPointer<vtkPolyDataMapper>::New();
-//     upperMapper->SetInputConnection (upperReader->GetOutputPort());
+//     upperMapper->SetInputConnection (upperSmooth->GetOutputPort());
 //     auto upperActor = vtkSmartPointer<vtkActor>::New();
 //     upperActor->SetMapper (upperMapper);
-//     upperActor->GetProperty()->SetOpacity (0.35);
+//     upperActor->GetProperty()->SetOpacity (1);
 //     upperActor->GetProperty()->SetColor (0.8, 0.8, 0.8);
 
 //     // 下颌模型
 //     auto lowerMapper = vtkSmartPointer<vtkPolyDataMapper>::New();
-//     lowerMapper->SetInputConnection (lowerReader->GetOutputPort());
+//     lowerMapper->SetInputConnection (lowerSmooth->GetOutputPort());
 //     auto lowerActor = vtkSmartPointer<vtkActor>::New();
 //     lowerActor->SetMapper (lowerMapper);
-//     lowerActor->GetProperty()->SetOpacity (0.35);
+//     lowerActor->GetProperty()->SetOpacity (1);
 //     lowerActor->GetProperty()->SetColor (0.6, 0.8, 1.0);
 
 //     // 切线 - 上颌
@@ -168,7 +186,7 @@
 //     auto upperCutActor = vtkSmartPointer<vtkActor>::New();
 //     upperCutActor->SetMapper (upperCutMapper);
 //     upperCutActor->GetProperty()->SetColor (1, 0, 0);
-//     upperCutActor->GetProperty()->SetLineWidth (3);
+//     upperCutActor->GetProperty()->SetLineWidth (1.5);
 
 //     // 切线 - 下颌
 //     auto lowerCutMapper = vtkSmartPointer<vtkPolyDataMapper>::New();
@@ -176,7 +194,7 @@
 //     auto lowerCutActor = vtkSmartPointer<vtkActor>::New();
 //     lowerCutActor->SetMapper (lowerCutMapper);
 //     lowerCutActor->GetProperty()->SetColor (0, 0.6, 0);
-//     lowerCutActor->GetProperty()->SetLineWidth (3);
+//     lowerCutActor->GetProperty()->SetLineWidth (1.5);
 
 //     // 左侧渲染 (3D)
 //     auto renLeft = vtkSmartPointer<vtkRenderer>::New();
@@ -210,7 +228,7 @@
 //     style->SetRenderWindow (renWin);
 //     style->SetRendererRight (renRight);
 //     style->SetCenter (centerX, centerY, centerZ);
-//     style->SetSensitivity (0.4);
+//     style->SetSensitivity (0.6);
 //     style->SetAngleLimits (0, 180);
 //     iren->SetInteractorStyle (style);
 

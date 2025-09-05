@@ -54,6 +54,8 @@ add_executable(${PROJECT_NAME}
     main_cutte_split_and_2d_paint.cpp
     main_cutter_plane_move_able.cpp
     main_cutter_plane_upper_and_lowe.cpp
+    main_distance_angle_testing.cpp
+    src/vtk/widget/PlaneSliceViewer.h src/vtk/widget/PlaneSliceViewer.cpp  # 测距 & 测角度
     # 可添加其他源文件...
 )
 
